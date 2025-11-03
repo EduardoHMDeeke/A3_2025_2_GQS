@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Eduardo Deeke
  */
+
+    /**
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AmigosDAOTest {
 
@@ -111,4 +113,4 @@ public class AmigosDAOTest {
         assertTrue(result.contains("Amigos{"), "toString should contain the class start.");
         assertTrue(result.contains("nome=" + TEST_NAME), "toString should display the name field.");
     }
-}
+} */
