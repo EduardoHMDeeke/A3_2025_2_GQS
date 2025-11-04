@@ -24,10 +24,10 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Set up JDK 18
+    - name: Set up JDK 25
       uses: actions/setup-java@v3
       with:
-        java-version: '18'
+        java-version: '25'
         distribution: 'temurin'
         cache: maven
 
@@ -47,10 +47,10 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    - name: Set up JDK 18
+    - name: Set up JDK 25
       uses: actions/setup-java@v3
       with:
-        java-version: '18'
+        java-version: '25'
         distribution: 'temurin'
         cache: maven
 
@@ -68,10 +68,10 @@ jobs:
     steps:
     - name: Realiza o checkout do repositório
       uses: actions/checkout@v3
-    - name: Configura o JDK 18
+    - name: Configura o JDK 25
       uses: actions/setup-java@v3
       with:
-        java-version: '18'
+        java-version: '25'
         distribution: 'temurin'
         cache: maven
 
