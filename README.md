@@ -19,7 +19,7 @@
     <td>Alexandre Ciro Andriani Júnior - 1072323107 - alexandre-jr-94</td>
   </tr>
   <tr>
-    <td>Eduardo Henrique de Melo Deeke</td>
+    <td>Eduardo Henrique de Melo Deeke - 1072311890 - EduardoHMDeeke</td>
   </tr>
   <tr>
     <td>João Vitor de Siqueira</td>
