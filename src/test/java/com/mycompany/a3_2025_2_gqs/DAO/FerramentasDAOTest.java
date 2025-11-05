@@ -178,4 +178,20 @@ class FerramentaDAOTest {
         }
     }
 
+    
+    @Test
+    void insertBD_deveProtegerContraSQLInjection() throws Exception {
+        try (Connection c = TestDatabase.newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            Ferramentas f = novaFerramenta("'; DROP TABLE ferramentas; --", "Marca", "10.00", 0);
+            dao.insertBD(f);
+        }
+
+        // Verifica se a tabela ainda existe e contém o dado como texto
+        try (Connection c = TestDatabase.newConnection()) {
+            ArrayList<Ferramentas> lista = new FerramentaDAO(c).listarFerramentas();
+            assertEquals(1, lista.size());
+            assertEquals("'; DROP TABLE ferramentas; --", lista.get(0).getNome());
+        }
+    }
 }
