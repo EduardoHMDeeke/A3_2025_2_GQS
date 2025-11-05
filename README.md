@@ -16,7 +16,7 @@
 <h2>👨‍🎓 Alunos</h2>
 <table border="1" cellpadding="5" cellspacing="0">
   <tr>
-    <th>Alexandre Ciro Andriani Júnior</th>
+    <td>Alexandre Ciro Andriani Júnior</td>
   </tr>
   <tr>
     <td>Eduardo Henrique de Melo Deeke</td>
