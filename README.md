@@ -22,7 +22,7 @@
     <td>Eduardo Henrique de Melo Deeke - 1072311890 - EduardoHMDeeke</td>
   </tr>
   <tr>
-    <td>João Vitor de Siqueira</td>
+    <td>João Vitor de Siqueira - 10723113301 - Joao05Vitor</td>
   </tr>
   <tr>
     <td>João da Silva Meurer</td>
