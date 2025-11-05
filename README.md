@@ -16,7 +16,7 @@
 <h2>👨‍🎓 Alunos</h2>
 <table border="1" cellpadding="5" cellspacing="0">
   <tr>
-    <td>Alexandre Ciro Andriani Júnior</td>
+    <td>Alexandre Ciro Andriani Júnior - 1072323107 - alexandre-jr-94</td>
   </tr>
   <tr>
     <td>Eduardo Henrique de Melo Deeke</td>
