@@ -25,13 +25,24 @@ public class FerramentaDAO {
     }
 
     //Inserir Ferramenta no Banco de dados (Create) 
+ 
     public void insertBD(Ferramentas ferramenta) throws SQLException {
-        String sql = "INSERT INTO ferramentas (nome, marca, preco, estaEmprestada) VALUES ('" + ferramenta.getNome() + "', '" + ferramenta.getMarca() + "', '" + ferramenta.getPreco() + "', '" + ferramenta.getEstaEmprestada() + "') ";
-        ps = connection.prepareStatement(sql);
-        ps.execute();
-        connection.close();
-    }
+        String sql = "INSERT INTO ferramentas (nome, marca, preco, estaEmprestada) VALUES (?, ?, ?, ?)";
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, ferramenta.getNome());
+            ps.setString(2, ferramenta.getMarca());
+            ps.setString(3, ferramenta.getPreco()); // ou setDouble se for numérico
+            ps.setInt(4, ferramenta.getEstaEmprestada());
 
+            ps.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(FerramentaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
+        } finally {
+            connection.close(); 
+        }
+    }
     //Atualizar Ferramenta Banco de dados (Upadate)
     public void UpdateFerramenta(Ferramentas ferramenta, int id) {
         String sql = "UPDATE ferramentas SET nome = ?, marca = ?, preco = ? " + "WHERE id = ?";
