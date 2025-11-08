@@ -35,7 +35,20 @@
             <version>5.10.1</version> 
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>RELEASE170</version>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>netbeans-repo</id>
+            <url>https://bits.netbeans.org/maven2/</url>
+        </repository>
+    </repositories>
 
     <name>ToolTracker</name>
 
