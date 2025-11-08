@@ -1,3 +1,10 @@
+[![Github Actions Status for
+EduardoHMDeeke/A3_2025_2_GQS](https://github.com/EduardoHMDeeke/A3_2025_2_GQS/workflows/Java%20CI%20with%20Maven/badge.svg)](https://github.com/EduardoHMDeeke/A3_2025_2_GQS/actions)
+[![Quality Gate
+Status](https://sonarcloud.io/api/project_badges/measure?project=A3_2025_2_GQS&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=A3_2025_2_GQS)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=A3_2025_2_GQS&metric=coverage)](https://sonarcloud.io/component_measures?id=A3_2025_2_GQS&metric=coverage)
+
+
 <h1>📦 Sistema de Registro de Ferramentas Emprestadas</h1>
 -----A3 de Gestão de Qualidade de Software-----
 
