@@ -36,6 +36,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- SQLite JDBC para permitir jdbc:sqlite:... nos testes -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.42.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
