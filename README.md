@@ -35,6 +35,6 @@ Status](https://sonarcloud.io/api/project_badges/measure?project=A3_2025_2_GQS&m
     <td>João da Silva Meurer</td>
   </tr>
     <tr>
-    <td>Ryan Pereira Lima</td>
+    <td>Ryan Pereira Lima - 1072310978 - ryanpzr</td>
   </tr>
 </table>
