@@ -17,7 +17,7 @@ public class Conexao {
         Connection conn = null;
         try {
             
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/dbtooltracker", "ghff13", "GOSTOSO4ever");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/dbtooltracker", "ghff13", "LJL!(D`ooACL<3P>6?^9u:nPl\lgc'@jGUJo0cDLfM\c--\,V.2Nkb;KaK3*X^pm");
             System.out.println("Conexão bem-sucedida!");
 
         } catch (SQLException ex) {
