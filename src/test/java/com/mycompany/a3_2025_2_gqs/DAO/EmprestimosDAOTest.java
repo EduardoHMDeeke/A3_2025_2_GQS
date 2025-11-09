@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Testes de integração para EmprestimosDAO usando SQLite in-memory.
- * Até Commit C (inclui teste de insert/listar e buscar por id)
+ * Até Commit D (inclui insert/listar, buscar por id e update status).
  */
 public class EmprestimosDAOTest {
 
@@ -120,6 +120,55 @@ public class EmprestimosDAOTest {
             assertEquals(1, encontrado.getIdAmigos());
             assertEquals(2, encontrado.getIdFerramentas());
             assertEquals(1, encontrado.getEstaEmprestada());
+        }
+    }
+
+    @Test
+    void updateEmprestimos_deveAlterarStatus() throws Exception {
+        int idGerado;
+
+        // Inserir registro (por padrão dao.insertBD define estaEmprestada = 1)
+        try (Connection c1 = newConnection()) {
+            EmprestimosDAO dao = new EmprestimosDAO(c1);
+            LocalDate hoje = LocalDate.now();
+            LocalDate seteDias = hoje.plusDays(7);
+            Emprestimos e = novoEmprestimo(5, 6, hoje, seteDias);
+            dao.insertBD(e);
+        }
+
+        // Ler id gerado
+        try (Connection c2 = newConnection()) {
+            EmprestimosDAO dao2 = new EmprestimosDAO(c2);
+            ArrayList<Emprestimos> lista = dao2.listarEmprestimos();
+            assertFalse(lista.isEmpty(), "Deve existir pelo menos um registro");
+            idGerado = lista.get(0).getId();
+            assertEquals(1, lista.get(0).getEstaEmprestada(), "Flag inicial deve ser 1");
+        }
+
+        // Atualiza para 0
+        try (Connection c3 = newConnection()) {
+            EmprestimosDAO dao3 = new EmprestimosDAO(c3);
+            dao3.updateEmprestimos(0, idGerado);
+        }
+
+        // Verifica que ficou 0
+        try (Connection c4 = newConnection()) {
+            EmprestimosDAO dao4 = new EmprestimosDAO(c4);
+            Emprestimos e = dao4.buscarEmprestimo(idGerado);
+            assertEquals(0, e.getEstaEmprestada(), "Flag deve ter sido atualizado para 0");
+        }
+
+        // Atualiza de volta para 1
+        try (Connection c5 = newConnection()) {
+            EmprestimosDAO dao5 = new EmprestimosDAO(c5);
+            dao5.updateEmprestimos(1, idGerado);
+        }
+
+        // Verifica que voltou para 1
+        try (Connection c6 = newConnection()) {
+            EmprestimosDAO dao6 = new EmprestimosDAO(c6);
+            Emprestimos e = dao6.buscarEmprestimo(idGerado);
+            assertEquals(1, e.getEstaEmprestada(), "Flag deve ter sido atualizado para 1");
         }
     }
 }
