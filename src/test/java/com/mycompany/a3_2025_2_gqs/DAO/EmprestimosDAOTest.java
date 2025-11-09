@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Testes de integração para EmprestimosDAO usando SQLite in-memory.
- * Commit B: infra + helper + teste insertBD/listarEmprestimos
+ * Até Commit C (inclui teste de insert/listar e buscar por id)
  */
 public class EmprestimosDAOTest {
 
@@ -89,5 +89,37 @@ public class EmprestimosDAOTest {
         assertEquals(10, salvo.getIdAmigos());
         assertEquals(20, salvo.getIdFerramentas());
         assertEquals(1, salvo.getEstaEmprestada());
+    }
+
+    @Test
+    void buscarEmprestimo_deveRetornarPorId() throws Exception {
+        int idGerado;
+
+        // Inserir um empréstimo
+        try (Connection c1 = newConnection()) {
+            EmprestimosDAO dao = new EmprestimosDAO(c1);
+            LocalDate hoje = LocalDate.now();
+            LocalDate seteDias = hoje.plusDays(7);
+            Emprestimos e = novoEmprestimo(1, 2, hoje, seteDias);
+            dao.insertBD(e);
+        }
+
+        // Buscar o id gerado
+        try (Connection c2 = newConnection()) {
+            EmprestimosDAO dao2 = new EmprestimosDAO(c2);
+            ArrayList<Emprestimos> lista = dao2.listarEmprestimos();
+            assertFalse(lista.isEmpty(), "A lista não deve estar vazia");
+            idGerado = lista.get(0).getId();
+        }
+
+        // Verificar se o buscarEmprestimo() retorna os dados corretos
+        try (Connection c3 = newConnection()) {
+            EmprestimosDAO dao3 = new EmprestimosDAO(c3);
+            Emprestimos encontrado = dao3.buscarEmprestimo(idGerado);
+
+            assertEquals(1, encontrado.getIdAmigos());
+            assertEquals(2, encontrado.getIdFerramentas());
+            assertEquals(1, encontrado.getEstaEmprestada());
+        }
     }
 }
