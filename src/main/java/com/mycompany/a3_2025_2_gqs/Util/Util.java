@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.a3_2025_2_gqs.Util;
 
 import java.math.BigDecimal;
@@ -16,10 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.text.MaskFormatter;
 
-/**
- *
- * @author NEX
- */
 public class Util {
 
     public static int obtemNum(String texto) {
@@ -54,9 +46,6 @@ public class Util {
 
     }
 
-    /* public static Date converterData (LocalDate localDate){
-        
-   }*/
     public static LocalDate converterData(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -84,15 +73,4 @@ public class Util {
 
         return decimalFormat.format(preco);
     }
-
-
-    /*public static void main(String[] args) {
-        LocalDate ld = LocalDate.now();
-        System.out.println(ld);
-        Date d = new Date();
-        
-       // int numero = obtemNum("String 1");
-        
-        //System.out.println(numero);
-    } */
 }
