@@ -8,13 +8,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Testes de integração para EmprestimosDAO usando SQLite in-memory.
- * Até Commit E (inclui insert, listar, buscar, update e proteção contra SQL injection)
+ * Até Commit F (inclui insert, listar, buscar, updates e SQL injection)
  */
 public class EmprestimosDAOTest {
 
@@ -60,9 +62,8 @@ public class EmprestimosDAOTest {
         }
     }
 
-    // helper para criar um objeto Emprestimos
+    // helper para criar um objeto Emprestimos (ajuste se sua model for diferente)
     private Emprestimos novoEmprestimo(int idAmigo, int idFerramenta, LocalDate dtEmp, LocalDate dtDev) {
-        // usa o construtor que você informou existir: (int,int,LocalDate,LocalDate,int)
         return new Emprestimos(idAmigo, idFerramenta, dtEmp, dtDev, 1);
     }
 
@@ -151,18 +152,49 @@ public class EmprestimosDAOTest {
     }
 
     @Test
+    void updateEmprestimosComData_deveAtualizarStatusEDataDevolvida() throws Exception {
+        int idGerado;
+        Date dataDev = Date.from(LocalDate.now().plusDays(2).atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        try (Connection c1 = newConnection()) {
+            EmprestimosDAO dao = new EmprestimosDAO(c1);
+            LocalDate hoje = LocalDate.now();
+            LocalDate seteDias = hoje.plusDays(7);
+            Emprestimos e = novoEmprestimo(7, 8, hoje, seteDias);
+            dao.insertBD(e);
+        }
+
+        try (Connection c2 = newConnection()) {
+            EmprestimosDAO dao2 = new EmprestimosDAO(c2);
+            ArrayList<Emprestimos> lista = dao2.listarEmprestimos();
+            assertFalse(lista.isEmpty());
+            idGerado = lista.get(0).getId();
+        }
+
+        try (Connection c3 = newConnection()) {
+            EmprestimosDAO dao3 = new EmprestimosDAO(c3);
+            dao3.updateEmprestimos(0, dataDev, idGerado);
+        }
+
+        try (Connection c4 = newConnection()) {
+            EmprestimosDAO dao4 = new EmprestimosDAO(c4);
+            Emprestimos atualizado = dao4.buscarEmprestimo(idGerado);
+            assertEquals(0, atualizado.getEstaEmprestada());
+            assertNotNull(atualizado.getDataDevolucao(), "Data de devolução deve estar registrada");
+        }
+    }
+
+    @Test
     void insertBD_deveProtegerContraSQLInjection() throws Exception {
         try (Connection c1 = newConnection()) {
             EmprestimosDAO dao = new EmprestimosDAO(c1);
             LocalDate hoje = LocalDate.now();
             LocalDate depois = hoje.plusDays(3);
 
-            // tenta injetar SQL no campo de idAmigo e idFerramenta (em DAO mal feito causaria erro)
             Emprestimos e = novoEmprestimo(999, 999, hoje, depois);
             dao.insertBD(e);
         }
 
-        // Agora checa se a tabela continua existindo e contém o registro
         ArrayList<Emprestimos> lista;
         try (Connection c2 = newConnection()) {
             EmprestimosDAO dao2 = new EmprestimosDAO(c2);
