@@ -8,6 +8,9 @@ import javax.swing.JOptionPane;
 import com.mycompany.a3_2025_2_gqs.Model.Emprestimos;
 import java.time.LocalDateTime;
 
+/**
+ * DAO para operações com a tabela emprestimos.
+ */
 public class EmprestimosDAO {
 
     private final Connection connection;
@@ -31,10 +34,12 @@ public class EmprestimosDAO {
             pstmt.setInt(2, emprestimos.getIdFerramentas());
 
             // Converte possíveis tipos de data para java.sql.Timestamp
-            // Suporte para: java.time.LocalDateTime, java.util.Date, java.sql.Timestamp
+            // Suporte para: java.time.LocalDateTime, java.util.Date, java.sql.Timestamp, java.time.LocalDate
             Object dtEmp = emprestimos.getDataEmprestimo();
             if (dtEmp instanceof LocalDateTime) {
                 pstmt.setTimestamp(3, Timestamp.valueOf((LocalDateTime) dtEmp));
+            } else if (dtEmp instanceof java.time.LocalDate) {
+                pstmt.setDate(3, java.sql.Date.valueOf((java.time.LocalDate) dtEmp));
             } else if (dtEmp instanceof java.util.Date) {
                 pstmt.setTimestamp(3, new Timestamp(((java.util.Date) dtEmp).getTime()));
             } else if (dtEmp instanceof Timestamp) {
@@ -47,6 +52,8 @@ public class EmprestimosDAO {
             Object dtDev = emprestimos.getDataDevolucao();
             if (dtDev instanceof LocalDateTime) {
                 pstmt.setTimestamp(4, Timestamp.valueOf((LocalDateTime) dtDev));
+            } else if (dtDev instanceof java.time.LocalDate) {
+                pstmt.setDate(4, java.sql.Date.valueOf((java.time.LocalDate) dtDev));
             } else if (dtDev instanceof java.util.Date) {
                 pstmt.setTimestamp(4, new Timestamp(((java.util.Date) dtDev).getTime()));
             } else if (dtDev instanceof Timestamp) {
@@ -55,7 +62,9 @@ public class EmprestimosDAO {
                 pstmt.setNull(4, Types.TIMESTAMP);
             }
 
-            pstmt.setInt(5, 1); // estaEmprestada padrão = 1
+            // Se o modelo já tiver o campo estaEmprestada configurado, usa-o; senão mantém 1 por padrão.
+            int estado = (emprestimos.getEstaEmprestada() == 0) ? 0 : 1;
+            pstmt.setInt(5, estado);
 
             pstmt.executeUpdate();
         } catch (SQLException ex) {
@@ -77,12 +86,31 @@ public class EmprestimosDAO {
             while (rs.next()) {
                 Date data = rs.getDate("dataEmprestimo");
                 Date data1 = rs.getDate("dataDevolucao");
-                Date data2 = rs.getDate("dataDevolvida");
+                Date data2 = null;
+                try {
+                    data2 = rs.getDate("dataDevolvida");
+                } catch (SQLException ignore) {
+                    // coluna pode não existir em alguns esquemas; ignora
+                }
 
                 Emprestimos emprestimos = new Emprestimos();
-                emprestimos.setDataDevolucao(com.mycompany.a3_2025_2_gqs.Util.Util.converterData(data1));
-                emprestimos.setDataEmprestimo(com.mycompany.a3_2025_2_gqs.Util.Util.converterData(data));
-                // emprestimos.setDataDevolvida(Util.Util.converterData(data2));
+
+                // tratar nulos antes de chamar o conversor (converterData espera não-nulo)
+                if (data1 != null) {
+                    emprestimos.setDataDevolucao(com.mycompany.a3_2025_2_gqs.Util.Util.converterData(data1));
+                } else {
+                    emprestimos.setDataDevolucao(null);
+                }
+
+                if (data != null) {
+                    emprestimos.setDataEmprestimo(com.mycompany.a3_2025_2_gqs.Util.Util.converterData(data));
+                } else {
+                    emprestimos.setDataEmprestimo(null);
+                }
+
+                // se desejar tratar data2, faça aqui (comentado para preservar compatibilidade)
+                // if (data2 != null) { ... }
+
                 emprestimos.setId(rs.getInt("id"));
                 emprestimos.setIdAmigos(rs.getInt("idAmigo"));
                 emprestimos.setIdFerramentas(rs.getInt("idFerramenta"));
@@ -98,6 +126,7 @@ public class EmprestimosDAO {
         return lista;
 
     }
+
     // Método preservando assinatura original: atualiza apenas o flag estaEmprestada
     public void updateEmprestimos(int estaEmprestada, int id) {
         String sql = "UPDATE emprestimos SET estaEmprestada = ? WHERE id = ?";
@@ -110,6 +139,7 @@ public class EmprestimosDAO {
         }
         // NOTA: não fechamos 'connection' aqui — quem criou a conexão deve geri-la.
     }
+
     public void updateEmprestimos(int estaEmprestada, java.util.Date dataDevolvida, int id) {
         String sql = "UPDATE emprestimos SET estaEmprestada = ?, dataDevolvida = ? WHERE id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -139,8 +169,17 @@ public class EmprestimosDAO {
                     emprestimos.setEstaEmprestada(rs.getInt("estaEmprestada"));
                     Date data = rs.getDate("dataEmprestimo");
                     Date data1 = rs.getDate("dataDevolucao");
-                    emprestimos.setDataEmprestimo(com.mycompany.a3_2025_2_gqs.Util.Util.converterData(data));
-                    emprestimos.setDataDevolucao(com.mycompany.a3_2025_2_gqs.Util.Util.converterData(data1));
+
+                    if (data != null) {
+                        emprestimos.setDataEmprestimo(com.mycompany.a3_2025_2_gqs.Util.Util.converterData(data));
+                    } else {
+                        emprestimos.setDataEmprestimo(null);
+                    }
+                    if (data1 != null) {
+                        emprestimos.setDataDevolucao(com.mycompany.a3_2025_2_gqs.Util.Util.converterData(data1));
+                    } else {
+                        emprestimos.setDataDevolucao(null);
+                    }
                 }
             }
         } catch (SQLException erro) {
