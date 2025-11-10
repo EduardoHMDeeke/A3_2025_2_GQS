@@ -1,6 +1,5 @@
 package com.mycompany.a3_2025_2_gqs.DAO;
 
-
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,174 +9,163 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-import com.mycompany.a3_2025_2_gqs.Model.*;
+import com.mycompany.a3_2025_2_gqs.Model.Ferramentas;
 
 public class FerramentaDAO {
 
-    //executar a conexao
     private final Connection connection;
     PreparedStatement ps;
     ResultSet rs;
     ArrayList<Ferramentas> lista = new ArrayList<>();
 
-    public FerramentaDAO(Connection conection) {
-        this.connection = conection;
+    public FerramentaDAO(Connection connection) {
+        this.connection = connection;
     }
 
-    //Inserir Ferramenta no Banco de dados (Create) 
- 
+    // Inserir Ferramenta
     public void insertBD(Ferramentas ferramenta) throws SQLException {
         String sql = "INSERT INTO ferramentas (nome, marca, preco, estaEmprestada) VALUES (?, ?, ?, ?)";
         try {
             ps = connection.prepareStatement(sql);
             ps.setString(1, ferramenta.getNome());
             ps.setString(2, ferramenta.getMarca());
-            ps.setString(3, ferramenta.getPreco()); // ou setDouble se for numérico
+            ps.setString(3, ferramenta.getPreco()); 
             ps.setInt(4, ferramenta.getEstaEmprestada());
-
             ps.execute();
         } catch (SQLException ex) {
             Logger.getLogger(FerramentaDAO.class.getName()).log(Level.SEVERE, null, ex);
             throw ex;
         } finally {
-            connection.close(); 
+            connection.close();
         }
     }
-    //Atualizar Ferramenta Banco de dados (Upadate)
-    public void UpdateFerramenta(Ferramentas ferramenta, int id) {
-        String sql = "UPDATE ferramentas SET nome = ?, marca = ?, preco = ? " + "WHERE id = ?";
+
+    // Atualizar Ferramenta
+    public void updateFerramenta(Ferramentas ferramenta, int id) {
+        String sql = "UPDATE ferramentas SET nome = ?, marca = ?, preco = ? WHERE id = ?";
         try {
             ps = connection.prepareStatement(sql);
-
-            //add valores que deseja atualizar
             ps.setString(1, ferramenta.getNome());
             ps.setString(2, ferramenta.getMarca());
             ps.setString(3, ferramenta.getPreco());
-
-            //Qual o id do registro
             ps.setInt(4, id);
-
-            //executar a query
             ps.execute();
-
-            //fechar conexao
-            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(FerramentaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                Logger.getLogger(FerramentaDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
-
     }
 
-    //Add uma Ferramenta dentro de uma lista 
+    // Listar todas as ferramentas
     public ArrayList<Ferramentas> listarFerramentas() throws SQLException {
-
-        String sql = "SELECT * FROM ferramentas";
-
+        String sql = "SELECT id, nome, marca, preco, estaEmprestada FROM ferramentas";
+        lista.clear();
         try {
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
-
             while (rs.next()) {
                 Ferramentas ferramenta = new Ferramentas();
+                ferramenta.setId(rs.getInt("id"));
                 ferramenta.setNome(rs.getString("nome"));
                 ferramenta.setMarca(rs.getString("marca"));
                 ferramenta.setValor(rs.getString("preco"));
-                ferramenta.setId(rs.getInt("id"));
                 ferramenta.setEstaEmprestada(rs.getInt("estaEmprestada"));
                 lista.add(ferramenta);
             }
         } catch (SQLException erro) {
-            JOptionPane.showMessageDialog(null, "FerramentaDAO ListarFeerramentas()" + erro);
-
+            JOptionPane.showMessageDialog(null, "Erro ao listar ferramentas: " + erro);
+        } finally {
+            connection.close();
         }
-        connection.close();
         return lista;
-
     }
 
+    // Listar ferramentas não emprestadas
     public ArrayList<Ferramentas> listarFerramentasNaoEmprestadas() throws SQLException {
-
-        String sql = "SELECT * FROM ferramentas WHERE estaEmprestada = 1";
-
+        String sql = "SELECT id, nome, marca, preco, estaEmprestada FROM ferramentas WHERE estaEmprestada = 1";
+        lista.clear();
         try {
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
-
             while (rs.next()) {
                 Ferramentas ferramenta = new Ferramentas();
+                ferramenta.setId(rs.getInt("id"));
                 ferramenta.setNome(rs.getString("nome"));
                 ferramenta.setMarca(rs.getString("marca"));
                 ferramenta.setValor(rs.getString("preco"));
-                ferramenta.setId(rs.getInt("id"));
                 ferramenta.setEstaEmprestada(rs.getInt("estaEmprestada"));
                 lista.add(ferramenta);
             }
         } catch (SQLException erro) {
-            JOptionPane.showMessageDialog(null, "FerramentaDAO ListarFeerramentas()" + erro);
-
+            JOptionPane.showMessageDialog(null, "Erro ao listar ferramentas não emprestadas: " + erro);
+        } finally {
+            connection.close();
         }
-        connection.close();
         return lista;
-
     }
 
-    //Deleta uma ferramenta
+    // Buscar ferramenta específica
+    public Ferramentas buscarFerramenta(int id) throws SQLException {
+        Ferramentas ferramenta = new Ferramentas();
+        String sql = "SELECT id, nome, marca, preco, estaEmprestada FROM ferramentas WHERE id = ?";
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                ferramenta.setId(rs.getInt("id"));
+                ferramenta.setNome(rs.getString("nome"));
+                ferramenta.setMarca(rs.getString("marca"));
+                ferramenta.setValor(rs.getString("preco"));
+                ferramenta.setEstaEmprestada(rs.getInt("estaEmprestada"));
+            }
+        } catch (SQLException erro) {
+            JOptionPane.showMessageDialog(null, "Erro ao buscar ferramenta: " + erro);
+        } finally {
+            connection.close();
+        }
+        return ferramenta;
+    }
+
+    // Deletar ferramenta
     public void deleteFerramentas(int id) {
         String sql = "DELETE FROM ferramentas WHERE id = ?";
         try {
             ps = connection.prepareStatement(sql);
-            //Qual o id do registro
             ps.setInt(1, id);
-
-            //executar a query
             ps.execute();
-            //fehcar conexao
-            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(FerramentaDAO.class.getName()).log(Level.SEVERE, null, ex);
-
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                Logger.getLogger(FerramentaDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
-
     }
 
-    public Ferramentas buscarFerramenta(int id) throws SQLException {
-        Ferramentas ferramentas = new Ferramentas();
-        String sql = "SELECT * FROM ferramentas WHERE id = ?";
-        try {
-            ps = connection.prepareStatement(sql);
-            ps.setInt(1, id);
-
-            rs = ps.executeQuery();
-
-            ferramentas.setNome(rs.getString("nome"));
-
-        } catch (SQLException erro) {
-            JOptionPane.showMessageDialog(null, "FerramentaDAO buscarFerramentas" + erro);
-
-        }
-        connection.close();
-        return ferramentas;
-    }
-
+    // Atualizar status
     public void updateStatus(int estaEmprestada, int id) {
-        String sql = "UPDATE ferramentas SET estaEmprestada = ? " + "WHERE id = ?";
+        String sql = "UPDATE ferramentas SET estaEmprestada = ? WHERE id = ?";
         try {
             ps = connection.prepareStatement(sql);
-
-            //add valores que deseja atualizar
             ps.setInt(1, estaEmprestada);
-
-            //Qual o id do registro
             ps.setInt(2, id);
-
-            //executar a query
             ps.execute();
-
-            //fechar conexao
-            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(FerramentaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                Logger.getLogger(FerramentaDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
-
     }
-} //Fim classe
+}
