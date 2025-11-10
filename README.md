@@ -32,7 +32,7 @@ Status](https://sonarcloud.io/api/project_badges/measure?project=EduardoHMDeeke_
     <td>João Vitor de Siqueira - 10723113301 - Joao05Vitor</td>
   </tr>
   <tr>
-    <td>João da Silva Meurer</td>
+    <td>João da Silva Meurer - 1072223534 - Bolguma</td>
   </tr>
     <tr>
     <td>Ryan Pereira Lima - 1072310978 - ryanpzr</td>
