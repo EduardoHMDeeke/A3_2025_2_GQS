@@ -68,7 +68,7 @@ public class RegistroFerramentasController {
             Ferramentas ferramentas = new Ferramentas(nome, marca, preco);
             Connection conexao = new Conexao().getConnection();
             FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao);
-            ferramentaDAO.UpdateFerramenta(ferramentas, id);
+            ferramentaDAO.updateFerramenta(ferramentas, id);
             JOptionPane.showMessageDialog(null, "FERRAMENTA ALTERADA COM SUCESSO!");
             view.getTxtnomeFerramenta().setText("");
             view.getTxtMarca().setText("");
