@@ -7,12 +7,15 @@ import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
-import org.assertj.swing.fixture.JOptionPaneFixture;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import java.awt.GraphicsEnvironment;
 
+@DisplayName("RegistrosAmigos GUI Tests")
+@EnabledIfEnvironmentVariable(named = "DISPLAY", matches = ".*", disabledReason = "GUI tests require display")
 public class RegistrosAmigosTest {
 
     private FrameFixture window;
@@ -21,6 +24,11 @@ public class RegistrosAmigosTest {
 
     @BeforeEach
     public void setUp() {
+        // Skip test setup if running in headless environment
+        if (GraphicsEnvironment.isHeadless()) {
+            return;
+        }
+        
         robot = BasicRobot.robotWithCurrentAwtHierarchy();
         frame = GuiActionRunner.execute(() -> new RegistrosAmigos());
         window = new FrameFixture(robot, frame);
@@ -30,12 +38,16 @@ public class RegistrosAmigosTest {
     @Test
     @DisplayName("Should initialize all UI components correctly")
     public void testInitialState() {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.out.println("Skipping GUI test in headless environment");
+            return;
+        }
+
         // Ensure the frame is fully initialized
         robot.waitForIdle();
         
         // Force initial validation state
         GuiActionRunner.execute(() -> {
-            // Ensure text field is empty and validate
             if (!frame.getTxtnome().getText().isEmpty()) {
                 frame.getTxtnome().setText("");
             }
@@ -59,39 +71,24 @@ public class RegistrosAmigosTest {
         window.button("jDeleteAmigo").requireEnabled().requireVisible();
         window.button("b_voltar").requireEnabled().requireVisible();
         
-        // Debug output
-        System.out.println("=== DEBUG INITIAL STATE ===");
-        System.out.println("Update enabled: " + frame.getUpdate().isEnabled());
-        System.out.println("Cadastro enabled: " + frame.getjBotaoCadastro().isEnabled());
-        System.out.println("txtnome text: '" + frame.getTxtnome().getText() + "'");
-        System.out.println("Validation result for empty string: " + 
-            com.mycompany.a3_2025_2_gqs.Util.Util.verficarNumnoTexto(""));
-        
         // Test invisible components using direct getters
-        assertThat(frame.getUpdate().isEnabled())
-            .as("Update button should be disabled initially with empty text field")
-            .isTrue();
+        assertThat(frame.getUpdate().isEnabled()).isFalse();
+        assertThat(frame.getUpdate().isVisible()).isFalse();
         
-        assertThat(frame.getUpdate().isVisible())
-            .as("Update button should be invisible initially")
-            .isFalse();
+        assertThat(frame.getjBotaoCadastro().isEnabled()).isFalse();
+        assertThat(frame.getjBotaoCadastro().isVisible()).isFalse();
         
-        assertThat(frame.getjBotaoCadastro().isEnabled())
-            .as("Cadastro button should be disabled initially with empty text field")
-            .isTrue();
-        
-        assertThat(frame.getjBotaoCadastro().isVisible())
-            .as("Cadastro button should be invisible initially")
-            .isFalse();
-        
-        assertThat(frame.getTxtId().isVisible())
-            .as("ID field should be invisible")
-            .isFalse();
+        assertThat(frame.getTxtId().isVisible()).isFalse();
     }
 
     @Test
     @DisplayName("Should enable buttons when valid name is entered")
     public void testValidarCampos_WithValidName() {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.out.println("Skipping GUI test in headless environment");
+            return;
+        }
+
         // Use direct text setting and trigger validation
         GuiActionRunner.execute(() -> {
             frame.getTxtnome().setText("João Silva");
@@ -108,6 +105,11 @@ public class RegistrosAmigosTest {
     @Test
     @DisplayName("Should disable buttons when name contains numbers")
     public void testValidarCampos_WithInvalidName() {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.out.println("Skipping GUI test in headless environment");
+            return;
+        }
+
         // Enable test mode to suppress JOptionPane
         frame.setTestMode(true);
         
@@ -126,6 +128,11 @@ public class RegistrosAmigosTest {
     @Test
     @DisplayName("Should handle component name assignment correctly")
     public void testComponentNamesAreSet() {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.out.println("Skipping GUI test in headless environment");
+            return;
+        }
+
         // Verify all components have names set
         assertThat(frame.getTxtnome().getName()).isNotNull();
         assertThat(frame.getTxtemail().getName()).isNotNull();
@@ -139,7 +146,7 @@ public class RegistrosAmigosTest {
 
     @AfterEach
     public void tearDown() {
-        if (window != null) {
+        if (window != null && !GraphicsEnvironment.isHeadless()) {
             window.cleanUp();
         }
     }
