@@ -37,11 +37,6 @@ public class FerramentasDAOTest {
         String url = "jdbc:sqlite:file:memdb?mode=memory&cache=shared";
         return DriverManager.getConnection(url);
     }
-
-    /**
-     * Cria a tabela usada pelos testes (se já existir, ignora).
-     * Ajuste colunas/tipos conforme o que o seu DAO espera.
-     */
     private static void createSchema(Connection c) throws SQLException {
         String sql = "CREATE TABLE IF NOT EXISTS ferramentas ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -56,14 +51,10 @@ public class FerramentasDAOTest {
         }
     }
 
-    /**
-     * Limpa os dados da tabela para garantir isolamento entre testes.
-     */
     private static void clearData(Connection c) throws SQLException {
         try (Statement st = c.createStatement()) {
             st.executeUpdate("DELETE FROM ferramentas");
         } catch (SQLException e) {
-            // Em caso de problema (tabela ausente, etc.) rethrow para diagnóstico.
             throw e;
         }
     }
@@ -73,7 +64,6 @@ public class FerramentasDAOTest {
         f.setNome(nome);
         f.setMarca(marca);
 
-        // Ajuste se seu modelo usar setValor(...) em vez de setPreco(...)
         boolean setOk = false;
         try {
             f.getClass().getMethod("setPreco", String.class).invoke(f, preco);
@@ -94,31 +84,34 @@ public class FerramentasDAOTest {
     }
 
     @Test
+    @DisplayName("insertBD e listarFerramentas devem persistir e listar um registro corretamente")
     void insertBD_e_listarFerramentas_devePersistirEListar() throws Exception {
-        // Inserção
         try (Connection c1 = newConnection()) {
             FerramentaDAO dao = new FerramentaDAO(c1);
             Ferramentas f = novaFerramenta("Chave de Fenda", "Tramontina", "29.90", 0);
             dao.insertBD(f);
         }
 
-        // Leitura
+ 
         ArrayList<Ferramentas> lista;
         try (Connection c2 = newConnection()) {
             FerramentaDAO dao2 = new FerramentaDAO(c2);
             lista = dao2.listarFerramentas();
         }
 
-        assertEquals(1, lista.size());
+        assertEquals(1, lista.size(), "Deve haver exatamente 1 ferramenta na lista.");
         Ferramentas salvo = lista.get(0);
         assertEquals("Chave de Fenda", salvo.getNome());
         assertEquals("Tramontina", salvo.getMarca());
+        assertTrue(salvo.getValor().contains("29.90") || salvo.getPreco().contains("29.90"));
         assertEquals(0, salvo.getEstaEmprestada());
+        assertTrue(salvo.getId() > 0, "O ID deve ser gerado pelo banco de dados.");
     }
 
     @Test
+    @DisplayName("listarFerramentasNaoEmprestadas deve retornar apenas ferramentas com estaEmprestada = 1")
     void listarFerramentasNaoEmprestadas_deveRetornarOndeEstaEmprestadaIgualA1() throws Exception {
-        // Apesar do nome sugerir "não emprestadas", o método filtra por 1 — testamos o COMPORTAMENTO atual
+
         try (Connection c = newConnection()) {
             new FerramentaDAO(c).insertBD(novaFerramenta("Martelo", "Vonder", "49.90", 1));
         }
@@ -131,107 +124,149 @@ public class FerramentasDAOTest {
             lista = new FerramentaDAO(c).listarFerramentasNaoEmprestadas();
         }
 
-        assertEquals(1, lista.size());
+        assertEquals(1, lista.size(), "Apenas a ferramenta com 'estaEmprestada = 1' deve ser listada.");
         assertEquals("Martelo", lista.get(0).getNome());
         assertEquals(1, lista.get(0).getEstaEmprestada());
     }
 
     @Test
+    @DisplayName("updateFerramenta deve atualizar Nome, Marca e Preço de um registro")
     void updateFerramenta_deveAtualizarNomeMarcaPreco() throws Exception {
         int idGerado;
 
-        // Insere
+
         try (Connection c = newConnection()) {
             new FerramentaDAO(c).insertBD(novaFerramenta("Serrote", "Irwin", "79.90", 0));
         }
 
-        // Obtém ID
+
         try (Connection c = newConnection()) {
             ArrayList<Ferramentas> lista = new FerramentaDAO(c).listarFerramentas();
             assertFalse(lista.isEmpty());
             idGerado = lista.get(0).getId();
         }
 
-        // Atualiza
+
         try (Connection c = newConnection()) {
-            Ferramentas novo = novaFerramenta("Serrote Profissional", "Irwin", "99.90", 0);
+            Ferramentas novo = novaFerramenta("Serrote Profissional", "Irwin Novo", "99.90", 0);
             new FerramentaDAO(c).updateFerramenta(novo, idGerado);
         }
 
-        // Verifica
         try (Connection c = newConnection()) {
             ArrayList<Ferramentas> lista = new FerramentaDAO(c).listarFerramentas();
             assertEquals(1, lista.size());
             assertEquals("Serrote Profissional", lista.get(0).getNome());
-            assertEquals("Irwin", lista.get(0).getMarca());
+            assertEquals("Irwin Novo", lista.get(0).getMarca());
+            assertTrue(lista.get(0).getValor().contains("99.90") || lista.get(0).getPreco().contains("99.90"));
+            assertEquals(idGerado, lista.get(0).getId());
         }
     }
 
     @Test
+    @DisplayName("updateStatus deve atualizar o campo estaEmprestada")
     void updateStatus_deveAtualizarCampoEstaEmprestada() throws Exception {
         int id;
 
-        // Insere
+
         try (Connection c = newConnection()) {
             new FerramentaDAO(c).insertBD(novaFerramenta("Trena", "Stanley", "59.90", 0));
         }
 
-        // Pega ID
+
         try (Connection c = newConnection()) {
             id = new FerramentaDAO(c).listarFerramentas().get(0).getId();
         }
 
-        // Atualiza status
         try (Connection c = newConnection()) {
             new FerramentaDAO(c).updateStatus(1, id);
         }
 
-        // Verifica
         try (Connection c = newConnection()) {
             Ferramentas f = new FerramentaDAO(c).listarFerramentas().get(0);
-            assertEquals(1, f.getEstaEmprestada());
+            assertEquals(1, f.getEstaEmprestada(), "O status deve ser atualizado para 1.");
         }
     }
 
     @Test
+    @DisplayName("deleteFerramentas deve excluir o registro do banco de dados")
     void deleteFerramentas_deveExcluirRegistro() throws Exception {
         int id;
 
-        // Insere
+
         try (Connection c = newConnection()) {
             new FerramentaDAO(c).insertBD(novaFerramenta("Nível", "Schulz", "89.90", 0));
         }
 
-        // Pega ID
+
         try (Connection c = newConnection()) {
-            id = new FerramentaDAO(c).listarFerramentas().get(0).getId();
+            ArrayList<Ferramentas> lista = new FerramentaDAO(c).listarFerramentas();
+            assertFalse(lista.isEmpty());
+            id = lista.get(0).getId();
         }
 
-        // Deleta
+    
         try (Connection c = newConnection()) {
             new FerramentaDAO(c).deleteFerramentas(id);
         }
 
-        // Confirma vazio
+
         try (Connection c = newConnection()) {
-            assertTrue(new FerramentaDAO(c).listarFerramentas().isEmpty());
+            assertTrue(new FerramentaDAO(c).listarFerramentas().isEmpty(), "A lista deve estar vazia após a exclusão.");
         }
     }
+    
+    @Test
+    @DisplayName("buscarFerramenta deve retornar o objeto Ferramentas correto pelo ID")
+    void buscarFerramenta_deveRetornarCorretoPeloId() throws Exception {
+        int idBuscar;
+        
+        // 1. Insere duas ferramentas
+        try (Connection c = newConnection()) {
+            new FerramentaDAO(c).insertBD(novaFerramenta("Parafusadeira", "Bosch", "199.90", 0));
+        }
+        try (Connection c = newConnection()) {
+            new FerramentaDAO(c).insertBD(novaFerramenta("Furadeira", "Makita", "299.90", 0));
+        }
 
+
+        try (Connection c = newConnection()) {
+             ArrayList<Ferramentas> lista = new FerramentaDAO(c).listarFerramentas();
+
+             idBuscar = lista.stream()
+                     .filter(f -> f.getNome().equals("Furadeira"))
+                     .findFirst().orElseThrow().getId();
+        }
+        
+
+        Ferramentas ferramentaEncontrada;
+        try (Connection c = newConnection()) {
+            ferramentaEncontrada = new FerramentaDAO(c).buscarFerramenta(idBuscar);
+        }
+        
+
+        assertNotNull(ferramentaEncontrada);
+        assertEquals(idBuscar, ferramentaEncontrada.getId());
+        assertEquals("Furadeira", ferramentaEncontrada.getNome());
+        assertEquals("Makita", ferramentaEncontrada.getMarca());
+        assertTrue(ferramentaEncontrada.getValor().contains("299.90") || ferramentaEncontrada.getPreco().contains("299.90"));
+        assertEquals(0, ferramentaEncontrada.getEstaEmprestada());
+    }
 
     @Test
+    @DisplayName("insertBD deve proteger contra SQL Injection usando PreparedStatement")
     void insertBD_deveProtegerContraSQLInjection() throws Exception {
+        String payload = "'; DROP TABLE ferramentas; --";
+        
         try (Connection c = newConnection()) {
             FerramentaDAO dao = new FerramentaDAO(c);
-            Ferramentas f = novaFerramenta("'; DROP TABLE ferramentas; --", "Marca", "10.00", 0);
+            Ferramentas f = novaFerramenta(payload, "Marca", "10.00", 0);
             dao.insertBD(f);
         }
 
-        // Verifica se a tabela ainda existe e contém o dado como texto
         try (Connection c = newConnection()) {
             ArrayList<Ferramentas> lista = new FerramentaDAO(c).listarFerramentas();
-            assertEquals(1, lista.size());
-            assertEquals("'; DROP TABLE ferramentas; --", lista.get(0).getNome());
+            assertEquals(1, lista.size(), "A tabela não deve ter sido excluída.");
+            assertEquals(payload, lista.get(0).getNome(), "O payload deve ser tratado como texto literal.");
         }
     }
 }
