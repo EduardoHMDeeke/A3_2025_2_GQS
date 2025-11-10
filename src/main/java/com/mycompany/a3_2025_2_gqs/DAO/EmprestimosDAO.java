@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import com.mycompany.a3_2025_2_gqs.Model.Emprestimos;
 import com.mycompany.a3_2025_2_gqs.Util.Util;
+import java.time.LocalDate; 
 import java.time.LocalDateTime;
 
 public class EmprestimosDAO {
@@ -25,10 +26,10 @@ public class EmprestimosDAO {
         this.connection = connection;
     }
     
-    private Object getAndConvertDate(ResultSet rs, String columnName) {
+    private LocalDate getAndConvertDate(ResultSet rs, String columnName) {
         try {
             Date sqlDate = rs.getDate(columnName);
-            return (sqlDate != null) ? Util.converterData(sqlDate) : null;
+            return (sqlDate != null) ? (LocalDate) Util.converterData(sqlDate) : null;
         } catch (SQLException e) {
             Logger.getLogger(EmprestimosDAO.class.getName()).log(Level.WARNING, "Coluna de data não encontrada ou erro de leitura: " + columnName, e);
             return null;
