@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mycompany</groupId>
@@ -17,9 +16,7 @@
 
         <sonar.organization>eduardohmdeeke</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.exclusions>**/principal/*Principal.*</sonar.coverage.exclusions>
-
-        <exec.mainClass>com.mycompany.a3_2025_2_gqs.A3_2025_2_GQS</exec.mainClass>
+        <sonar.coverage.exclusions>**/main/*Principal.*</sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
@@ -38,7 +35,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- NetBeans AbsoluteLayout (se necessário no projeto) -->
+        <!-- NetBeans AbsoluteLayout (necessário no projeto) -->
         <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
