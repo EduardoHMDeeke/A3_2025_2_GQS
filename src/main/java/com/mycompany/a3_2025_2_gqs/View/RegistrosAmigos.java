@@ -5,6 +5,7 @@
 package com.mycompany.a3_2025_2_gqs.View;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -19,15 +20,34 @@ import static javax.swing.UIManager.setLookAndFeel;
 public class RegistrosAmigos extends javax.swing.JFrame {
 
     private final RegistrosAmigosController controller;
+    private boolean testMode = false;
+
+    private void setComponentNames() {
+        jLabel1.setName("jLabel1");
+        txtnome.setName("txtnome");
+        txtemail.setName("txtemail");
+        txttelefone.setName("txttelefone");
+        labelNome.setName("labelNome");
+        labelEmail.setName("labelEmail");
+        labelFone.setName("labelFone");
+        update.setName("update");
+        jBotaoCadastro.setName("jBotaoCadastro");
+        jDeleteAmigo.setName("jDeleteAmigo");
+        b_voltar.setName("b_voltar");
+        txtId.setName("txtId");
+    }
 
     /**
      * Creates new form LoginAmigos
      */
     public RegistrosAmigos() {
         initComponents();
+        setComponentNames();
         controller = new RegistrosAmigosController(this);
         //Deixar em tela cheia
         // this.setExtendedState(MAXIMIZED_BOTH);
+
+        testMode = java.awt.GraphicsEnvironment.isHeadless() || System.getProperty("test.mode") != null;
     }
 
     /**
@@ -438,16 +458,37 @@ public class RegistrosAmigos extends javax.swing.JFrame {
         this.jDeleteAmigo = jDeleteAmigo;
     }
 
-       public void validarCampos() {
+    public void validarCampos() {
         String textoAmigos = txtnome.getText();
         boolean numero = com.mycompany.a3_2025_2_gqs.Util.Util.verficarNumnoTexto(textoAmigos);
         update.setEnabled(numero);
         jBotaoCadastro.setEnabled(numero);
-        if (!numero) {
-            
+        if (!numero && !testMode) {
             JOptionPane.showMessageDialog(null, "Este campo não aceita números");
-            
         }
-        
+    }
+
+    public void setTestMode(boolean testMode) {
+        this.testMode = testMode;
+    }
+    
+    public JLabel getjLabel1() {
+        return jLabel1;
+    }
+
+    public JLabel getLabelNome() {
+        return labelNome;
+    }
+
+    public JLabel getLabelEmail() {
+        return labelEmail;
+    }
+
+    public JLabel getLabelFone() {
+        return labelFone;
+    }
+
+    public JButton getb_voltar() {
+        return b_voltar;
     }
 }
