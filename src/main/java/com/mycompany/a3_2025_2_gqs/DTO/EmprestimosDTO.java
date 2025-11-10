@@ -65,7 +65,4 @@ public class EmprestimosDTO {
     public void setDataEmprestimo(String dataEmprestimo) {
         this.dataEmprestimo = dataEmprestimo;
     }
-    
-    
-    
 }
