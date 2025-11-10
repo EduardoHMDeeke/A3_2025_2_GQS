@@ -155,7 +155,7 @@ public class FerramentasDAOTest {
         // Atualiza
         try (Connection c = newConnection()) {
             Ferramentas novo = novaFerramenta("Serrote Profissional", "Irwin", "99.90", 0);
-            new FerramentaDAO(c).UpdateFerramenta(novo, idGerado);
+            new FerramentaDAO(c).updateFerramenta(novo, idGerado);
         }
 
         // Verifica
