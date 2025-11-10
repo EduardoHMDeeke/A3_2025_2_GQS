@@ -34,17 +34,17 @@ public class AmigosDAO {
 
     //Inserir amigos no banco
     public void insertBD(Amigos amigos) throws SQLException {
-    String sql = "INSERT INTO amigos (nome,idade,telefone,email) VALUES (?, ?, ?, ?);";
-    ps = connection.prepareStatement(sql);
+        String sql = "INSERT INTO amigos (nome,idade,telefone,email) VALUES (?, ?, ?, ?);";
+        ps = connection.prepareStatement(sql);
 
-    ps.setString(1, amigos.getNome());
-    ps.setInt(2, amigos.getIdade()); // Using setInt for idade
-    ps.setString(3, amigos.getTelefone());
-    ps.setString(4, amigos.getEmail());
+        ps.setString(1, amigos.getNome());
+        ps.setInt(2, amigos.getIdade()); // Using setInt for idade
+        ps.setString(3, amigos.getTelefone());
+        ps.setString(4, amigos.getEmail());
 
-    ps.execute();
-    connection.close();
-}
+        ps.execute();
+        connection.close();
+    }
 
     public void UpdateAmigos(Amigos amigos, int id) {
         String sql = "UPDATE amigos SET nome = ?, email = ?, telefone = ? " + "WHERE id = ?";
@@ -72,26 +72,28 @@ public class AmigosDAO {
     //Add amigos dentro de uma lista 
     public ArrayList<Amigos> listarAmigos() throws SQLException {
 
-        String sql = "SELECT * FROM amigos";
+        String sql = "SELECT id, nome, idade, telefone, email FROM amigos";
+        ArrayList<Amigos> listaLocal = new ArrayList<>();
         try {
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 Amigos amigos = new Amigos();
-                amigos.setNome(rs.getString("nome"));
-                amigos.setEmail(rs.getString("email"));
-                amigos.setTelefone(rs.getString("telefone"));
                 amigos.setId(rs.getInt("id"));
+                amigos.setNome(rs.getString("nome"));
+                amigos.setIdade(rs.getInt("idade"));
+                amigos.setTelefone(rs.getString("telefone"));
+                amigos.setEmail(rs.getString("email"));
 
-                lista.add(amigos);
+                listaLocal.add(amigos);
             }
         } catch (SQLException erro) {
             JOptionPane.showMessageDialog(null, "AmigosDAO ListarAmigos()" + erro);
 
         }
         connection.close();
-        return lista;
+        return listaLocal;
 
     }
 
@@ -115,16 +117,20 @@ public class AmigosDAO {
 
     public Amigos buscarAmigo(int id) throws SQLException {
         Amigos amigos = new Amigos();
-        String sql = "SELECT * FROM amigos WHERE id = ?";
+        String sql = "SELECT id, nome, idade, telefone, email FROM amigos WHERE id = ?";
         try {
             ps = connection.prepareStatement(sql);
             ps.setInt(1, id);
 
             rs = ps.executeQuery();
 
-            amigos.setNome(rs.getString("nome"));
-
-
+            if (rs.next()) {
+                amigos.setId(rs.getInt("id"));
+                amigos.setNome(rs.getString("nome"));
+                amigos.setIdade(rs.getInt("idade"));
+                amigos.setTelefone(rs.getString("telefone"));
+                amigos.setEmail(rs.getString("email"));
+            }
 
         } catch (SQLException erro) {
             JOptionPane.showMessageDialog(null, "AmigosDAO BuscarAmigos()" + erro);
