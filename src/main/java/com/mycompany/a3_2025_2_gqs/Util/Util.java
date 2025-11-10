@@ -60,7 +60,7 @@ public class Util {
 
     public static boolean verficarNumnoTexto(String texto) {
         int numero = obtemNum(texto);
-        return numero == 0;
+        return numero == 0;  // Returns TRUE when NO numbers found
     }
 
     public static String converterPreco(BigDecimal preco) {

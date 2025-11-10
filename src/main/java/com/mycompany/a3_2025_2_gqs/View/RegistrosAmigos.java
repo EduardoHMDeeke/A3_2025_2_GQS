@@ -460,10 +460,19 @@ public class RegistrosAmigos extends javax.swing.JFrame {
 
     public void validarCampos() {
         String textoAmigos = txtnome.getText();
-        boolean numero = com.mycompany.a3_2025_2_gqs.Util.Util.verficarNumnoTexto(textoAmigos);
-        update.setEnabled(numero);
-        jBotaoCadastro.setEnabled(numero);
-        if (!numero && !testMode) {
+
+        // Handle null case
+        if (textoAmigos == null) {
+            textoAmigos = "";
+        }
+
+        boolean temNumeros = !com.mycompany.a3_2025_2_gqs.Util.Util.verficarNumnoTexto(textoAmigos);
+        // temNumeros will be true when numbers ARE found
+
+        update.setEnabled(!temNumeros);
+        jBotaoCadastro.setEnabled(!temNumeros);
+
+        if (temNumeros && !testMode) {
             JOptionPane.showMessageDialog(null, "Este campo não aceita números");
         }
     }
