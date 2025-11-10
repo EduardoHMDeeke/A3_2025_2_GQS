@@ -1,9 +1,4 @@
 package com.mycompany.a3_2025_2_gqs.Controller;
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 
 import java.sql.*;
 import javax.swing.JOptionPane;
@@ -24,10 +19,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map;
 
-/**
- *
- * @author Guilherme
- */
 public class ListaAmigosFerramentasController {
 
     private TelaPrincipal view;
@@ -37,7 +28,6 @@ public class ListaAmigosFerramentasController {
     }
 
     public void listarAmigos() {
-        //Faz a coenxao com a classe e manda os dados para a tela dentro da tabela;
         try {
             Connection conexao = new Conexao().getConnection();
             AmigosDAO amigosdao = new AmigosDAO(conexao);
@@ -65,7 +55,6 @@ public class ListaAmigosFerramentasController {
     }
 
     public void listarFerramentas() {
-        //Faz a coenxao com a classe e manda os dados para a tela dentro da tabela;
         try {
             Connection conexao = new Conexao().getConnection();
             FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao);
@@ -93,7 +82,6 @@ public class ListaAmigosFerramentasController {
     }
 
     public void listarEmprestimos() {
-        //Faz a coenxao com a classe e manda os dados para a tela dentro da tabela;
         try {
             Connection conexao1 = new Conexao().getConnection();
             FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao1);
