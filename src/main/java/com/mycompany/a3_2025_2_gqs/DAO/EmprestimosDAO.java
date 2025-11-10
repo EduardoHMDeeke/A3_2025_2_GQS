@@ -77,16 +77,26 @@ public class EmprestimosDAO {
 
     public ArrayList<Emprestimos> listarEmprestimos() throws SQLException {
 
-        String sql = "SELECT * FROM emprestimos";
+        // Evitar SELECT * para atender regra do Sonar e melhorar estabilidade (colunas explícitas)
+        String sql = "SELECT id, idAmigo, idFerramenta, dataEmprestimo, dataDevolucao, dataDevolvida, estaEmprestada FROM emprestimos";
         ArrayList<Emprestimos> lista = new ArrayList<>();
         // usar try-with-resources para Statement e ResultSet
         try (PreparedStatement pstmt = connection.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                Date data = rs.getDate("dataEmprestimo");
-                Date data1 = rs.getDate("dataDevolucao");
+                Date data = null;
+                Date data1 = null;
                 Date data2 = null;
+                try {
+                    data = rs.getDate("dataEmprestimo");
+                } catch (SQLException ignore) {
+                    // caso a coluna não exista no esquema, manterá null
+                }
+                try {
+                    data1 = rs.getDate("dataDevolucao");
+                } catch (SQLException ignore) {
+                }
                 try {
                     data2 = rs.getDate("dataDevolvida");
                 } catch (SQLException ignore) {
@@ -158,7 +168,8 @@ public class EmprestimosDAO {
 
     public Emprestimos buscarEmprestimo(int id) throws SQLException {
         Emprestimos emprestimos = new Emprestimos();
-        String sql = "SELECT * FROM emprestimos WHERE id = ?";
+        // Evitar SELECT * e listar colunas explicitamente
+        String sql = "SELECT id, idAmigo, idFerramenta, dataEmprestimo, dataDevolucao, dataDevolvida, estaEmprestada FROM emprestimos WHERE id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -167,8 +178,16 @@ public class EmprestimosDAO {
                     emprestimos.setIdFerramentas(rs.getInt("idFerramenta"));
                     emprestimos.setIdAmigos(rs.getInt("idAmigo"));
                     emprestimos.setEstaEmprestada(rs.getInt("estaEmprestada"));
-                    Date data = rs.getDate("dataEmprestimo");
-                    Date data1 = rs.getDate("dataDevolucao");
+                    Date data = null;
+                    Date data1 = null;
+                    try {
+                        data = rs.getDate("dataEmprestimo");
+                    } catch (SQLException ignore) {
+                    }
+                    try {
+                        data1 = rs.getDate("dataDevolucao");
+                    } catch (SQLException ignore) {
+                    }
 
                     if (data != null) {
                         emprestimos.setDataEmprestimo(com.mycompany.a3_2025_2_gqs.Util.Util.converterData(data));
