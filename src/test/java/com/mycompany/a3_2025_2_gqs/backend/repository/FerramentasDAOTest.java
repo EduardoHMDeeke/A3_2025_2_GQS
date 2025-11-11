@@ -1,7 +1,9 @@
-package com.mycompany.a3_2025_2_gqs.DAO;
+package com.mycompany.a3_2025_2_gqs.backend.repository;
 
-import com.mycompany.a3_2025_2_gqs.Model.Ferramentas;
 import org.junit.jupiter.api.*;
+
+import com.mycompany.a3_2025_2_gqs.backend.model.Ferramentas;
+import com.mycompany.a3_2025_2_gqs.backend.repository.FerramentaDAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

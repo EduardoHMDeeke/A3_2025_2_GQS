@@ -1,8 +1,8 @@
-package com.mycompany.a3_2025_2_gqs.DAO; // Place this in your test folder structure
-
-import com.mycompany.a3_2025_2_gqs.Model.Amigos;
+package com.mycompany.a3_2025_2_gqs.backend.repository; // Place this in your test folder structure
 
 import org.junit.jupiter.api.*;
+
+import com.mycompany.a3_2025_2_gqs.backend.model.Amigos;
 
 import static org.junit.jupiter.api.Assertions.*;
 

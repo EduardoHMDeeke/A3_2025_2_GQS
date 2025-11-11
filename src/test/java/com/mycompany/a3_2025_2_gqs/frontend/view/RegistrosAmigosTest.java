@@ -1,4 +1,4 @@
-package com.mycompany.a3_2025_2_gqs.View;
+package com.mycompany.a3_2025_2_gqs.frontend.view;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

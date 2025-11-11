@@ -1,8 +1,10 @@
-package com.mycompany.a3_2025_2_gqs.DTO;
+package com.mycompany.a3_2025_2_gqs.backend.dto;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class EmprestimosDTOTest {
 

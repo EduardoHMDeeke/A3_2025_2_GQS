@@ -101,7 +101,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>main.Main</mainClass>
+                                    <mainClass>com.mycompany.a3_2025_2_gqs.Principal</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
