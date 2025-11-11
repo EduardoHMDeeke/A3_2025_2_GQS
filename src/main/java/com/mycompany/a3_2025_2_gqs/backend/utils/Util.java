@@ -1,4 +1,4 @@
-package com.mycompany.a3_2025_2_gqs.backend.util;
+package com.mycompany.a3_2025_2_gqs.backend.utils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

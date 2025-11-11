@@ -18,9 +18,9 @@ import com.mycompany.a3_2025_2_gqs.backend.model.Amigos;
 import com.mycompany.a3_2025_2_gqs.backend.model.Emprestimos;
 import com.mycompany.a3_2025_2_gqs.backend.model.Ferramentas;
 import com.mycompany.a3_2025_2_gqs.backend.repository.AmigosDAO;
-import com.mycompany.a3_2025_2_gqs.backend.repository.Conexao;
 import com.mycompany.a3_2025_2_gqs.backend.repository.EmprestimosDAO;
 import com.mycompany.a3_2025_2_gqs.backend.repository.FerramentaDAO;
+import com.mycompany.a3_2025_2_gqs.backend.utils.database.mysql.MySqlConnectionFactory;
 
 /**
  *
@@ -33,30 +33,27 @@ public class ViewEmprestimos extends javax.swing.JFrame {
      */
     public ViewEmprestimos() throws SQLException {
         initComponents();
-        Connection conexao = new Conexao().getConnection();
-        AmigosDAO amigosDAO = new AmigosDAO(conexao);
 
-        //
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        List<Amigos> listaAmigos = amigosDAO.listarAmigos();
-        
-        for (Amigos a : listaAmigos) {
-            model.addElement(a.getNome() + "-" + a.getId());
-            // comboBoxAmigos.add
+        try (Connection conexao = MySqlConnectionFactory.getConnection()) {
+            AmigosDAO amigosDAO = new AmigosDAO(conexao);
+            List<Amigos> listaAmigos = amigosDAO.listarAmigos();
+
+            for (Amigos a : listaAmigos) {
+                model.addElement(a.getNome() + "-" + a.getId());
+            }
         }
         comboBoxAmigos.setModel(model);
-        
-        Connection conexao1 = new Conexao().getConnection();
-        
-        FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao1);
-        List<Ferramentas> listaFerramentas = ferramentaDAO.listarFerramentas();
-        DefaultComboBoxModel<String> model1 = new DefaultComboBoxModel<>();
-        for (Ferramentas f : listaFerramentas) {
-            if (f.getEstaEmprestada() == 0) {
-                model1.addElement(f.getNome() + "-" + f.getId());
-            }
 
-            // comboBoxAmigos.add
+        DefaultComboBoxModel<String> model1 = new DefaultComboBoxModel<>();
+        try (Connection conexao1 = MySqlConnectionFactory.getConnection()) {
+            FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao1);
+            List<Ferramentas> listaFerramentas = ferramentaDAO.listarFerramentas();
+            for (Ferramentas f : listaFerramentas) {
+                if (f.getEstaEmprestada() == 0) {
+                    model1.addElement(f.getNome() + "-" + f.getId());
+                }
+            }
         }
         comboBoxFerramentas.setModel(model1);
         
@@ -308,21 +305,22 @@ public class ViewEmprestimos extends javax.swing.JFrame {
         if (boxAmigos == null || boxAmigos.equals("") || boxFerramentas == null || boxFerramentas.equals("")) {
             JOptionPane.showMessageDialog(null, "um ou mais campos não foram preenchidos!");
         } else {
-            int idAmigo = com.mycompany.a3_2025_2_gqs.backend.util.Util.obtemNum(boxAmigos);
-            int idFerramenta = com.mycompany.a3_2025_2_gqs.backend.util.Util.obtemNum(boxFerramentas);
+            int idAmigo = com.mycompany.a3_2025_2_gqs.backend.utils.Util.obtemNum(boxAmigos);
+            int idFerramenta = com.mycompany.a3_2025_2_gqs.backend.utils.Util.obtemNum(boxFerramentas);
             String dataDevolucao = DataDevolucao.getText();
             String dataEmprestimo = DataEmprestimo.getText();
-            LocalDate dtDevolucao = com.mycompany.a3_2025_2_gqs.backend.util.Util.converterData(dataDevolucao);
-            LocalDate dtEmprestimo = com.mycompany.a3_2025_2_gqs.backend.util.Util.converterData(dataEmprestimo);
+            LocalDate dtDevolucao = com.mycompany.a3_2025_2_gqs.backend.utils.Util.converterData(dataDevolucao);
+            LocalDate dtEmprestimo = com.mycompany.a3_2025_2_gqs.backend.utils.Util.converterData(dataEmprestimo);
             
             Emprestimos emprestimos = new Emprestimos(idAmigo, idFerramenta, dtEmprestimo, dtDevolucao, 1);
-            Connection conexao = new Conexao().getConnection();
-            EmprestimosDAO emprestimosdao = new EmprestimosDAO(conexao);
-            
-            try {
-                emprestimosdao.insertBD(emprestimos);
-                atualizaStatusFerramenta(idFerramenta);
-                
+            try (Connection conexao = MySqlConnectionFactory.getConnection()) {
+                EmprestimosDAO emprestimosdao = new EmprestimosDAO(conexao);
+                try {
+                    emprestimosdao.insertBD(emprestimos);
+                    atualizaStatusFerramenta(idFerramenta);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ViewEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(ViewEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -332,10 +330,12 @@ public class ViewEmprestimos extends javax.swing.JFrame {
     }//GEN-LAST:event_jRealizarEmprestimoActionPerformed
     
     private void atualizaStatusFerramenta(int idFerramenta) {
-        Connection conexao = new Conexao().getConnection();
-        FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao);
-        ferramentaDAO.updateStatus(1, idFerramenta);
-        
+        try (Connection conexao = MySqlConnectionFactory.getConnection()) {
+            FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao);
+            ferramentaDAO.updateStatus(1, idFerramenta);
+        } catch (SQLException ex) {
+            Logger.getLogger(ViewEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private void comboBoxAmigosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxAmigosActionPerformed

@@ -7,8 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.mycompany.a3_2025_2_gqs.backend.model.Ferramentas;
-import com.mycompany.a3_2025_2_gqs.backend.repository.Conexao;
 import com.mycompany.a3_2025_2_gqs.backend.repository.FerramentaDAO;
+import com.mycompany.a3_2025_2_gqs.backend.utils.database.mysql.MySqlConnectionFactory;
 import com.mycompany.a3_2025_2_gqs.frontend.view.RegistroFerramentas;
 
 public class RegistroFerramentasController {
@@ -31,7 +31,7 @@ public class RegistroFerramentasController {
         
         Ferramentas ferramentas = new Ferramentas(nome, marca, valor);
 
-        try (Connection conexao = new Conexao().getConnection()) {
+        try (Connection conexao = MySqlConnectionFactory.getConnection()) {
             FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao);
             ferramentaDAO.insertBD(ferramentas);
             
@@ -68,7 +68,7 @@ public class RegistroFerramentasController {
 
         Ferramentas ferramentas = new Ferramentas(nome, marca, preco);
         
-        try (Connection conexao = new Conexao().getConnection()) {
+        try (Connection conexao = MySqlConnectionFactory.getConnection()) {
             FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao);
             ferramentaDAO.updateFerramenta(ferramentas, id);
             
@@ -100,7 +100,7 @@ public class RegistroFerramentasController {
             return;
         }
 
-        try (Connection conexao = new Conexao().getConnection()) {
+        try (Connection conexao = MySqlConnectionFactory.getConnection()) {
             FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao);
             ferramentaDAO.deleteFerramentas(id);
             JOptionPane.showMessageDialog(null, "FERRAMENTA DELETADA COM SUCESSO!");

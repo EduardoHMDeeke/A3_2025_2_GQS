@@ -308,7 +308,7 @@ public class RegistrosAmigos extends javax.swing.JFrame {
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
         String textoFerramenta = txtnome.getText();
-        boolean numero = com.mycompany.a3_2025_2_gqs.backend.util.Util.verficarNumnoTexto(textoFerramenta);
+        boolean numero = com.mycompany.a3_2025_2_gqs.backend.utils.Util.verficarNumnoTexto(textoFerramenta);
         
         if (numero) {
             controller.updateAmigo();
@@ -466,7 +466,7 @@ public class RegistrosAmigos extends javax.swing.JFrame {
             textoAmigos = "";
         }
 
-        boolean temNumeros = !com.mycompany.a3_2025_2_gqs.backend.util.Util.verficarNumnoTexto(textoAmigos);
+        boolean temNumeros = !com.mycompany.a3_2025_2_gqs.backend.utils.Util.verficarNumnoTexto(textoAmigos);
         // temNumeros will be true when numbers ARE found
 
         update.setEnabled(!temNumeros);

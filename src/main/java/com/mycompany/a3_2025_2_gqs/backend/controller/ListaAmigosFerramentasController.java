@@ -9,15 +9,12 @@ import com.mycompany.a3_2025_2_gqs.backend.model.Amigos;
 import com.mycompany.a3_2025_2_gqs.backend.model.Emprestimos;
 import com.mycompany.a3_2025_2_gqs.backend.model.Ferramentas;
 import com.mycompany.a3_2025_2_gqs.backend.repository.AmigosDAO;
-import com.mycompany.a3_2025_2_gqs.backend.repository.Conexao;
 import com.mycompany.a3_2025_2_gqs.backend.repository.EmprestimosDAO;
 import com.mycompany.a3_2025_2_gqs.backend.repository.FerramentaDAO;
+import com.mycompany.a3_2025_2_gqs.backend.utils.database.mysql.MySqlConnectionFactory;
 import com.mycompany.a3_2025_2_gqs.frontend.view.TelaPrincipal;
-import com.mycompany.a3_2025_2_gqs.frontend.view.ViewEmprestimos;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class ListaAmigosFerramentasController {
 
@@ -29,21 +26,22 @@ public class ListaAmigosFerramentasController {
 
     public void listarAmigos() {
         try {
-            Connection conexao = new Conexao().getConnection();
-            AmigosDAO amigosdao = new AmigosDAO(conexao);
+            try (Connection conexao = MySqlConnectionFactory.getConnection()) {
+                AmigosDAO amigosdao = new AmigosDAO(conexao);
 
-            DefaultTableModel model = (DefaultTableModel) view.getTable_amigos().getModel();
-            model.setNumRows(0);
+                DefaultTableModel model = (DefaultTableModel) view.getTable_amigos().getModel();
+                model.setNumRows(0);
 
-            ArrayList<Amigos> lista = amigosdao.listarAmigos();
+                ArrayList<Amigos> lista = amigosdao.listarAmigos();
 
-            for (int i = 0; i < lista.size(); i++) {
-                model.addRow(new Object[]{
-                    lista.get(i).getId(),
-                    lista.get(i).getNome(),
-                    lista.get(i).getEmail(),
-                    lista.get(i).getTelefone(),});
+                for (int i = 0; i < lista.size(); i++) {
+                    model.addRow(new Object[]{
+                        lista.get(i).getId(),
+                        lista.get(i).getNome(),
+                        lista.get(i).getEmail(),
+                        lista.get(i).getTelefone(),});
 
+                }
             }
 
         } catch (SQLException erro) {
@@ -56,21 +54,22 @@ public class ListaAmigosFerramentasController {
 
     public void listarFerramentas() {
         try {
-            Connection conexao = new Conexao().getConnection();
-            FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao);
+            try (Connection conexao = MySqlConnectionFactory.getConnection()) {
+                FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao);
 
-            DefaultTableModel model = (DefaultTableModel) view.getTable_ferramentas().getModel();
-            model.setNumRows(0);
+                DefaultTableModel model = (DefaultTableModel) view.getTable_ferramentas().getModel();
+                model.setNumRows(0);
 
-            ArrayList<Ferramentas> lista = ferramentaDAO.listarFerramentas();
+                ArrayList<Ferramentas> lista = ferramentaDAO.listarFerramentas();
 
-            for (int i = 0; i < lista.size(); i++) {
-                model.addRow(new Object[]{
-                    lista.get(i).getId(),
-                    lista.get(i).getNome(),
-                    lista.get(i).getMarca(),
-                    lista.get(i).getPreco(),});
+                for (int i = 0; i < lista.size(); i++) {
+                    model.addRow(new Object[]{
+                        lista.get(i).getId(),
+                        lista.get(i).getNome(),
+                        lista.get(i).getMarca(),
+                        lista.get(i).getPreco(),});
 
+                }
             }
 
         } catch (SQLException erro) {
@@ -83,24 +82,28 @@ public class ListaAmigosFerramentasController {
 
     public void listarEmprestimos() {
         try {
-            Connection conexao1 = new Conexao().getConnection();
-            FerramentaDAO ferramentaDAO = new FerramentaDAO(conexao1);
+            ArrayList<Ferramentas> listaFerramentas;
+            try (Connection conexaoFerramentas = MySqlConnectionFactory.getConnection()) {
+                FerramentaDAO ferramentaDAO = new FerramentaDAO(conexaoFerramentas);
+                listaFerramentas = ferramentaDAO.listarFerramentas();
+            }
 
-            ArrayList<Ferramentas> listaFerramentas = ferramentaDAO.listarFerramentas();
+            ArrayList<Amigos> listaAmigos;
+            try (Connection conexaoAmigos = MySqlConnectionFactory.getConnection()) {
+                AmigosDAO amigosDAO = new AmigosDAO(conexaoAmigos);
+                listaAmigos = amigosDAO.listarAmigos();
+            }
 
-            Connection conexao2 = new Conexao().getConnection();
-
-            AmigosDAO amigosDAO = new AmigosDAO(conexao2);
-            ArrayList<Amigos> listaAmigos = amigosDAO.listarAmigos();
-
-            Connection conexao = new Conexao().getConnection();
-            EmprestimosDAO emprestimodao = new EmprestimosDAO(conexao);
+            ArrayList<Emprestimos> listaBD;
+            try (Connection conexaoEmprestimos = MySqlConnectionFactory.getConnection()) {
+                EmprestimosDAO emprestimodao = new EmprestimosDAO(conexaoEmprestimos);
+                listaBD = emprestimodao.listarEmprestimos();
+            }
 
             DefaultTableModel model = (DefaultTableModel) view.getTabelaEmprestimo().getModel();
             model.setNumRows(0);
 
             ArrayList<EmprestimosDTO> lista = new ArrayList<>();
-            ArrayList<Emprestimos> listaBD = emprestimodao.listarEmprestimos();
 
             for (Emprestimos emprestimos : listaBD) {
 
@@ -108,7 +111,7 @@ public class ListaAmigosFerramentasController {
                 Amigos amigos = busqueAmigo(emprestimos.getIdAmigos(), listaAmigos);
                 System.out.println(amigos);
                 if (amigos != null && ferramentas != null && emprestimos.getEstaEmprestada() == 1) {
-                    EmprestimosDTO emprestimosDTO = new EmprestimosDTO(emprestimos.getId(), amigos.getNome(), ferramentas.getNome(), com.mycompany.a3_2025_2_gqs.backend.util.Util.converterData(emprestimos.getDataDevolucao()), com.mycompany.a3_2025_2_gqs.backend.util.Util.converterData(emprestimos.getDataEmprestimo()));
+                    EmprestimosDTO emprestimosDTO = new EmprestimosDTO(emprestimos.getId(), amigos.getNome(), ferramentas.getNome(), com.mycompany.a3_2025_2_gqs.backend.utils.Util.converterData(emprestimos.getDataDevolucao()), com.mycompany.a3_2025_2_gqs.backend.utils.Util.converterData(emprestimos.getDataEmprestimo()));
                     model.addRow(new Object[]{
                         emprestimosDTO.getId(),
                         emprestimosDTO.getAmigo(),

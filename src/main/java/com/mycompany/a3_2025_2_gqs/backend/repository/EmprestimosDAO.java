@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 import com.mycompany.a3_2025_2_gqs.backend.model.Emprestimos;
-import com.mycompany.a3_2025_2_gqs.backend.util.Util;
+import com.mycompany.a3_2025_2_gqs.backend.utils.Util;
 
 import java.time.LocalDate; 
 import java.time.LocalDateTime;

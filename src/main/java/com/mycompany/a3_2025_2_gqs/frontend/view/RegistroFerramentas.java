@@ -301,7 +301,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
 
     private void updateFerramentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateFerramentaActionPerformed
         String textoFerramenta = txtnomeFerramenta.getText();
-        boolean numero = com.mycompany.a3_2025_2_gqs.backend.util.Util.verficarNumnoTexto(textoFerramenta);
+        boolean numero = com.mycompany.a3_2025_2_gqs.backend.utils.Util.verficarNumnoTexto(textoFerramenta);
 
         if (numero) {
             controller.updateFerramenta();
@@ -349,7 +349,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
         if (!input.isEmpty()) {
             try {
                 BigDecimal preco = new BigDecimal(input);
-                String precoFormatado= com.mycompany.a3_2025_2_gqs.backend.util.Util.converterPreco(preco);
+                String precoFormatado= com.mycompany.a3_2025_2_gqs.backend.utils.Util.converterPreco(preco);
                 txtPreco.setText(precoFormatado);
             } catch (NumberFormatException ex) {
                 // Caso o valor não possa ser convertido para BigDecimal, não faz nada
@@ -473,7 +473,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
 
     public void validarCampos() {
         String textoFerramenta = txtnomeFerramenta.getText();
-        boolean numero = com.mycompany.a3_2025_2_gqs.backend.util.Util.verficarNumnoTexto(textoFerramenta);
+        boolean numero = com.mycompany.a3_2025_2_gqs.backend.utils.Util.verficarNumnoTexto(textoFerramenta);
         updateFerramenta.setEnabled(numero);
         jBotaoCadastroFerramenta.setEnabled(numero);
         if (!numero) {

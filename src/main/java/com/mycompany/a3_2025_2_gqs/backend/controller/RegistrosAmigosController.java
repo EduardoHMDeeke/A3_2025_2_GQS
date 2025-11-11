@@ -5,7 +5,6 @@ package com.mycompany.a3_2025_2_gqs.backend.controller;
  */
 
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,10 +12,8 @@ import javax.swing.JOptionPane;
 
 import com.mycompany.a3_2025_2_gqs.backend.model.Amigos;
 import com.mycompany.a3_2025_2_gqs.backend.repository.AmigosDAO;
-import com.mycompany.a3_2025_2_gqs.backend.repository.Conexao;
+import com.mycompany.a3_2025_2_gqs.backend.utils.database.mysql.MySqlConnectionFactory;
 import com.mycompany.a3_2025_2_gqs.frontend.view.RegistrosAmigos;
-import com.mycompany.a3_2025_2_gqs.frontend.view.TelaPrincipal;
-import com.mycompany.a3_2025_2_gqs.frontend.view.ViewEmprestimos;
 
 /**
  *
@@ -40,8 +37,7 @@ public class RegistrosAmigosController {
         if (view.getTxtnome().getText().equals("") || view.getTxtemail().getText().equals("") || view.getTxttelefone().getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Informe todos os dados para efetuar o cadastro!");
         } else {
-            try {
-                Connection conexao = new Conexao().getConnection();
+            try (java.sql.Connection conexao = MySqlConnectionFactory.getConnection()) {
                 AmigosDAO amigosDAO = new AmigosDAO(conexao);
                 amigosDAO.insertBD(amigos);
                 JOptionPane.showMessageDialog(null, "AMIGO CADASTRADO COM SUCESSO!");
@@ -67,21 +63,28 @@ public class RegistrosAmigosController {
             String telefone = view.getTxttelefone().getText();
 
             Amigos amigos = new Amigos(nome, email, telefone);
-            Connection conexao = new Conexao().getConnection();
-            AmigosDAO amigosDAO = new AmigosDAO(conexao);
-            amigosDAO.UpdateAmigos(amigos, id);
-            JOptionPane.showMessageDialog(null, "AMIGO ALTERADO COM SUCESSO!");
-            view.getTxtnome().setText("");
-            view.getTxtemail().setText("");
-            view.getTxttelefone().setText("");
+            try (java.sql.Connection conexao = MySqlConnectionFactory.getConnection()) {
+                AmigosDAO amigosDAO = new AmigosDAO(conexao);
+                amigosDAO.UpdateAmigos(amigos, id);
+                JOptionPane.showMessageDialog(null, "AMIGO ALTERADO COM SUCESSO!");
+                view.getTxtnome().setText("");
+                view.getTxtemail().setText("");
+                view.getTxttelefone().setText("");
+            } catch (SQLException ex) {
+                Logger.getLogger(RegistrosAmigos.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Erro ao atualizar o usuario" + ex);
+            }
         }
     }
 
     public void deleteAmigo() {
         int id = Integer.parseInt(view.getTxtId().getText());
-        Amigos amigos = new Amigos();
-        Connection conexao = new Conexao().getConnection();
-        AmigosDAO amigosDAO = new AmigosDAO(conexao);
-        amigosDAO.deleteAmigos(id);
+        try (java.sql.Connection conexao = MySqlConnectionFactory.getConnection()) {
+            AmigosDAO amigosDAO = new AmigosDAO(conexao);
+            amigosDAO.deleteAmigos(id);
+        } catch (SQLException ex) {
+            Logger.getLogger(RegistrosAmigos.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Erro ao deletar o usuario" + ex);
+        }
     }
 }
