@@ -6,10 +6,8 @@ services:
     container_name: tooltracker-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: "12345"
       MYSQL_DATABASE: dbtooltracker
-      MYSQL_USER: ghff13
-      MYSQL_PASSWORD: "LJL!(D`ooACL<3P>6?^9u:nPl\\lgc'@jGUJo0cDLfM\\c--\\,V.2Nkb;KaK3*X^pm"
     ports:
       - "3306:3306"
     volumes:

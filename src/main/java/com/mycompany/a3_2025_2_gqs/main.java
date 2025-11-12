@@ -12,12 +12,7 @@ import com.mycompany.a3_2025_2_gqs.frontend.view.TelaPrincipal;
 /**
  * Ponto de entrada da aplicação.
  */
-public final class Principal {
-
-    private Principal() {
-        // Utility class
-    }
-
+public final class main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new TelaPrincipal().setVisible(true));
     }

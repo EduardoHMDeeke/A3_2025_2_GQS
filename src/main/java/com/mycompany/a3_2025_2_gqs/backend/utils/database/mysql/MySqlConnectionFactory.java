@@ -7,8 +7,8 @@ import java.sql.SQLException;
 public final class MySqlConnectionFactory {
 
     private static final String URL = "jdbc:mysql://localhost:3306/dbtooltracker";
-    private static final String USER = "ghff13";
-    private static final String PASSWORD = "LJL!(D`ooACL<3P>6?^9u:nPl\\lgc'@jGUJo0cDLfM\\c--\\,V.2Nkb;KaK3*X^pm";
+    private static final String USER = "root";
+    private static final String PASSWORD = "12345";
 
     private MySqlConnectionFactory() {
         // Utility class
