@@ -1,10 +1,10 @@
 package com.mycompany.a3_2025_2_gqs.backend.controller;
 
-import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 import com.mycompany.a3_2025_2_gqs.backend.model.Ferramentas;
 import com.mycompany.a3_2025_2_gqs.backend.repository.FerramentaDAO;
@@ -62,7 +62,7 @@ public class RegistroFerramentasController {
         try {
             id = Integer.parseInt(idText);
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "O ID deve ser um número inteiro válido.");
+            JOptionPane.showMessageDialog(null, "O ID deve ser um nÃºmero inteiro vÃ¡lido.");
             return;
         }
 
@@ -96,7 +96,7 @@ public class RegistroFerramentasController {
         try {
             id = Integer.parseInt(idText);
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "O ID deve ser um número inteiro válido.");
+            JOptionPane.showMessageDialog(null, "O ID deve ser um nÃºmero inteiro vÃ¡lido.");
             return;
         }
 

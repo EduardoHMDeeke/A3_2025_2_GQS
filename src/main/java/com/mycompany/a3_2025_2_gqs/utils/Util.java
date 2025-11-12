@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -20,7 +20,7 @@ public class Util {
         // Criar um objeto Matcher
         Matcher matcher = pattern.matcher(texto);
 
-        // Concatenar os números encontrados em uma única sequência
+        // Concatenar os nÃºmeros encontrados em uma Ãºnica sequÃªncia
         StringBuilder numeros = new StringBuilder();
         while (matcher.find()) {
             numeros.append(matcher.group());
@@ -38,7 +38,7 @@ public class Util {
     }
 
     public static String converterData(LocalDate localDate) {
-        // Definir o padrão de formatação desejado
+        // Definir o padrÃ£o de formataÃ§Ã£o desejado
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         // Converter LocalDate para String formatada
@@ -51,7 +51,7 @@ public class Util {
         calendar.setTime(date);
 
         int dia = calendar.get(Calendar.DAY_OF_MONTH);
-        int mes = calendar.get(Calendar.MONTH) + 1; // Mês começa em 0, então adicionamos 1
+        int mes = calendar.get(Calendar.MONTH) + 1; // MÃªs comeÃ§a em 0, entÃ£o adicionamos 1
         int ano = calendar.get(Calendar.YEAR);
 
         return LocalDate.of(ano, mes, dia);

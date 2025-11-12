@@ -1,6 +1,7 @@
 package com.mycompany.a3_2025_2_gqs.backend.controller;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 

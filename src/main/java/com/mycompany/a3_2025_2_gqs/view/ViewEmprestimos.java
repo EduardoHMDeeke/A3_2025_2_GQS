@@ -4,7 +4,8 @@
  */
 package com.mycompany.a3_2025_2_gqs.frontend.view;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;

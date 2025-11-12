@@ -1,8 +1,8 @@
 package com.mycompany.a3_2025_2_gqs.backend.repository;
 
-import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -88,7 +88,7 @@ public class FerramentaDAO {
                 lista.add(ferramenta);
             }
         } catch (SQLException erro) {
-            JOptionPane.showMessageDialog(null, "Erro ao listar ferramentas não emprestadas: " + erro);
+            JOptionPane.showMessageDialog(null, "Erro ao listar ferramentas nÃ£o emprestadas: " + erro);
         }
         return lista;
     }

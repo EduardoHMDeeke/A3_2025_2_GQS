@@ -1,10 +1,10 @@
 package com.mycompany.a3_2025_2_gqs.frontend.view;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -34,7 +34,7 @@ class RegistrosAmigosValidationTest {
     @Test
     @DisplayName("Should enable buttons for valid name without numbers")
     void testValidarCampos_ValidName() {
-        view.getTxtnome().setText("João da Silva");
+        view.getTxtnome().setText("JoÃ£o da Silva");
         view.validarCampos();
         
         assertTrue(view.getUpdate().isEnabled());
@@ -43,7 +43,7 @@ class RegistrosAmigosValidationTest {
 
     @ParameterizedTest
     @DisplayName("Should disable buttons for invalid names (null, empty, or with numbers)")
-    @ValueSource(strings = {"João123", "123456", "Test123Test"}) // Names with numbers
+    @ValueSource(strings = {"JoÃ£o123", "123456", "Test123Test"}) // Names with numbers
     void testValidarCampos_WithInvalidNames(String invalidNameInput) {
         view.getTxtnome().setText(invalidNameInput);
         view.validarCampos();
