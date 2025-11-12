@@ -10,17 +10,22 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.condition.DisabledIf;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 
-/**
 @DisplayName("RegistrosAmigos GUI Tests")
+@DisabledIf("isHeadless")
 public class RegistrosAmigosTest {
 
     private FrameFixture window;
     private Robot robot;
     private RegistrosAmigos frame;
     private boolean headless;
+    
+    private static boolean isHeadless() {
+        return GraphicsEnvironment.isHeadless();
+    }
 
     @BeforeEach
     public void setUp() {
@@ -33,22 +38,26 @@ public class RegistrosAmigosTest {
         }
         
         try {
-            robot = BasicRobot.robotWithCurrentAwtHierarchy();
+            if (!headless) {
+                robot = BasicRobot.robotWithCurrentAwtHierarchy();
+            }
             frame = GuiActionRunner.execute(() -> {
                 RegistrosAmigos f = new RegistrosAmigos();
                 f.setTestMode(true); // Always enable test mode to suppress dialogs
                 return f;
             });
-            window = new FrameFixture(robot, frame);
             
-            if (!headless) {
+            if (!headless && robot != null) {
+                window = new FrameFixture(robot, frame);
                 window.show(); // Only show if not headless
             } else {
                 // In headless mode, we need to manually make the frame "visible" for testing
                 frame.setVisible(true);
             }
-        } catch (HeadlessException e) {
-            System.out.println("Running in headless mode: " + e.getMessage());
+        } catch (HeadlessException | ExceptionInInitializerError e) {
+            // Running in headless mode, skip robot initialization
+            // This should not happen due to @DisabledIf, but handle gracefully
+            throw new RuntimeException("GUI tests cannot run in headless mode", e);
         }
     }
 
@@ -61,12 +70,12 @@ public class RegistrosAmigosTest {
         }
 
         // Force initial validation state
-        GuiActionRunner.execute(() -> {
+        if (frame != null) {
             if (!frame.getTxtnome().getText().isEmpty()) {
                 frame.getTxtnome().setText("");
             }
             frame.validarCampos();
-        });
+        }
         
         if (robot != null) {
             robot.waitForIdle();
@@ -127,11 +136,13 @@ public class RegistrosAmigosTest {
     @Test
     @DisplayName("Should enable buttons when valid name is entered")
     public void testValidarCampos_WithValidName() {
+        if (frame == null) {
+            return; // Skip test in headless mode if frame is not initialized
+        }
+        
         // Use direct text setting and trigger validation
-        GuiActionRunner.execute(() -> {
-            frame.getTxtnome().setText("João Silva");
-            frame.validarCampos();
-        });
+        frame.getTxtnome().setText("João Silva");
+        frame.validarCampos();
         
         if (robot != null) {
             robot.waitForIdle();
@@ -145,13 +156,15 @@ public class RegistrosAmigosTest {
     @Test
     @DisplayName("Should disable buttons when name contains numbers")
     public void testValidarCampos_WithInvalidName() {
+        if (frame == null) {
+            return; // Skip test in headless mode if frame is not initialized
+        }
+        
         // Enable test mode to suppress JOptionPane
         frame.setTestMode(true);
 
-        GuiActionRunner.execute(() -> {
-            frame.getTxtnome().setText("João123");
-            frame.validarCampos();
-        });
+        frame.getTxtnome().setText("João123");
+        frame.validarCampos();
 
         if (robot != null) {
             robot.waitForIdle();
@@ -165,6 +178,10 @@ public class RegistrosAmigosTest {
     @Test
     @DisplayName("Should handle component name assignment correctly")
     public void testComponentNamesAreSet() {
+        if (frame == null) {
+            return; // Skip test in headless mode if frame is not initialized
+        }
+        
         // Verify all components have names set
         assertThat(frame.getTxtnome().getName()).isNotNull();
         assertThat(frame.getTxtemail().getName()).isNotNull();
@@ -189,4 +206,4 @@ public class RegistrosAmigosTest {
             frame.dispose();
         }
     }
-} */
+}
