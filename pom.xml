@@ -16,7 +16,7 @@
 
         <sonar.organization>eduardohmdeeke</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.exclusions>**/main/*Principal.*</sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>./src/main/java/com/mycompany/a3_2025_2_gqs/main.java</sonar.coverage.exclusions>
 
         <java.awt.headless>true</java.awt.headless>
     </properties>
