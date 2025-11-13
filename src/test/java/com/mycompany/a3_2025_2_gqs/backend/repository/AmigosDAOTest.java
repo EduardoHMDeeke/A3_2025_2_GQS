@@ -1,102 +1,221 @@
-package com.mycompany.a3_2025_2_gqs.backend.repository; // Place this in your test folder structure
+package com.mycompany.a3_2025_2_gqs.backend.repository;
 
 import org.junit.jupiter.api.*;
 
 import com.mycompany.a3_2025_2_gqs.backend.model.Amigos;
+import com.mycompany.a3_2025_2_gqs.backend.repository.AmigosDAO;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
+ * Testes de integração para AmigosDAO usando SQLite in-memory.
  *
  * @author Eduardo Deeke
  */
-
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AmigosDAOTest {
 
-    // --- Test Data ---
-    private static final int TEST_ID = 1;
-    private static final String TEST_NAME = "Alice Smith";
-    private static final String TEST_EMAIL = "alice@example.com";
-    private static final String TEST_PHONE = "1199887766";
-    private static final int TEST_IDADE = 25;
-    private static final String TEST_DATE = "2025-10-27";
-    private static final String NEW_NAME = "Bob Johnson";
-    private static final int NEW_IDADE = 40;
+    private Connection keeper;
 
-    // --- 1. Test Constructors ---
-    @Test
-    void testNoArgsConstructor() {
-        Amigos amigo = new Amigos();
+    @BeforeEach
+    void setUp() throws SQLException {
+        keeper = newConnection();
+        createSchema(keeper);
+        clearData(keeper);
+    }
 
-        // Fields come back as Default (0 int, null String)
-        assertNotNull(amigo);
-        assertEquals(0, amigo.getId());
-        assertNull(amigo.getNome());
+    @AfterEach
+    void tearDown() throws SQLException {
+        if (keeper != null && !keeper.isClosed()) {
+            keeper.close();
+        }
+    }
+
+    private static Connection newConnection() throws SQLException {
+        String url = "jdbc:sqlite:file:memdb?mode=memory&cache=shared";
+        return DriverManager.getConnection(url);
+    }
+
+    private static void createSchema(Connection c) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS amigos ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "nome TEXT NOT NULL, "
+                + "idade INTEGER, "
+                + "telefone TEXT, "
+                + "email TEXT"
+                + ")";
+        try (Statement st = c.createStatement()) {
+            st.execute(sql);
+        }
+    }
+
+    private static void clearData(Connection c) throws SQLException {
+        try (Statement st = c.createStatement()) {
+            st.executeUpdate("DELETE FROM amigos");
+        }
+    }
+
+    private Amigos novoAmigo(String nome, String email, String telefone, int idade) {
+        return new Amigos(nome, email, telefone, idade);
     }
 
     @Test
-    void testFullArgsConstructor() {
-        Amigos amigo = new Amigos(TEST_NAME, TEST_EMAIL, TEST_PHONE, TEST_IDADE);
+    void insertBD_e_listarAmigos_devePersistirEListar() throws Exception {
+        try (Connection c1 = newConnection()) {
+            AmigosDAO dao = new AmigosDAO(c1);
+            Amigos amigo = novoAmigo("Alice Smith", "alice@example.com", "1199887766", 25);
+            dao.insertBD(amigo);
+        }
 
-        assertEquals(TEST_NAME, amigo.getNome(), "Name should match constructor input.");
-        assertEquals(TEST_EMAIL, amigo.getEmail(), "Email should match constructor input.");
-        assertEquals(TEST_PHONE, amigo.getTelefone(), "Phone should match constructor input.");
-        assertEquals(TEST_IDADE, amigo.getIdade(), "Idade should match constructor input.");
-        assertEquals(0, amigo.getId(), "ID should be default 0.");
-        assertNull(amigo.getDiaDoEmprestimo(), "DiaDoEmprestimo should be null by default.");
+        ArrayList<Amigos> lista;
+        try (Connection c2 = newConnection()) {
+            AmigosDAO dao2 = new AmigosDAO(c2);
+            lista = dao2.listarAmigos();
+        }
+
+        assertEquals(1, lista.size(), "Deve haver 1 registro salvo");
+        Amigos salvo = lista.get(0);
+        assertEquals("Alice Smith", salvo.getNome());
+        assertEquals("alice@example.com", salvo.getEmail());
+        assertEquals("1199887766", salvo.getTelefone());
+        assertEquals(25, salvo.getIdade());
+        assertTrue(salvo.getId() > 0);
     }
 
     @Test
-    void testPartialArgsConstructor() {
-        Amigos amigo = new Amigos(TEST_NAME, TEST_EMAIL, TEST_PHONE);
+    void buscarAmigo_deveRetornarPorId() throws Exception {
+        int idGerado;
 
-        assertEquals(TEST_NAME, amigo.getNome());
-        assertEquals(TEST_EMAIL, amigo.getEmail());
-        assertEquals(TEST_PHONE, amigo.getTelefone());
-        assertEquals(0, amigo.getIdade(), "Idade should be default 0.");
+        try (Connection c1 = newConnection()) {
+            AmigosDAO dao = new AmigosDAO(c1);
+            Amigos amigo = novoAmigo("Bob Johnson", "bob@example.com", "1199776655", 30);
+            dao.insertBD(amigo);
+        }
+
+        try (Connection c2 = newConnection()) {
+            AmigosDAO dao2 = new AmigosDAO(c2);
+            ArrayList<Amigos> lista = dao2.listarAmigos();
+            assertFalse(lista.isEmpty(), "A lista não deve estar vazia");
+            idGerado = lista.get(0).getId();
+        }
+
+        try (Connection c3 = newConnection()) {
+            AmigosDAO dao3 = new AmigosDAO(c3);
+            Amigos encontrado = dao3.buscarAmigo(idGerado);
+
+            assertEquals("Bob Johnson", encontrado.getNome());
+            assertEquals("bob@example.com", encontrado.getEmail());
+            assertEquals("1199776655", encontrado.getTelefone());
+            assertEquals(30, encontrado.getIdade());
+            assertEquals(idGerado, encontrado.getId());
+        }
     }
 
-    // --- 2. Test Getters and Setters ---
     @Test
-    void testGettersAndSetters() {
-        Amigos amigo = new Amigos();
+    void UpdateAmigos_deveAtualizarDados() throws Exception {
+        int idGerado;
 
-        // Set all values
-        amigo.setId(TEST_ID);
-        amigo.setNome(TEST_NAME);
-        amigo.setEmail(TEST_EMAIL);
-        amigo.setTelefone(TEST_PHONE);
-        amigo.setIdade(TEST_IDADE);
-        amigo.setDiaDoEmprestimo(TEST_DATE);
+        try (Connection c1 = newConnection()) {
+            AmigosDAO dao = new AmigosDAO(c1);
+            Amigos amigo = novoAmigo("Carlos Silva", "carlos@example.com", "1199665544", 35);
+            dao.insertBD(amigo);
+        }
 
-        // Verify all getters return the set values
-        assertEquals(TEST_ID, amigo.getId(), "The ID getter/setter failed.");
-        assertEquals(TEST_NAME, amigo.getNome(), "The Nome getter/setter failed.");
-        assertEquals(TEST_EMAIL, amigo.getEmail(), "The Email getter/setter failed.");
-        assertEquals(TEST_PHONE, amigo.getTelefone(), "The Telefone getter/setter failed.");
-        assertEquals(TEST_IDADE, amigo.getIdade(), "The Idade getter/setter failed.");
-        assertEquals(TEST_DATE, amigo.getDiaDoEmprestimo(), "The DiaDoEmprestimo getter/setter failed.");
+        try (Connection c2 = newConnection()) {
+            AmigosDAO dao2 = new AmigosDAO(c2);
+            ArrayList<Amigos> lista = dao2.listarAmigos();
+            assertFalse(lista.isEmpty(), "Deve existir pelo menos um registro");
+            idGerado = lista.get(0).getId();
+        }
 
-        // Test update with new values
-        amigo.setNome(NEW_NAME);
-        amigo.setIdade(NEW_IDADE);
+        try (Connection c3 = newConnection()) {
+            AmigosDAO dao3 = new AmigosDAO(c3);
+            Amigos atualizado = novoAmigo("Carlos Silva Junior", "carlos.junior@example.com", "1199554433", 36);
+            dao3.UpdateAmigos(atualizado, idGerado);
+        }
 
-        // Verify updates
-        assertEquals(NEW_NAME, amigo.getNome(), "Updating the Name failed.");
-        assertEquals(NEW_IDADE, amigo.getIdade(), "Updating the Idade failed.");
+        try (Connection c4 = newConnection()) {
+            AmigosDAO dao4 = new AmigosDAO(c4);
+            Amigos amigo = dao4.buscarAmigo(idGerado);
+            assertEquals("Carlos Silva Junior", amigo.getNome());
+            assertEquals("carlos.junior@example.com", amigo.getEmail());
+            assertEquals("1199554433", amigo.getTelefone());
+        }
     }
 
-    // --- 3. Test toString() Method ---
     @Test
-    void testToString() {
-        Amigos amigo = new Amigos();
-        amigo.setNome(TEST_NAME);
+    void deleteAmigos_deveExcluirRegistro() throws Exception {
+        int id;
 
-        String result = amigo.toString();
+        try (Connection c = newConnection()) {
+            AmigosDAO dao = new AmigosDAO(c);
+            Amigos amigo = novoAmigo("Diana Costa", "diana@example.com", "1199443322", 28);
+            dao.insertBD(amigo);
+        }
 
-        // Verify the output contains the class name and the name field as implemented
-        assertTrue(result.contains("Amigos{"), "toString should contain the class start.");
-        assertTrue(result.contains("nome=" + TEST_NAME), "toString should display the name field.");
+        try (Connection c = newConnection()) {
+            AmigosDAO dao = new AmigosDAO(c);
+            ArrayList<Amigos> lista = dao.listarAmigos();
+            assertFalse(lista.isEmpty());
+            id = lista.get(0).getId();
+        }
+
+        try (Connection c = newConnection()) {
+            AmigosDAO dao = new AmigosDAO(c);
+            dao.deleteAmigos(id);
+        }
+
+        try (Connection c = newConnection()) {
+            AmigosDAO dao = new AmigosDAO(c);
+            assertTrue(dao.listarAmigos().isEmpty());
+        }
+    }
+
+    @Test
+    void insertBD_deveProtegerContraSQLInjection() throws Exception {
+        String payload = "'; DROP TABLE amigos; --";
+        
+        try (Connection c1 = newConnection()) {
+            AmigosDAO dao = new AmigosDAO(c1);
+            Amigos amigo = novoAmigo(payload, "test@example.com", "1199332211", 25);
+            dao.insertBD(amigo);
+        }
+
+        try (Connection c2 = newConnection()) {
+            AmigosDAO dao2 = new AmigosDAO(c2);
+            ArrayList<Amigos> lista = dao2.listarAmigos();
+            assertEquals(1, lista.size());
+            assertEquals(payload, lista.get(0).getNome());
+        }
+    }
+
+    @Test
+    void listarAmigos_deveRetornarListaVaziaQuandoNaoHaRegistros() throws Exception {
+        try (Connection c = newConnection()) {
+            AmigosDAO dao = new AmigosDAO(c);
+            ArrayList<Amigos> lista = dao.listarAmigos();
+            assertTrue(lista.isEmpty(), "Lista deve estar vazia quando não há registros");
+        }
+    }
+
+    @Test
+    void insertBD_comIdadeZero_deveFuncionar() throws Exception {
+        try (Connection c1 = newConnection()) {
+            AmigosDAO dao = new AmigosDAO(c1);
+            Amigos amigo = novoAmigo("Eva Santos", "eva@example.com", "1199221100", 0);
+            dao.insertBD(amigo);
+        }
+
+        try (Connection c2 = newConnection()) {
+            AmigosDAO dao2 = new AmigosDAO(c2);
+            ArrayList<Amigos> lista = dao2.listarAmigos();
+            assertEquals(1, lista.size());
+            assertEquals(0, lista.get(0).getIdade());
+        }
     }
 }

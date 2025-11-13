@@ -1,5 +1,7 @@
 package com.mycompany.a3_2025_2_gqs.frontend.view;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -16,19 +18,48 @@ import java.awt.GraphicsEnvironment;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("RegistrosAmigos Validation Tests")
-@EnabledIf("isGuiTestSupported")
 class RegistrosAmigosValidationTest {
 
     private RegistrosAmigos view;
+    private static boolean xvfbEnabled = false;
+
+    @BeforeAll
+    static void setUpXvfb() {
+        // Try to start Xvfb if we're in headless mode
+        if (GraphicsEnvironment.isHeadless()) {
+            xvfbEnabled = XvfbDisplayManager.startXvfb();
+            if (xvfbEnabled) {
+                // Reset headless state after Xvfb starts
+                System.setProperty("java.awt.headless", "false");
+            }
+        }
+    }
+    
+    @AfterAll
+    static void tearDownXvfb() {
+        if (xvfbEnabled) {
+            XvfbDisplayManager.stopXvfb();
+        }
+    }
 
     private static boolean isGuiTestSupported() {
+        // If Xvfb is enabled, we can run GUI tests
+        if (xvfbEnabled) {
+            return true;
+        }
         return !GraphicsEnvironment.isHeadless();
     }
 
     @BeforeEach
     void setUp() {
-        view = new RegistrosAmigos();
-        view.setTestMode(true);
+        // Skip tests if we're truly headless and Xvfb is not available
+        if (isGuiTestSupported()) {
+            view = new RegistrosAmigos();
+            view.setTestMode(true);
+        } else {
+            org.junit.jupiter.api.Assumptions.assumeFalse(true, 
+                "Skipping GUI test: headless environment and Xvfb not available");
+        }
     }
 
     @Test

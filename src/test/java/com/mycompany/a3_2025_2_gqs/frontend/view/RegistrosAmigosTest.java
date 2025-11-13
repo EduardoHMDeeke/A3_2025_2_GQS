@@ -6,7 +6,9 @@ import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -15,49 +17,83 @@ import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 
 @DisplayName("RegistrosAmigos GUI Tests")
-@DisabledIf("isHeadless")
 public class RegistrosAmigosTest {
 
     private FrameFixture window;
     private Robot robot;
     private RegistrosAmigos frame;
     private boolean headless;
+    private static boolean xvfbEnabled = false;
+    
+    @BeforeAll
+    static void setUpXvfb() {
+        // Try to start Xvfb if we're in headless mode
+        if (GraphicsEnvironment.isHeadless()) {
+            xvfbEnabled = XvfbDisplayManager.startXvfb();
+            if (xvfbEnabled) {
+                // Reset headless state after Xvfb starts
+                System.setProperty("java.awt.headless", "false");
+            }
+        }
+    }
+    
+    @AfterAll
+    static void tearDownXvfb() {
+        if (xvfbEnabled) {
+            XvfbDisplayManager.stopXvfb();
+        }
+    }
     
     private static boolean isHeadless() {
+        // If Xvfb is enabled, we're not really headless anymore
+        if (xvfbEnabled) {
+            return false;
+        }
         return GraphicsEnvironment.isHeadless();
     }
 
     @BeforeEach
     public void setUp() {
+        // Skip tests if we're truly headless and Xvfb is not available
+        if (isHeadless() && !xvfbEnabled) {
+            org.junit.jupiter.api.Assumptions.assumeFalse(true, 
+                "Skipping GUI test: headless environment and Xvfb not available");
+            return;
+        }
+        
         headless = GraphicsEnvironment.isHeadless();
         
-        if (headless) {
+        if (headless && !xvfbEnabled) {
             // Set headless mode properties
             System.setProperty("java.awt.headless", "true");
             System.setProperty("test.mode", "true");
+        } else {
+            // Ensure headless is false when Xvfb is enabled
+            System.setProperty("java.awt.headless", "false");
         }
         
         try {
-            if (!headless) {
-                robot = BasicRobot.robotWithCurrentAwtHierarchy();
-            }
+            robot = BasicRobot.robotWithCurrentAwtHierarchy();
             frame = GuiActionRunner.execute(() -> {
                 RegistrosAmigos f = new RegistrosAmigos();
                 f.setTestMode(true); // Always enable test mode to suppress dialogs
                 return f;
             });
             
-            if (!headless && robot != null) {
+            if (robot != null) {
                 window = new FrameFixture(robot, frame);
-                window.show(); // Only show if not headless
+                window.show();
             } else {
-                // In headless mode, we need to manually make the frame "visible" for testing
+                // Fallback: make frame visible directly
                 frame.setVisible(true);
             }
         } catch (HeadlessException | ExceptionInInitializerError e) {
-            // Running in headless mode, skip robot initialization
-            // This should not happen due to @DisabledIf, but handle gracefully
-            throw new RuntimeException("GUI tests cannot run in headless mode", e);
+            // If Xvfb is enabled, this shouldn't happen
+            if (xvfbEnabled) {
+                throw new RuntimeException("GUI test failed even with Xvfb enabled", e);
+            }
+            org.junit.jupiter.api.Assumptions.assumeFalse(true, 
+                "Skipping GUI test: " + e.getMessage());
         }
     }
 

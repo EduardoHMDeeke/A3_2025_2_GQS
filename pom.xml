@@ -168,6 +168,10 @@
                         <java.awt.headless>true</java.awt.headless>
                         <test.mode>true</test.mode>
                     </systemPropertyVariables>
+                    <environmentVariables>
+                        <!-- Xvfb will set DISPLAY automatically if available -->
+                        <DISPLAY>${env.DISPLAY}</DISPLAY>
+                    </environmentVariables>
                 </configuration>
             </plugin>
 
