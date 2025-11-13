@@ -46,16 +46,16 @@ Status](https://sonarcloud.io/api/project_badges/measure?project=EduardoHMDeeke_
 ## ✅ Requisitos do Sistema </br>
 
 ### Requisitos Funcionais </br>
-1. **Cadastro de Ferramentas**  </br>
+RF001 **Cadastro de Ferramentas**  </br>
    O sistema deve permitir registrar ferramentas com nome, código e estado. </br>
 
-2. **Registro de Empréstimo e Devolução**  </br>
+RF002 **Registro de Empréstimo e Devolução**  </br>
    O sistema deve possibilitar registrar quando uma ferramenta é emprestada ou devolvida, atualizando seu status. </br>
 
-3. **Consulta de Ferramentas**  </br>
+RF003 **Consulta de Ferramentas**  </br>
    O sistema deve permitir buscar ferramentas por nome, código ou status (disponível/emprestada). </br>
 
 ### Requisito Não Funcional </br>
-- **Usabilidade**  </br>
+RNF001 **Usabilidade**  </br>
   A interface deve ser simples e intuitiva para facilitar o uso por qualquer colaborador. </br>
 
