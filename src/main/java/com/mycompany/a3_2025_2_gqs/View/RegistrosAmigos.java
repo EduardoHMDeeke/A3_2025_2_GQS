@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.a3_2025_2_gqs.View;
 
 import javax.swing.JButton;
@@ -13,13 +9,12 @@ import com.mycompany.a3_2025_2_gqs.Controller.RegistrosAmigosController;
 
 import static javax.swing.UIManager.setLookAndFeel;
 
-/**
- *
- * @author Guilherme
- */
-public class RegistrosAmigos extends javax.swing.JFrame {
 
-    private final RegistrosAmigosController controller;
+public class RegistrosAmigos extends javax.swing.JFrame {
+    
+    private static final String SEGOE = "Segoe UI Black";
+    
+    private transient final RegistrosAmigosController controller;
     private boolean testMode = false;
 
     private void setComponentNames() {
@@ -37,9 +32,6 @@ public class RegistrosAmigos extends javax.swing.JFrame {
         txtId.setName("txtId");
     }
 
-    /**
-     * Creates new form LoginAmigos
-     */
     public RegistrosAmigos() {
         initComponents();
         setComponentNames();
@@ -91,7 +83,7 @@ public class RegistrosAmigos extends javax.swing.JFrame {
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         update.setVisible(false);
-        update.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        update.setFont(new java.awt.Font(SEGOE, 0, 12)); // NOI18N
         update.setText("Atualizar");
         update.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -101,7 +93,7 @@ public class RegistrosAmigos extends javax.swing.JFrame {
         jPanel2.add(update, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 130, -1));
 
         jBotaoCadastro.setVisible(false);
-        jBotaoCadastro.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        jBotaoCadastro.setFont(new java.awt.Font(SEGOE, 0, 12)); // NOI18N
         jBotaoCadastro.setText("Cadastrar");
         jBotaoCadastro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,7 +102,7 @@ public class RegistrosAmigos extends javax.swing.JFrame {
         });
         jPanel2.add(jBotaoCadastro, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 130, -1));
 
-        jDeleteAmigo.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        jDeleteAmigo.setFont(new java.awt.Font(SEGOE, 0, 12)); // NOI18N
         jDeleteAmigo.setText("Delete");
         jDeleteAmigo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -119,7 +111,7 @@ public class RegistrosAmigos extends javax.swing.JFrame {
         });
         jPanel2.add(jDeleteAmigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 130, -1));
 
-        b_voltar.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        b_voltar.setFont(new java.awt.Font(SEGOE, 0, 12)); // NOI18N
         b_voltar.setText("Voltar");
         b_voltar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,7 +125,7 @@ public class RegistrosAmigos extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(235, 120, 3));
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        labelNome.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        labelNome.setFont(new java.awt.Font(SEGOE, 0, 12)); // NOI18N
         labelNome.setText("Nome");
 
         txtnome.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -153,7 +145,7 @@ public class RegistrosAmigos extends javax.swing.JFrame {
             }
         });
 
-        labelFone.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        labelFone.setFont(new java.awt.Font(SEGOE, 0, 12)); // NOI18N
         labelFone.setText("Telefone");
 
         txttelefone.addActionListener(new java.awt.event.ActionListener() {
@@ -162,7 +154,7 @@ public class RegistrosAmigos extends javax.swing.JFrame {
             }
         });
 
-        labelEmail.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        labelEmail.setFont(new java.awt.Font(SEGOE, 0, 12)); // NOI18N
         labelEmail.setText("Email");
 
         txtId.setVisible(false);
@@ -213,7 +205,7 @@ public class RegistrosAmigos extends javax.swing.JFrame {
 
         panel_fundo.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 90, 475, -1));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 2, 36)); // NOI18N
+        jLabel1.setFont(new java.awt.Font(SEGOE, 2, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Amigos");
         panel_fundo.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, 490, 80));
@@ -341,15 +333,9 @@ public class RegistrosAmigos extends javax.swing.JFrame {
         validarCampos();
     }//GEN-LAST:event_txtnomeFocusLost
 
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -358,20 +344,11 @@ public class RegistrosAmigos extends javax.swing.JFrame {
                     break;
                 }
             }
-            /*} catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(RegistrosAmigos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(RegistrosAmigos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(RegistrosAmigos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } */
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(RegistrosAmigos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new RegistrosAmigos().setVisible(true);
