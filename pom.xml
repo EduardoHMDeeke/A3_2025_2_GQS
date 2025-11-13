@@ -11,7 +11,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Use release para alinhar compilação ao JDK 22 -->
         <maven.compiler.release>22</maven.compiler.release>
 
         <sonar.organization>eduardohmdeeke</sonar.organization>
@@ -24,16 +23,13 @@
         <sonar.java.binaries>target/classes</sonar.java.binaries>
         <sonar.java.test.binaries>target/test-classes</sonar.java.test.binaries>
         <sonar.coverage.exclusions>
-                <!-- removido: por que diabos foi incluido as exclusões? -->
-        </sonar.coverage.exclusions>
+            </sonar.coverage.exclusions>
         <sonar.exclusions>
         </sonar.exclusions>
 
-        <java.awt.headless>true</java.awt.headless>
-    </properties>
+        </properties>
 
     <dependencies>
-        <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -55,14 +51,12 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- NetBeans AbsoluteLayout (necessário no projeto) -->
         <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
             <version>RELEASE170</version>
         </dependency>
 
-        <!-- SQLite JDBC para testes de integração -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
@@ -88,7 +82,6 @@
 
     <build>
         <plugins>
-            <!-- Compiler plugin: usa <release>22 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -98,7 +91,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Assembly (se precisar) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -122,7 +114,6 @@
                 </executions>
             </plugin>
 
-            <!-- Jacoco para cobertura de código -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -172,19 +163,23 @@
                 </executions>
             </plugin>
 
-            <!-- Surefire: garante JUnit 5 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
                 <configuration>
                     <useModulePath>false</useModulePath>
+                    <argLine>
+                        -Djava.awt.headless=true
+                        --add-opens java.desktop/java.awt=ALL-UNNAMED
+                        --add-opens java.desktop/sun.awt=ALL-UNNAMED
+                        --add-opens java.desktop/sun.font=ALL-UNNAMED
+                    </argLine>
                     <systemPropertyVariables>
-                        <java.awt.headless>true</java.awt.headless>
                         <test.mode>true</test.mode>
+                        <java.awt.headless>true</java.awt.headless> 
                     </systemPropertyVariables>
                     <environmentVariables>
-                        <!-- Xvfb will set DISPLAY automatically if available -->
                         <DISPLAY>${env.DISPLAY}</DISPLAY>
                     </environmentVariables>
                 </configuration>
@@ -225,7 +220,6 @@
                 </executions>
             </plugin>
 
-            <!-- SonarCloud Maven Plugin -->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
