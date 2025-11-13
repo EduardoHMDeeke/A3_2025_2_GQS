@@ -1,8 +1,9 @@
-name: SonarCloud Build
+name: SonarQube
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -36,7 +37,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build and run tests
+      - name: Build and test
         run: mvn -B clean verify
 
       - name: Check JaCoCo report
@@ -45,7 +46,8 @@ jobs:
       - name: SonarCloud analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B sonar:sonar \
-          -Dsonar.projectKey=EduardoHMDeeke_A3_2025_2_GQS \
-          -Dsonar.organization=eduardohmdeeke \
-          -Dsonar.host.url=https://sonarcloud.io
+        run: |
+          mvn -B sonar:sonar \
+            -Dsonar.projectKey=EduardoHMDeeke_A3_2025_2_GQS \
+            -Dsonar.organization=eduardohmdeeke \
+            -Dsonar.host.url=https://sonarcloud.io
