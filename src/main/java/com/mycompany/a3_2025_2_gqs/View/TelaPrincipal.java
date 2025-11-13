@@ -269,7 +269,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel3.setFont(new java.awt.Font("FONT_NAME", 1, 94)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("", 1, 94)); // NOI18N
         jLabel3.setText("TOOL TRACKER");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 46, -1, -1));
 
@@ -340,7 +340,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         JP_Principal.add(JP_Home, "Home");
 
-        JL_ListaAmigos.setFont(new java.awt.Font("FONT_NAME", 1, 48)); // NOI18N
+        JL_ListaAmigos.setFont(new java.awt.Font(FONT_NAME, 1, 48)); // NOI18N
         JL_ListaAmigos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JL_ListaAmigos.setText("AMIGOS");
 
@@ -459,7 +459,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         JP_Principal.add(JP_ListaAmigos, AMIGO_ESTOU_AQUI);
 
-        jLabel1.setFont(new java.awt.Font("FONT_NAME", 1, 48)); // NOI18N
+        jLabel1.setFont(new java.awt.Font(FONT_NAME, 1, 48)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Ferramentas");
 
@@ -571,7 +571,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         JP_Principal.add(JP_ListaFerramentas, FERRAMENTA);
 
-        jLabel4.setFont(new java.awt.Font("FONT_NAME", 1, 24)); // NOI18N
+        jLabel4.setFont(new java.awt.Font(FONT_NAME, 1, 24)); // NOI18N
         jLabel4.setText(RELATORIO);
 
         javax.swing.GroupLayout JP_RelatorioLayout = new javax.swing.GroupLayout(JP_Relatorio);
@@ -600,7 +600,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        b_Home.setFont(new java.awt.Font("FONT_NAME", 1, 14)); // NOI18N
+        b_Home.setFont(new java.awt.Font(FONT_NAME, 1, 14)); // NOI18N
         b_Home.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/casa_1.png"))); // NOI18N
         b_Home.setText("   Home");
         b_Home.setFocusPainted(false);
@@ -611,7 +611,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        b_ListaAmigos.setFont(new java.awt.Font("FONT_NAME", 1, 14)); // NOI18N
+        b_ListaAmigos.setFont(new java.awt.Font(FONT_NAME, 1, 14)); // NOI18N
         b_ListaAmigos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/amigos_lp.png"))); // NOI18N
         b_ListaAmigos.setText("   Amigos");
         b_ListaAmigos.setFocusPainted(false);
@@ -623,7 +623,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        b_ListaFerramentas.setFont(new java.awt.Font("FONT_NAME", 1, 12)); // NOI18N
+        b_ListaFerramentas.setFont(new java.awt.Font(FONT_NAME, 1, 12)); // NOI18N
         b_ListaFerramentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/ferramentas_lp.png"))); // NOI18N
         b_ListaFerramentas.setText("    Ferramentas");
         b_ListaFerramentas.setFocusable(false);
@@ -634,7 +634,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        b_relatorio.setFont(new java.awt.Font("FONT_NAME", 1, 14)); // NOI18N
+        b_relatorio.setFont(new java.awt.Font(FONT_NAME, 1, 14)); // NOI18N
         b_relatorio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/emprestimos_lp.png"))); // NOI18N
         b_relatorio.setText("    Relatório");
         b_relatorio.setFocusable(false);
@@ -654,7 +654,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        b_opcoes.setFont(new java.awt.Font("FONT_NAME", 1, 14)); // NOI18N
+        b_opcoes.setFont(new java.awt.Font(FONT_NAME, 1, 14)); // NOI18N
         b_opcoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/opcoes_lp.png"))); // NOI18N
         b_opcoes.setText("    Opções");
         b_opcoes.setFocusPainted(false);
