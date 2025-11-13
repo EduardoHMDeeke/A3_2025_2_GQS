@@ -3,7 +3,6 @@ package com.mycompany.a3_2025_2_gqs.backend.repository;
 import org.junit.jupiter.api.*;
 
 import com.mycompany.a3_2025_2_gqs.backend.model.Ferramentas;
-import com.mycompany.a3_2025_2_gqs.backend.repository.FerramentaDAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

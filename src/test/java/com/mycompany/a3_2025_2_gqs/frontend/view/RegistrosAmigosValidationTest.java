@@ -3,17 +3,15 @@ package com.mycompany.a3_2025_2_gqs.frontend.view;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.condition.EnabledIf;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.mycompany.a3_2025_2_gqs.frontend.view.RegistrosAmigos;
-
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import java.awt.GraphicsEnvironment;
+
+import com.mycompany.a3_2025_2_gqs.frontend.view.RegistrosAmigos;
+import com.mycompany.a3_2025_2_gqs.frontend.view.XvfbDisplayManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 

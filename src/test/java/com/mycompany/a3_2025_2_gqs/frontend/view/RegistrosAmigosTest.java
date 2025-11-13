@@ -12,9 +12,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.condition.DisabledIf;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
+
+import com.mycompany.a3_2025_2_gqs.frontend.view.RegistrosAmigos;
+import com.mycompany.a3_2025_2_gqs.frontend.view.XvfbDisplayManager;
 
 @DisplayName("RegistrosAmigos GUI Tests")
 public class RegistrosAmigosTest {
