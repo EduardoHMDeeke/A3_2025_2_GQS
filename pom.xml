@@ -15,8 +15,20 @@
         <maven.compiler.release>22</maven.compiler.release>
 
         <sonar.organization>eduardohmdeeke</sonar.organization>
+        <sonar.projectKey>EduardoHMDeeke_A3_2025_2_GQS</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.exclusions>./src/main/java/com/mycompany/a3_2025_2_gqs/main.java</sonar.coverage.exclusions>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.exclusions>
+            **/main.java,
+            **/frontend/view/**,
+            **/*.form
+        </sonar.coverage.exclusions>
+        <sonar.exclusions>
+            **/main.java,
+            **/frontend/view/**,
+            **/*.form
+        </sonar.exclusions>
 
         <java.awt.headless>true</java.awt.headless>
     </properties>
@@ -111,14 +123,16 @@
                 </executions>
             </plugin>
 
-            <!-- Jacoco atualizado -->
+            <!-- Jacoco para cobertura de código -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.13</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/main/*Main.*</exclude>
+                        <exclude>**/main.java</exclude>
+                        <exclude>**/frontend/view/**</exclude>
+                        <exclude>**/*.form</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -130,10 +144,30 @@
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>prepare-package</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.10</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -145,25 +179,6 @@
                 <version>3.2.5</version>
                 <configuration>
                     <useModulePath>false</useModulePath>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M9</version>
-                <configuration>
-                    <systemPropertyVariables>
-                        <java.awt.headless>true</java.awt.headless>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
-                <configuration>
                     <systemPropertyVariables>
                         <java.awt.headless>true</java.awt.headless>
                         <test.mode>true</test.mode>
@@ -208,6 +223,13 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- SonarCloud Maven Plugin -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.11.0.3922</version>
             </plugin>
         </plugins>
     </build>
