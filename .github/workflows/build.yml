@@ -41,12 +41,15 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Install Xvfb and X11 utils
-        run: sudo apt-get update && sudo apt-get install -y xvfb x11-utils
-        # Build project and run tests with Xvfb
-      - name: Build, Test and Generate Jacoco
-        env:
-          JAVA_TOOL_OPTIONS: "-Djava.awt.headless=false"
+      # 5️⃣ Instalar Xvfb e dependências nativas X11 (Combinado e Otimizado)
+      - name: 🛠️ Instalar Xvfb e libs nativas (Correção GUI Headless)
+        run: |
+          sudo apt-get update
+          # Xvfb, X11 utils e bibliotecas gráficas essenciais para AssertJ Swing/AWT
+          sudo apt-get install -y xvfb x11-utils libxtst6 libxrender1 libfontconfig1
+
+      # 6️⃣ Build, Test e Jacoco (Executado via xvfb-run, sem JAVA_TOOL_OPTIONS conflitante)
+      - name: 🧪 Build, Test and Generate Jacoco (via Xvfb)
         run: xvfb-run mvn -B clean verify
         
       - name: Show JaCoCo report
