@@ -24,14 +24,9 @@
         <sonar.java.binaries>target/classes</sonar.java.binaries>
         <sonar.java.test.binaries>target/test-classes</sonar.java.test.binaries>
         <sonar.coverage.exclusions>
-            **/main.java,
-            **/frontend/view/**,
-            **/*.form
+                <!-- removido: por que diabos foi incluido as exclusões? -->
         </sonar.coverage.exclusions>
         <sonar.exclusions>
-            **/main.java,
-            **/frontend/view/**,
-            **/*.form
         </sonar.exclusions>
 
         <java.awt.headless>true</java.awt.headless>
