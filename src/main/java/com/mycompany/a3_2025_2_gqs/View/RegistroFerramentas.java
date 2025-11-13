@@ -11,13 +11,10 @@ import javax.swing.JTextField;
 
 import com.mycompany.a3_2025_2_gqs.Controller.RegistroFerramentasController;
 
-/**
- *
- * @author NEX
- */
-public class RegistroFerramentas extends javax.swing.JFrame {
 
-    private final RegistroFerramentasController controller;
+public class RegistroFerramentas extends javax.swing.JFrame {
+    private static final String FONT_NAME = "Segoe UI Black";
+    private transient final RegistroFerramentasController controller;
 
     /**
      * Creates new form RegistroFerramenta
@@ -66,7 +63,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
         jPanel2.setPreferredSize(new java.awt.Dimension(335, 39));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        updateFerramenta.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        updateFerramenta.setFont(new java.awt.Font(FONT_NAME, 0, 12)); // NOI18N
         updateFerramenta.setText("Atualizar");
         updateFerramenta.setVisible(false);
         updateFerramenta.addActionListener(new java.awt.event.ActionListener() {
@@ -77,7 +74,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
         jPanel2.add(updateFerramenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 120, -1));
 
         jBotaoCadastroFerramenta.setVisible(false);
-        jBotaoCadastroFerramenta.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        jBotaoCadastroFerramenta.setFont(new java.awt.Font(FONT_NAME, 0, 12)); // NOI18N
         jBotaoCadastroFerramenta.setText("Cadastrar");
         jBotaoCadastroFerramenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -87,7 +84,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
         jPanel2.add(jBotaoCadastroFerramenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 120, -1));
 
         setVisible(false);
-        jDeleteFerramenta.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        jDeleteFerramenta.setFont(new java.awt.Font(FONT_NAME, 0, 12)); // NOI18N
         jDeleteFerramenta.setText("Delete");
         jDeleteFerramenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -96,7 +93,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
         });
         jPanel2.add(jDeleteFerramenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 120, -1));
 
-        b_voltar.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        b_voltar.setFont(new java.awt.Font(FONT_NAME, 0, 12)); // NOI18N
         b_voltar.setText("Voltar");
         b_voltar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,7 +107,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(235, 120, 3));
         jPanel1.setPreferredSize(new java.awt.Dimension(469, 177));
 
-        labelNome.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        labelNome.setFont(new java.awt.Font(FONT_NAME, 0, 12)); // NOI18N
         labelNome.setText("Nome");
 
         txtnomeFerramenta.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -138,7 +135,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
             }
         });
 
-        labelFone.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        labelFone.setFont(new java.awt.Font(FONT_NAME, 0, 12)); // NOI18N
         labelFone.setText("Preço");
 
         txtPreco.addActionListener(new java.awt.event.ActionListener() {
@@ -152,7 +149,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
             }
         });
 
-        labelEmail.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        labelEmail.setFont(new java.awt.Font(FONT_NAME, 0, 12)); // NOI18N
         labelEmail.setText("Marca");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -259,7 +256,7 @@ public class RegistroFerramentas extends javax.swing.JFrame {
 
         JP_Fundo.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 380, 890, 10));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 2, 36)); // NOI18N
+        jLabel1.setFont(new java.awt.Font(FONT_NAME, 2, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Ferramentas");
         JP_Fundo.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 30, 440, 50));
