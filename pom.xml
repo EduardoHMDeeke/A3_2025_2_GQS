@@ -130,7 +130,6 @@
                 <configuration>
                     <excludes>
                         <exclude>**/main.java</exclude>
-                        <exclude>**/frontend/view/**</exclude>
                         <exclude>**/*.form</exclude>
                     </excludes>
                 </configuration>
