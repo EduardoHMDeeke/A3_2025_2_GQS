@@ -44,16 +44,11 @@ jobs:
       - name: Install Xvfb and X11 utils
         run: sudo apt-get update && sudo apt-get install -y xvfb x11-utils
         # Build project and run tests with Xvfb
-      - name: Build and run tests
+      - name: Build, Test and Generate Jacoco
         env:
           JAVA_TOOL_OPTIONS: "-Djava.awt.headless=false"
-        run: xvfb-run mvn -B verify
-
-      # 5️⃣ Build + Test (gera Jacoco)
-      - name: Build and test with Maven
-        run: mvn -B clean verify
-
-      # 6️⃣ Mostrar Jacoco report (opcional, só pra debug)
+        run: xvfb-run mvn -B clean verif
+        
       - name: Show JaCoCo report
         run: ls -R target/site/jacoco || echo "No JaCoCo report found!"
 
