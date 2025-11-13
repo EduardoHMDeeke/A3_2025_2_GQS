@@ -7,8 +7,8 @@ import java.sql.SQLException;
 public class Conexao {
 
     private static final String URL = "jdbc:mysql://localhost:3306/dbtooltracker";
-    private static final String USER = "ghff13";
-    private static final String PASSWORD = "NEW_SECURE_PASSWORD"; 
+    private static final String USER = System.getenv("DB_USER");
+    private static final String PASSWORD = System.getenv("DB_PASSWORD");
 
     public Connection getConnection() {
         Connection conn = null;
