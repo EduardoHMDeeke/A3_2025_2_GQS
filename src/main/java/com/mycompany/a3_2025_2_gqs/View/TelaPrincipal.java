@@ -20,8 +20,18 @@ author @Caio / @Guilherme
 public class TelaPrincipal extends javax.swing.JFrame {
 
     private boolean b_editarOuDeletar;
+    private static final String FONT_NAME = "Segoe UI Black"; 
+    private static final String AMIGO = "Cadastrar Amigo"; 
+    private static final String LOGO = "/Icons/ToolTracker Logo Oficial.png"; 
+    private static final String REFRESH = "Refresh"; 
+    private static final String AMIGO_ESTOU_AQUI = "Lista Amigos"; 
+    private static final String FERRAMENTA = "Lista Ferramentas"; 
+    private static final String RELATORIO = "Relatorio"; 
 
-    private final ListaAmigosFerramentasController controller;
+
+
+    
+    private transient final ListaAmigosFerramentasController controller;
 
     private boolean cardHome = false;
     private boolean cardAmigos = false;
@@ -149,7 +159,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
         JPop_botoes.add(popupSair);
 
-        popupCadastrar.setText("Cadastrar Amigo");
+        popupCadastrar.setText(AMIGO);
         popupCadastrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 popupCadastrarActionPerformed(evt);
@@ -183,7 +193,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        CadastrarAmigoHome.setText("Cadastrar Amigo");
+        CadastrarAmigoHome.setText(AMIGO);
         CadastrarAmigoHome.setFocusPainted(false);
         CadastrarAmigoHome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -259,16 +269,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI Black", 1, 94)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("FONT_NAME", 1, 94)); // NOI18N
         jLabel3.setText("TOOL TRACKER");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 46, -1, -1));
 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/ToolTracker Logo Oficial.png"))); // NOI18N
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource(LOGO))); // NOI18N
         jLabel7.setToolTipText("");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(799, 0, -1, -1));
 
-        b_refreshEmprestimos.setText("Refresh");
+        b_refreshEmprestimos.setText(REFRESH);
         b_refreshEmprestimos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_refreshEmprestimosActionPerformed(evt);
@@ -330,11 +340,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         JP_Principal.add(JP_Home, "Home");
 
-        JL_ListaAmigos.setFont(new java.awt.Font("Segoe UI Black", 1, 48)); // NOI18N
+        JL_ListaAmigos.setFont(new java.awt.Font("FONT_NAME", 1, 48)); // NOI18N
         JL_ListaAmigos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JL_ListaAmigos.setText("AMIGOS");
 
-        b_cadastrarAmigos.setText("Cadastrar Amigo");
+        b_cadastrarAmigos.setText(AMIGO);
         b_cadastrarAmigos.setFocusPainted(false);
         b_cadastrarAmigos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -389,7 +399,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        atualizarTabela.setText("Refresh");
+        atualizarTabela.setText(REFRESH);
         atualizarTabela.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 atualizarTabelaActionPerformed(evt);
@@ -397,7 +407,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
 
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/ToolTracker Logo Oficial.png"))); // NOI18N
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource(LOGO))); // NOI18N
         jLabel6.setToolTipText("");
 
         javax.swing.GroupLayout JP_ListaAmigosLayout = new javax.swing.GroupLayout(JP_ListaAmigos);
@@ -447,9 +457,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        JP_Principal.add(JP_ListaAmigos, "Lista Amigos");
+        JP_Principal.add(JP_ListaAmigos, AMIGO_ESTOU_AQUI);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 1, 48)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("FONT_NAME", 1, 48)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Ferramentas");
 
@@ -475,7 +485,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jScrollPane2.setViewportView(table_ferramentas);
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/ToolTracker Logo Oficial.png"))); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource(LOGO))); // NOI18N
         jLabel8.setToolTipText("");
 
         b_cadastrarFerramenta.setText("Cadastrar Ferramenta");
@@ -502,7 +512,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        AtualizarFerramentas.setText("Refresh");
+        AtualizarFerramentas.setText(REFRESH);
         AtualizarFerramentas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AtualizarFerramentasActionPerformed(evt);
@@ -559,10 +569,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addContainerGap(66, Short.MAX_VALUE))
         );
 
-        JP_Principal.add(JP_ListaFerramentas, "Lista Ferramentas");
+        JP_Principal.add(JP_ListaFerramentas, FERRAMENTA);
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI Black", 1, 24)); // NOI18N
-        jLabel4.setText("Relatorio");
+        jLabel4.setFont(new java.awt.Font("FONT_NAME", 1, 24)); // NOI18N
+        jLabel4.setText(RELATORIO);
 
         javax.swing.GroupLayout JP_RelatorioLayout = new javax.swing.GroupLayout(JP_Relatorio);
         JP_Relatorio.setLayout(JP_RelatorioLayout);
@@ -581,7 +591,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addContainerGap(646, Short.MAX_VALUE))
         );
 
-        JP_Principal.add(JP_Relatorio, "Relatorio");
+        JP_Principal.add(JP_Relatorio, RELATORIO);
 
         JP_Lista.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         JP_Lista.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -590,7 +600,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        b_Home.setFont(new java.awt.Font("Segoe UI Black", 1, 14)); // NOI18N
+        b_Home.setFont(new java.awt.Font("FONT_NAME", 1, 14)); // NOI18N
         b_Home.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/casa_1.png"))); // NOI18N
         b_Home.setText("   Home");
         b_Home.setFocusPainted(false);
@@ -601,7 +611,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        b_ListaAmigos.setFont(new java.awt.Font("Segoe UI Black", 1, 14)); // NOI18N
+        b_ListaAmigos.setFont(new java.awt.Font("FONT_NAME", 1, 14)); // NOI18N
         b_ListaAmigos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/amigos_lp.png"))); // NOI18N
         b_ListaAmigos.setText("   Amigos");
         b_ListaAmigos.setFocusPainted(false);
@@ -613,7 +623,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        b_ListaFerramentas.setFont(new java.awt.Font("Segoe UI Black", 1, 12)); // NOI18N
+        b_ListaFerramentas.setFont(new java.awt.Font("FONT_NAME", 1, 12)); // NOI18N
         b_ListaFerramentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/ferramentas_lp.png"))); // NOI18N
         b_ListaFerramentas.setText("    Ferramentas");
         b_ListaFerramentas.setFocusable(false);
@@ -624,7 +634,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        b_relatorio.setFont(new java.awt.Font("Segoe UI Black", 1, 14)); // NOI18N
+        b_relatorio.setFont(new java.awt.Font("FONT_NAME", 1, 14)); // NOI18N
         b_relatorio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/emprestimos_lp.png"))); // NOI18N
         b_relatorio.setText("    Relatório");
         b_relatorio.setFocusable(false);
@@ -644,7 +654,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        b_opcoes.setFont(new java.awt.Font("Segoe UI Black", 1, 14)); // NOI18N
+        b_opcoes.setFont(new java.awt.Font("FONT_NAME", 1, 14)); // NOI18N
         b_opcoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/opcoes_lp.png"))); // NOI18N
         b_opcoes.setText("    Opções");
         b_opcoes.setFocusPainted(false);
@@ -726,7 +736,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     //Botão Amigos
     private void b_ListaAmigosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_ListaAmigosActionPerformed
         CardLayout CL = (CardLayout) JP_Principal.getLayout();
-        CL.show(JP_Principal, "Lista Amigos");
+        CL.show(JP_Principal, AMIGO_ESTOU_AQUI);
 
         //Para verificação do PopUp Menu
         cardAmigos = true;
@@ -738,7 +748,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     //Botão Ferramentas
     private void b_ListaFerramentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_ListaFerramentasActionPerformed
         CardLayout CL = (CardLayout) JP_Principal.getLayout();
-        CL.show(JP_Principal, "Lista Ferramentas");
+        CL.show(JP_Principal, FERRAMENTA);
 
         //Para verificação do PopUp Menu
         cardAmigos = false;
@@ -750,7 +760,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     //Botão Rank
     private void b_relatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_relatorioActionPerformed
         CardLayout CL = (CardLayout) JP_Principal.getLayout();
-        CL.show(JP_Principal, "Relatorio");
+        CL.show(JP_Principal, RELATORIO);
 
         // Para verificação do PopUp Menu
         cardAmigos = false;
@@ -900,7 +910,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void popupAmigosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popupAmigosActionPerformed
         CardLayout CL = (CardLayout) JP_Principal.getLayout();
-        CL.show(JP_Principal, "Lista Amigos");
+        CL.show(JP_Principal, AMIGO_ESTOU_AQUI);
 
         //Para verificação do PopUp Menu
         cardAmigos = true;
@@ -911,7 +921,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void popupFerramentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popupFerramentasActionPerformed
         CardLayout CL = (CardLayout) JP_Principal.getLayout();
-        CL.show(JP_Principal, "Lista Ferramentas");
+        CL.show(JP_Principal, FERRAMENTA);
 
         //Para verificação do PopUp Menu
         cardAmigos = false;
@@ -922,7 +932,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void popupRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popupRelatorioActionPerformed
         CardLayout CL = (CardLayout) JP_Principal.getLayout();
-        CL.show(JP_Principal, "Relatorio");
+        CL.show(JP_Principal, RELATORIO);
 
         // Para verificação do PopUp Menu
         cardAmigos = false;
