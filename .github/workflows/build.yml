@@ -47,7 +47,7 @@ jobs:
       - name: Build, Test and Generate Jacoco
         env:
           JAVA_TOOL_OPTIONS: "-Djava.awt.headless=false"
-        run: xvfb-run mvn -B clean verif
+        run: xvfb-run mvn -B clean verify
         
       - name: Show JaCoCo report
         run: ls -R target/site/jacoco || echo "No JaCoCo report found!"
