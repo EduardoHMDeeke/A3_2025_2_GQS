@@ -29,19 +29,21 @@ public class TelaPrincipalTest {
     void shouldDeclareExpectedUiFields() throws Exception {
         Class<?> cls = Class.forName(TARGET_CLASS);
         Set<String> declared = new HashSet<>();
-        for (Field f : cls.getDeclaredFields()) declared.add(f.getName());
+        for (Field f : cls.getDeclaredFields()) {
+            declared.add(f.getName());
+        }
 
         String[] expected = {
-                "table_amigos",
-                "table_ferramentas",
-                "tabelaEmprestimo",
-                "b_Home",
-                "b_ListaAmigos",
-                "b_ListaFerramentas",
-                "b_relatorio",
-                "b_opcoes",
-                "JP_Principal",
-                "JP_Home"
+            "table_amigos",
+            "table_ferramentas",
+            "tabelaEmprestimo",
+            "b_Home",
+            "b_ListaAmigos",
+            "b_ListaFerramentas",
+            "b_relatorio",
+            "b_opcoes",
+            "JP_Principal",
+            "JP_Home"
         };
 
         for (String name : expected) {
@@ -56,8 +58,9 @@ public class TelaPrincipalTest {
 
         Field controller = null;
         for (Field f : cls.getDeclaredFields()) {
-            if (f.getName().equals("controller"))
+            if (f.getName().equals("controller")) {
                 controller = f;
+            }
         }
 
         assertNotNull(controller, "controller field must exist");
@@ -68,4 +71,24 @@ public class TelaPrincipalTest {
         assertTrue(Modifier.isFinal(mods), "controller must be final");
         assertFalse(Modifier.isStatic(mods), "controller must NOT be static");
     }
+
+    @Test
+    void fontNameConstantShouldMatchExpected() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        Field fontField = null;
+        for (Field f : cls.getDeclaredFields()) {
+            if (f.getName().equals("FONT_NAME")) {
+                fontField = f;
+            }
+        }
+
+        assertNotNull(fontField, "FONT_NAME constant must exist");
+
+        fontField.setAccessible(true);
+        Object value = fontField.get(null);
+
+        assertEquals("Segoe UI Black", value);
+    }
+
 }
