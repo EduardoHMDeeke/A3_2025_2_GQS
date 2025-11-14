@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,11 +28,9 @@ public class TelaPrincipalTest {
     @Test
     void shouldDeclareExpectedUiFields() throws Exception {
         Class<?> cls = Class.forName(TARGET_CLASS);
-        Field[] fields = cls.getDeclaredFields();
         Set<String> declared = new HashSet<>();
-        for (Field f : fields) declared.add(f.getName());
+        for (Field f : cls.getDeclaredFields()) declared.add(f.getName());
 
-        // Campos principais detectados no código da TelaPrincipal
         String[] expected = {
                 "table_amigos",
                 "table_ferramentas",
@@ -47,7 +46,26 @@ public class TelaPrincipalTest {
 
         for (String name : expected) {
             assertTrue(declared.contains(name),
-                    "Expected field not found in TelaPrincipal: " + name);
+                    "Expected field not found: " + name);
         }
+    }
+
+    @Test
+    void controllerFieldShouldBeTransientAndFinal() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        Field controller = null;
+        for (Field f : cls.getDeclaredFields()) {
+            if (f.getName().equals("controller"))
+                controller = f;
+        }
+
+        assertNotNull(controller, "controller field must exist");
+
+        int mods = controller.getModifiers();
+
+        assertTrue(Modifier.isTransient(mods), "controller must be transient");
+        assertTrue(Modifier.isFinal(mods), "controller must be final");
+        assertFalse(Modifier.isStatic(mods), "controller must NOT be static");
     }
 }
