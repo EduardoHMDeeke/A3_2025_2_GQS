@@ -91,4 +91,27 @@ public class TelaPrincipalTest {
         assertEquals("Segoe UI Black", value);
     }
 
+    @Test
+    void shouldHaveActionMethods() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        Set<String> methodNames = new HashSet<>();
+        for (var m : cls.getDeclaredMethods()) {
+            methodNames.add(m.getName());
+        }
+
+        String[] expectedMethods = {
+            "b_HomeActionPerformed",
+            "b_ListaAmigosActionPerformed",
+            "b_ListaFerramentasActionPerformed",
+            "jMudarTemaActionPerformed",
+            "b_opcoesActionPerformed",
+            "b_cadastrarAmigosActionPerformed"
+        };
+
+        for (String m : expectedMethods) {
+            assertTrue(methodNames.contains(m), "Expected action method missing: " + m);
+        }
+    }
+
 }
