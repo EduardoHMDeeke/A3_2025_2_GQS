@@ -1093,4 +1093,96 @@ public class TelaPrincipalTest {
         });
     }
 
+    @Test
+    void test_JP_PrincipalMouseReleased_contextualPopups_manual() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Pulando em headless");
+
+        Object tela = createTelaWithManualComponents();
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        class TestPopup extends javax.swing.JPopupMenu {
+
+            boolean shown = false;
+
+            @Override
+            public void show(java.awt.Component invoker, int x, int y) {
+                shown = true;
+            }
+        }
+        TestPopup tpHome = new TestPopup();
+        TestPopup tpAmigos = new TestPopup();
+        try {
+            Field f1 = cls.getDeclaredField("JPop_Home");
+            f1.setAccessible(true);
+            f1.set(tela, tpHome);
+        } catch (NoSuchFieldException ignored) {
+        }
+        try {
+            Field f2 = cls.getDeclaredField("JPop_Amigos");
+            f2.setAccessible(true);
+            f2.set(tela, tpAmigos);
+        } catch (NoSuchFieldException ignored) {
+        }
+
+        java.awt.Frame frame = new java.awt.Frame();
+        java.awt.Button invoker = new java.awt.Button("i");
+        try {
+            frame.add(invoker);
+            frame.pack();
+            frame.addNotify();
+
+            Field fCardHome = null;
+            Field fCardAmigos = null;
+            try {
+                fCardHome = cls.getDeclaredField("cardHome");
+                fCardHome.setAccessible(true);
+                fCardHome.setBoolean(tela, true);
+            } catch (NoSuchFieldException ignored) {
+            }
+            try {
+                fCardAmigos = cls.getDeclaredField("cardAmigos");
+                fCardAmigos.setAccessible(true);
+                fCardAmigos.setBoolean(tela, false);
+            } catch (NoSuchFieldException ignored) {
+            }
+
+            Method m = cls.getDeclaredMethod("JP_PrincipalMouseReleased", java.awt.event.MouseEvent.class);
+            m.setAccessible(true);
+            MouseEvent ev = new MouseEvent(invoker, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, 5, 5, 1, true);
+
+            SwingUtilities.invokeAndWait(() -> {
+                try {
+                    m.invoke(tela, ev);
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            assertTrue(tpHome.shown, "JPop_Home não foi mostrado quando cardHome==true");
+
+            tpHome.shown = false;
+            if (fCardHome != null) {
+                fCardHome.setBoolean(tela, false);
+            }
+            if (fCardAmigos != null) {
+                fCardAmigos.setBoolean(tela, true);
+            }
+
+            SwingUtilities.invokeAndWait(() -> {
+                try {
+                    m.invoke(tela, ev);
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            assertTrue(tpAmigos.shown, "JPop_Amigos não foi mostrado quando cardAmigos==true");
+        } finally {
+            try {
+                frame.remove(invoker);
+                frame.removeNotify();
+                frame.dispose();
+            } catch (Throwable ignored) {
+            }
+        }
+    }
+
 }
