@@ -1,9 +1,11 @@
-
 package com.mycompany.a3_2025_2_gqs.View;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,14 +16,19 @@ public class OpcoesTest {
     private Opcoes tela;
 
     @BeforeEach
-    public void setup() {
-
-        tela = new Opcoes();
+    public void setup() throws Exception {
+        // Swing deve ser criado no EDT
+        EventQueue.invokeAndWait(() -> {
+            tela = new Opcoes();
+            tela.setVisible(false); // Talvez isso funcione?  não sei.
+        });
     }
 
     @AfterEach
-    public void cleanup() {
-        if (tela != null) tela.dispose();
+    public void cleanup() throws Exception {
+        if (tela != null) {
+            EventQueue.invokeAndWait(() -> tela.dispose());
+        }
     }
 
     @Test
@@ -37,34 +44,32 @@ public class OpcoesTest {
     }
 
     @Test
-    public void testBotaoVoltarChamaDispose() {
-        var botaoVoltar = (javax.swing.JButton) getField(tela, "jButton1");
+    public void testBotaoVoltarChamaDispose() throws Exception {
+        JButton botaoVoltar = (JButton) getField(tela, "jButton1");
         assertNotNull(botaoVoltar);
 
         assertTrue(tela.isDisplayable());
 
-        // Simula o clique no botão "Voltar" (que esperamos que chame dispose())
-        botaoVoltar.getActionListeners()[0]
-            .actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
+        EventQueue.invokeAndWait(() ->
+            botaoVoltar.getActionListeners()[0]
+                .actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""))
+        );
 
-        // Verifica se a tela não está mais visível/displayable
         assertFalse(tela.isDisplayable());
     }
 
     @Test
     public void testBotaoSairExiste() {
-        var botaoSair = (javax.swing.JButton) getField(tela, "b_sair");
+        var botaoSair = (JButton) getField(tela, "b_sair");
         assertNotNull(botaoSair);
     }
 
-    // Método utilitário para acessar campos privados (private) usando Reflection
     private Object getField(Object obj, String name) {
         try {
             var f = obj.getClass().getDeclaredField(name);
-            f.setAccessible(true); // Permite acesso a campos privados
+            f.setAccessible(true);
             return f.get(obj);
         } catch (Exception e) {
-            // Em caso de erro (campo não encontrado, etc.), retorna null
             return null;
         }
     }
