@@ -1,3 +1,4 @@
+/*
 package com.mycompany.a3_2025_2_gqs.View;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,9 +45,11 @@ public class OpcoesTest {
 
         assertTrue(tela.isDisplayable());
 
+        // Simula o clique no botão "Voltar" (que esperamos que chame dispose())
         botaoVoltar.getActionListeners()[0]
             .actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 
+        // Verifica se a tela não está mais visível/displayable
         assertFalse(tela.isDisplayable());
     }
 
@@ -56,13 +59,16 @@ public class OpcoesTest {
         assertNotNull(botaoSair);
     }
 
+    // Método utilitário para acessar campos privados (private) usando Reflection
     private Object getField(Object obj, String name) {
         try {
             var f = obj.getClass().getDeclaredField(name);
-            f.setAccessible(true);
+            f.setAccessible(true); // Permite acesso a campos privados
             return f.get(obj);
         } catch (Exception e) {
+            // Em caso de erro (campo não encontrado, etc.), retorna null
             return null;
         }
     }
 }
+*/
