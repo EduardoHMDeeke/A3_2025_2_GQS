@@ -1,4 +1,4 @@
-/*
+
 package com.mycompany.a3_2025_2_gqs.View;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,8 +15,6 @@ public class OpcoesTest {
 
     @BeforeEach
     public void setup() {
-        // Força permitir Swing mesmo em ambiente headless
-        System.setProperty("java.awt.headless", "false");
 
         tela = new Opcoes();
     }
@@ -71,4 +69,3 @@ public class OpcoesTest {
         }
     }
 }
-*/
