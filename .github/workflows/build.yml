@@ -23,9 +23,6 @@ jobs:
           java-version: 22
           distribution: 'zulu'
 
-      - name: Install xvfb
-        run: sudo apt-get install -y xvfb
-
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
@@ -40,11 +37,18 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build and analyze
+      - name: Install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
+      - name: Build and analyze (with xvfb)
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: xvfb-run mvn -B verify \
-              org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-              -Dsonar.projectKey=EduardoHMDeeke_A3_2025_2_GQS \
-              org.jacoco:jacoco-maven-plugin:prepare-agent \
-              -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+        run: |
+          export DISPLAY=:99
+          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" \
+            mvn -B verify \
+            org.jacoco:jacoco-maven-plugin:prepare-agent \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=EduardoHMDeeke_A3_2025_2_GQS \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+      # ==========================================================
