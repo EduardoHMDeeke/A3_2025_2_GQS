@@ -363,7 +363,6 @@ public class TelaPrincipalTest {
         Object tela = createTelaPrincipalInstance();
         assertNotNull(tela, "Instancia de TelaPrincipal não deve ser null");
     }
- 
 
     @Test
     @DisplayName("doClick on buttons does not throw (skipped headless)")
@@ -409,6 +408,34 @@ public class TelaPrincipalTest {
                 fail("Clicar no botão " + f.getName() + " lançou exceção: " + err.get());
             }
         }
+    }
+// Commit: test(TelaPrincipal): buttons have listeners or are enabled (skipped headless)
+
+    @Test
+    @DisplayName("buttons have listeners or are enabled (skipped headless)")
+    void test16_buttonsShouldHaveListenersOrBeEnabled() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ambiente headless: pulando verificação de listeners/estado");
+        Object tela = createTelaPrincipalInstance();
+
+        String[] toCheck = {"b_Home", "b_ListaAmigos", "b_ListaFerramentas", "b_relatorio", "b_opcoes", "b_cadastrarAmigos", "b_cadastrarFerramenta"};
+        Class<?> cls = tela.getClass();
+        boolean anyFound = false;
+        for (String name : toCheck) {
+            try {
+                Field f = cls.getDeclaredField(name);
+                f.setAccessible(true);
+                Object v = f.get(tela);
+                if (!(v instanceof AbstractButton)) {
+                    continue;
+                }
+                anyFound = true;
+                AbstractButton b = (AbstractButton) v;
+                boolean hasListeners = b.getActionListeners() != null && b.getActionListeners().length > 0;
+                assertTrue(hasListeners || b.isEnabled(), "Botão " + f.getName() + " está desabilitado e sem listeners.");
+            } catch (NoSuchFieldException ex) {
+                /* ignora */ }
+        }
+        assertTrue(anyFound, "Nenhum dos botões esperados foi encontrado para checagem de listeners/estado.");
     }
 
 }
