@@ -1074,4 +1074,23 @@ public class TelaPrincipalTest {
                 "Fonte do JL_ListaAmigos deve usar FONT_NAME (" + fontName + "), mas foi: " + actualFamily);
     }
 
+    @Test
+    void test_jMudarTemaActionPerformed_noException_manual() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Pulando teste de tema em ambiente headless");
+
+        Object tela = createTelaWithManualComponents();
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        Method m = cls.getDeclaredMethod("jMudarTemaActionPerformed", java.awt.event.ActionEvent.class);
+        m.setAccessible(true);
+
+        SwingUtilities.invokeAndWait(() -> {
+            try {
+                m.invoke(tela, (Object) null);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
 }
