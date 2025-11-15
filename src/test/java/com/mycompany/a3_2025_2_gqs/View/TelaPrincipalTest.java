@@ -288,4 +288,29 @@ public class TelaPrincipalTest {
                     "Método de ação NÃO deve ser static: " + methodName);
         }
     }
+    
+        @Test
+    void cardPanelsShouldExistAndBeJPanels() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        Object[][] expectedCards = {
+                {"JP_Home", javax.swing.JPanel.class},
+                {"JP_ListaAmigos", javax.swing.JPanel.class},
+                {"JP_ListaFerramentas", javax.swing.JPanel.class},
+                {"JP_Relatorio", javax.swing.JPanel.class}
+        };
+
+        for (Object[] pair : expectedCards) {
+            String fieldName = (String) pair[0];
+            Class<?> expectedType = (Class<?>) pair[1];
+
+            Field f = cls.getDeclaredField(fieldName);
+            assertNotNull(f, "Painel/card esperado não foi encontrado: " + fieldName);
+
+            assertTrue(expectedType.isAssignableFrom(f.getType()),
+                    "Painel '" + fieldName + "' deve ser um " + expectedType.getSimpleName()
+                    + ", mas é " + f.getType().getSimpleName());
+        }
+    }
+
 }
