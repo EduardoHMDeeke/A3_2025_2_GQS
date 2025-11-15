@@ -2,6 +2,7 @@ package com.mycompany.a3_2025_2_gqs.View;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +15,11 @@ public class OpcoesTest {
 
     @BeforeEach
     public void setup() {
+        // Se o ambiente é headless, NÃO cria janela (evita exceptions)
+        if (GraphicsEnvironment.isHeadless()) {
+            System.setProperty("java.awt.headless", "false");
+        }
+
         tela = new Opcoes();
     }
 
@@ -39,16 +45,13 @@ public class OpcoesTest {
     @Test
     public void testBotaoVoltarChamaDispose() {
         var botaoVoltar = (javax.swing.JButton) getField(tela, "jButton1");
-
         assertNotNull(botaoVoltar);
 
-        // Antes do clique
         assertTrue(tela.isDisplayable());
 
-        // Simula clique
-        botaoVoltar.getActionListeners()[0].actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
+        botaoVoltar.getActionListeners()[0]
+            .actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 
-        // Depois do clique → deve fechar
         assertFalse(tela.isDisplayable());
     }
 
