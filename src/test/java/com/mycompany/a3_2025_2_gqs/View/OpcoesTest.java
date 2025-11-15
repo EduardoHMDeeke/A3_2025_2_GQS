@@ -2,7 +2,6 @@ package com.mycompany.a3_2025_2_gqs.View;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 
 import org.junit.jupiter.api.AfterEach;
@@ -15,19 +14,15 @@ public class OpcoesTest {
 
     @BeforeEach
     public void setup() {
-        // Se o ambiente é headless, NÃO cria janela (evita exceptions)
-        if (GraphicsEnvironment.isHeadless()) {
-            System.setProperty("java.awt.headless", "false");
-        }
+        // Força permitir Swing mesmo em ambiente headless
+        System.setProperty("java.awt.headless", "false");
 
         tela = new Opcoes();
     }
 
     @AfterEach
     public void cleanup() {
-        if (tela != null) {
-            tela.dispose();
-        }
+        if (tela != null) tela.dispose();
     }
 
     @Test
@@ -61,9 +56,6 @@ public class OpcoesTest {
         assertNotNull(botaoSair);
     }
 
-    /**
-     * Pega campo privado via reflexão
-     */
     private Object getField(Object obj, String name) {
         try {
             var f = obj.getClass().getDeclaredField(name);
