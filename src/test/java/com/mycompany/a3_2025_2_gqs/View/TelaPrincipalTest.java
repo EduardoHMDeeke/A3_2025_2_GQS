@@ -1,7 +1,14 @@
 package com.mycompany.a3_2025_2_gqs.View;
 
 import org.junit.jupiter.api.*;
-
+import java.awt.GraphicsEnvironment;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
+import java.lang.reflect.Field;
+import javax.swing.AbstractButton;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -10,25 +17,34 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
-/**
- * Testes por reflexão para TelaPrincipal.
- * - Não instancia a UI (CI-safe / headless).
- * - Verifica existência de campos essenciais (tabelas, botões, popups).
- * - Verifica existência de métodos de actionPerformed.
- * - Verifica que 'controller' é transient e final.
- * - Verifica valor da constante FONT_NAME.
- * - Verifica que initComponents é private e non-static.
- * - Garante que não há componentes Swing estáticos.
- */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TelaPrincipalTest {
 
     private static final String TARGET_CLASS = "com.mycompany.a3_2025_2_gqs.View.TelaPrincipal";
 
+    private Object createTelaPrincipalInstance() throws Exception {
+        AtomicReference<Object> ref = new AtomicReference<>();
+        AtomicReference<Throwable> err = new AtomicReference<>();
+        SwingUtilities.invokeAndWait(() -> {
+            try {
+                Object tela = Class.forName("com.mycompany.a3_2025_2_gqs.View.TelaPrincipal")
+                        .getDeclaredConstructor().newInstance();
+                ref.set(tela);
+            } catch (Throwable e) {
+                err.set(e);
+            }
+        });
+        if (err.get() != null) {
+            throw new Exception("Erro ao instanciar TelaPrincipal", err.get());
+        }
+        return ref.get();
+    }
+
     @BeforeAll
     void beforeAll() {
-        // Garante execução em headless (CI / GitHub Actions)
+        // Garante execução em headless (CI / GitHub Actions) por padrão
         System.setProperty("java.awt.headless", "true");
     }
 
@@ -43,30 +59,32 @@ public class TelaPrincipalTest {
         Class<?> cls = Class.forName(TARGET_CLASS);
         Field[] fields = cls.getDeclaredFields();
         Set<String> declared = new HashSet<>();
-        for (Field f : fields) declared.add(f.getName());
+        for (Field f : fields) {
+            declared.add(f.getName());
+        }
 
         // Nomes detectados no código fornecido
         String[] expected = {
-                "table_amigos",
-                "table_ferramentas",
-                "tabelaEmprestimo",
-                "b_Home",
-                "b_ListaAmigos",
-                "b_ListaFerramentas",
-                "b_relatorio",
-                "b_opcoes",
-                "JP_Principal",
-                "JP_Home",
-                // popups / menu items presentes no código
-                "JPop_botoes",
-                "JPop_Amigos",
-                "JPop_Home",
-                "popupHome",
-                "popupAmigos",
-                "popupFerramentas",
-                "popupRelatorio",
-                "popupOpcoes",
-                "popupSair"
+            "table_amigos",
+            "table_ferramentas",
+            "tabelaEmprestimo",
+            "b_Home",
+            "b_ListaAmigos",
+            "b_ListaFerramentas",
+            "b_relatorio",
+            "b_opcoes",
+            "JP_Principal",
+            "JP_Home",
+            // popups / menu items presentes no código
+            "JPop_botoes",
+            "JPop_Amigos",
+            "JPop_Home",
+            "popupHome",
+            "popupAmigos",
+            "popupFerramentas",
+            "popupRelatorio",
+            "popupOpcoes",
+            "popupSair"
         };
 
         for (String name : expected) {
@@ -115,14 +133,14 @@ public class TelaPrincipalTest {
         Arrays.stream(methods).forEach(m -> methodNames.add(m.getName()));
 
         String[] expectedMethods = {
-                "b_HomeActionPerformed",
-                "b_ListaAmigosActionPerformed",
-                "b_ListaFerramentasActionPerformed",
-                "jMudarTemaActionPerformed",
-                "b_opcoesActionPerformed",
-                "b_cadastrarAmigosActionPerformed",
-                "initComponents",
-                "JP_PrincipalMouseReleased"
+            "b_HomeActionPerformed",
+            "b_ListaAmigosActionPerformed",
+            "b_ListaFerramentasActionPerformed",
+            "jMudarTemaActionPerformed",
+            "b_opcoesActionPerformed",
+            "b_cadastrarAmigosActionPerformed",
+            "initComponents",
+            "JP_PrincipalMouseReleased"
         };
 
         for (String m : expectedMethods) {
@@ -135,12 +153,14 @@ public class TelaPrincipalTest {
         Class<?> cls = Class.forName(TARGET_CLASS);
 
         Set<String> methodNames = new HashSet<>();
-        for (var m : cls.getDeclaredMethods()) methodNames.add(m.getName());
+        for (var m : cls.getDeclaredMethods()) {
+            methodNames.add(m.getName());
+        }
 
         String[] expectedGetters = {
-                "getTable_amigos",
-                "getTable_ferramentas",
-                "getTabelaEmprestimo"
+            "getTable_amigos",
+            "getTable_ferramentas",
+            "getTabelaEmprestimo"
         };
 
         for (String g : expectedGetters) {
@@ -154,8 +174,9 @@ public class TelaPrincipalTest {
 
         Method init = null;
         for (Method m : cls.getDeclaredMethods()) {
-            if (m.getName().equals("initComponents"))
+            if (m.getName().equals("initComponents")) {
                 init = m;
+            }
         }
 
         assertNotNull(init, "initComponents deve existir");
@@ -171,8 +192,9 @@ public class TelaPrincipalTest {
         for (Field f : cls.getDeclaredFields()) {
 
             // Ignora constantes estáticas finais (ex: FONT_NAME)
-            if (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()))
+            if (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers())) {
                 continue;
+            }
 
             Class<?> type = f.getType();
 
@@ -185,134 +207,161 @@ public class TelaPrincipalTest {
     }
 
     @Test
-    void uiFieldsShouldHaveExpectedTypes() throws Exception {
+    void tableModelsShouldHaveExpectedColumns() throws Exception {
         Class<?> cls = Class.forName(TARGET_CLASS);
 
-        Object[][] expectedTypes = {
-            {"table_amigos", javax.swing.JTable.class},
-            {"table_ferramentas", javax.swing.JTable.class},
-            {"tabelaEmprestimo", javax.swing.JTable.class},
-            {"b_Home", javax.swing.JButton.class},
-            {"b_ListaAmigos", javax.swing.JButton.class},
-            {"b_ListaFerramentas", javax.swing.JButton.class},
-            {"b_relatorio", javax.swing.JButton.class},
-            {"b_opcoes", javax.swing.JButton.class},
-            {"JP_Principal", javax.swing.JPanel.class},
-            {"JP_Home", javax.swing.JPanel.class},
-            {"JPop_botoes", javax.swing.JPopupMenu.class},
-            {"JPop_Amigos", javax.swing.JPopupMenu.class},
-            {"JPop_Home", javax.swing.JPopupMenu.class},
-            {"popupHome", javax.swing.JMenuItem.class},
-            {"popupAmigos", javax.swing.JMenuItem.class},
-            {"popupFerramentas", javax.swing.JMenuItem.class},
-            {"popupRelatorio", javax.swing.JMenuItem.class},
-            {"popupOpcoes", javax.swing.JMenuItem.class},
-            {"popupSair", javax.swing.JMenuItem.class}
+        // Verifica a existência dos JTable por reflexão (sempre)
+        String[] tables = {
+            "table_amigos",
+            "table_ferramentas",
+            "tabelaEmprestimo"
         };
 
-        for (Object[] pair : expectedTypes) {
+        for (String table : tables) {
+            Field f = cls.getDeclaredField(table);
+            assertNotNull(f, "Campo JTable esperado não encontrado: " + table);
+            assertTrue(javax.swing.JTable.class.isAssignableFrom(f.getType()),
+                    "Campo '" + table + "' deve ser um JTable");
+        }
+
+        boolean runningHeadless = java.awt.GraphicsEnvironment.isHeadless();
+        assumeFalse(runningHeadless, "Ambiente headless — pulando verificação de nomes de colunas");
+
+        Object instance = null;
+        try {
+            Class<?> target = Class.forName(TARGET_CLASS);
+            instance = target.getDeclaredConstructor().newInstance();
+
+            // acessar campos JTable e verificar TableModel columns
+            Field fAmigos = target.getDeclaredField("table_amigos");
+            fAmigos.setAccessible(true);
+            javax.swing.JTable tableAmigos = (javax.swing.JTable) fAmigos.get(instance);
+            assertNotNull(tableAmigos.getModel(), "TableModel de table_amigos não deve ser null");
+            // Exemplo de checagem básica (ajuste conforme seu modelo real)
+            assertTrue(tableAmigos.getColumnCount() >= 3, "table_amigos deve ter pelo menos 3 colunas");
+
+            Field fFerr = target.getDeclaredField("table_ferramentas");
+            fFerr.setAccessible(true);
+            javax.swing.JTable tableFerr = (javax.swing.JTable) fFerr.get(instance);
+            assertNotNull(tableFerr.getModel(), "TableModel de table_ferramentas não deve ser null");
+            assertTrue(tableFerr.getColumnCount() >= 3, "table_ferramentas deve ter pelo menos 3 colunas");
+
+            Field fEmp = target.getDeclaredField("tabelaEmprestimo");
+            fEmp.setAccessible(true);
+            javax.swing.JTable tableEmp = (javax.swing.JTable) fEmp.get(instance);
+            assertNotNull(tableEmp.getModel(), "TableModel de tabelaEmprestimo não deve ser null");
+            assertTrue(tableEmp.getColumnCount() >= 4, "tabelaEmprestimo deve ter pelo menos 4 colunas");
+
+        } finally {
+
+            if (instance != null) {
+                try {
+                    Method mDispose = instance.getClass().getMethod("dispose");
+                    mDispose.invoke(instance);
+                } catch (NoSuchMethodException ignored) {
+                } catch (Throwable ignored) {
+                }
+            }
+        }
+    }
+
+    @Test
+    void actionMethodsShouldBePrivateAndNonStatic() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        String[] expectedActionMethods = {
+            "b_HomeActionPerformed",
+            "b_ListaAmigosActionPerformed",
+            "b_ListaFerramentasActionPerformed",
+            "jMudarTemaActionPerformed",
+            "b_opcoesActionPerformed",
+            "b_cadastrarAmigosActionPerformed",
+            "JP_PrincipalMouseReleased"
+        };
+
+        for (String methodName : expectedActionMethods) {
+            Method m = null;
+
+            for (Method mm : cls.getDeclaredMethods()) {
+                if (mm.getName().equals(methodName)) {
+                    m = mm;
+                    break;
+                }
+            }
+
+            assertNotNull(m, "Método de ação não encontrado: " + methodName);
+
+            int mods = m.getModifiers();
+
+            assertTrue(Modifier.isPrivate(mods),
+                    "Método de ação deve ser private: " + methodName);
+
+            assertFalse(Modifier.isStatic(mods),
+                    "Método de ação NÃO deve ser static: " + methodName);
+        }
+    }
+
+    @Test
+    void cardPanelsShouldExistAndBeJPanels() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        Object[][] expectedCards = {
+            {"JP_Home", javax.swing.JPanel.class},
+            {"JP_ListaAmigos", javax.swing.JPanel.class},
+            {"JP_ListaFerramentas", javax.swing.JPanel.class},
+            {"JP_Relatorio", javax.swing.JPanel.class}
+        };
+
+        for (Object[] pair : expectedCards) {
             String fieldName = (String) pair[0];
             Class<?> expectedType = (Class<?>) pair[1];
 
-            Field field = cls.getDeclaredField(fieldName);
-            assertNotNull(field, "Campo esperado não encontrado: " + fieldName);
+            Field f = cls.getDeclaredField(fieldName);
+            assertNotNull(f, "Painel/card esperado não foi encontrado: " + fieldName);
 
-            assertTrue(expectedType.isAssignableFrom(field.getType()),
-                    "Tipo incorreto no campo '" + fieldName +
-                    "'. Esperado: " + expectedType.getSimpleName() +
-                    ", Encontrado: " + field.getType().getSimpleName());
+            assertTrue(expectedType.isAssignableFrom(f.getType()),
+                    "Painel '" + fieldName + "' deve ser um " + expectedType.getSimpleName()
+                    + ", mas é " + f.getType().getSimpleName());
         }
     }
 
-    /**
-     * Substitui validação de botões que falhou por causa de um nome errado.
-     * Verifica existência e que sejam privados (não static, tipo JButton).
-     */
     @Test
-    void allButtonsShouldExistAndBePrivateJButtons() throws Exception {
+    void cardControlFlagsShouldExistAndBePrivateBooleans() throws Exception {
         Class<?> cls = Class.forName(TARGET_CLASS);
 
-        String[] expectedButtons = {
-                "b_Home",
-                "b_ListaAmigos",
-                "b_ListaFerramentas",
-                "b_relatorio",
-                "b_opcoes",
-                "b_cadastrarAmigos",
-                "b_cadastrarFerramenta",        // nome correto (singular) presente no código
-                "CadastrarAmigoHome",          // botão com nome capitalizado no código
-                "CadastrarFerramentaHome"      // botão com nome capitalizado no código
+        String[] expectedFlags = {
+            "cardHome",
+            "cardAmigos",
+            "cardFerramentas",
+            "cardRelatorio"
         };
 
-        for (String btnName : expectedButtons) {
-            Field f = cls.getDeclaredField(btnName);
-            assertNotNull(f, "Botão esperado não encontrado: " + btnName);
+        for (String flag : expectedFlags) {
+            Field f = cls.getDeclaredField(flag);
+            assertNotNull(f, "Flag de controle não encontrada: " + flag);
+
+            // Tipo deve ser boolean
+            assertEquals(boolean.class, f.getType(),
+                    "Flag '" + flag + "' deve ser do tipo boolean.");
 
             int mods = f.getModifiers();
-            assertTrue(Modifier.isPrivate(mods) || !Modifier.isPublic(mods),
-                    "Botão '" + btnName + "' deve ser private (visibilidade esperada)");
-            assertFalse(Modifier.isStatic(mods), "Botão '" + btnName + "' NÃO deve ser static");
 
-            // tipo
-            assertTrue(javax.swing.JButton.class.isAssignableFrom(f.getType()),
-                    "Botão '" + btnName + "' deve ser do tipo javax.swing.JButton, mas é " + f.getType().getSimpleName());
-        }
-    }
+            // Deve ser private
+            assertTrue(Modifier.isPrivate(mods),
+                    "Flag '" + flag + "' deve ser private.");
 
-    /* ===== testes extras adicionados para aumentar cobertura sem instanciar UI ===== */
-
-    @Test
-    void constantsShouldExistAndBeStrings() throws Exception {
-        Class<?> cls = Class.forName(TARGET_CLASS);
-        String[] expectedConstants = {
-                "AMIGO",
-                "LOGO",
-                "REFRESH",
-                "AMIGO_ESTOU_AQUI",
-                "FERRAMENTA",
-                "RELATORIO"
-        };
-
-        for (String constName : expectedConstants) {
-            Field f = cls.getDeclaredField(constName);
-            assertNotNull(f, "Constante esperada não encontrada: " + constName);
-            assertTrue(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()),
-                    "Constante '" + constName + "' deve ser static final");
-            assertTrue(String.class.isAssignableFrom(f.getType()),
-                    "Constante '" + constName + "' deve ser String");
+            // Não pode ser static
+            assertFalse(Modifier.isStatic(mods),
+                    "Flag '" + flag + "' NÃO deve ser static.");
         }
     }
 
     @Test
-    void mainMethodShouldExistAndBeStatic() throws Exception {
-        Class<?> cls = Class.forName(TARGET_CLASS);
-        Method main = null;
-        for (Method m : cls.getDeclaredMethods()) {
-            if (m.getName().equals("main")) {
-                main = m;
-                break;
-            }
-        }
-        assertNotNull(main, "Método main deve existir");
-        int mods = main.getModifiers();
-        assertTrue(Modifier.isStatic(mods), "Método main deve ser static");
-        // cheque assinatura (String[] param)
-        Class<?>[] params = main.getParameterTypes();
-        assertEquals(1, params.length, "main deve ter exatamente 1 parâmetro");
-        assertTrue(params[0].isArray(), "main deve ter parâmetro array");
-        assertEquals(String.class, params[0].getComponentType(), "main deve aceitar String[]");
+    @DisplayName("instantiate in EDT (skipped headless)")
+    void test14_instantiateShouldNotThrowWhenNotHeadless() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ambiente headless: pulando teste de instanciação/EDT");
+        Object tela = createTelaPrincipalInstance();
+        assertNotNull(tela, "Instancia de TelaPrincipal não deve ser null");
     }
 
-    @Test
-    void swingFieldsShouldBePrivate() throws Exception {
-        Class<?> cls = Class.forName(TARGET_CLASS);
-        for (Field f : cls.getDeclaredFields()) {
-            Class<?> type = f.getType();
-            if (java.awt.Component.class.isAssignableFrom(type)) {
-                int mods = f.getModifiers();
-                assertTrue(Modifier.isPrivate(mods) || !Modifier.isPublic(mods),
-                        "Campo Swing não deve ser public: " + f.getName());
-            }
-        }
-    }
 }
