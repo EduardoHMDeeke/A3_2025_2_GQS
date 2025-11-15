@@ -1040,4 +1040,20 @@ public class TelaPrincipalTest {
         assertTrue(flag.getBoolean(stub), "listarEmprestimos() não foi chamado no stub");
     }
 
+    @Test
+    void test_buttonTextsMatchConstantsAfterManualInjection() throws Exception {
+        Object tela = createTelaWithManualComponents();
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        Field fAMIGO = cls.getDeclaredField("AMIGO");
+        fAMIGO.setAccessible(true);
+        String amigoConst = (String) fAMIGO.get(null);
+
+        Field fBtn = cls.getDeclaredField("b_cadastrarAmigos");
+        fBtn.setAccessible(true);
+        javax.swing.JButton btn = (javax.swing.JButton) fBtn.get(tela);
+        assertNotNull(btn, "b_cadastrarAmigos deve estar injetado");
+        assertEquals(amigoConst, btn.getText(), "Texto do botão b_cadastrarAmigos deve corresponder à constante AMIGO");
+    }
+
 }
