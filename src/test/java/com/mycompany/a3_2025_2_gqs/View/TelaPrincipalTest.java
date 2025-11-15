@@ -999,4 +999,45 @@ public class TelaPrincipalTest {
         assertTrue(flag.getBoolean(stub), "listarFerramentas() não foi chamado no stub");
     }
 
+    @Test
+    void test_b_refreshEmprestimos_callsControllerListarEmprestimos() throws Exception {
+        Object tela = createTelaWithManualComponents();
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        class Stub extends com.mycompany.a3_2025_2_gqs.Controller.ListaAmigosFerramentasController {
+
+            boolean listarEmprestimosCalled = false;
+
+            public Stub() {
+                super(null);
+            }
+
+            @Override
+            public void listarEmprestimos() {
+                listarEmprestimosCalled = true;
+            }
+        }
+        Constructor<?> objCons = Object.class.getDeclaredConstructor();
+        sun.reflect.ReflectionFactory rf = sun.reflect.ReflectionFactory.getReflectionFactory();
+        Object stub = rf.newConstructorForSerialization(Stub.class, objCons).newInstance();
+
+        Field fController = cls.getDeclaredField("controller");
+        fController.setAccessible(true);
+        fController.set(tela, stub);
+
+        Method m = cls.getDeclaredMethod("b_refreshEmprestimosActionPerformed", java.awt.event.ActionEvent.class);
+        SwingUtilities.invokeAndWait(() -> {
+            try {
+                m.setAccessible(true);
+                m.invoke(tela, (Object) null);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        Field flag = Stub.class.getDeclaredField("listarEmprestimosCalled");
+        flag.setAccessible(true);
+        assertTrue(flag.getBoolean(stub), "listarEmprestimos() não foi chamado no stub");
+    }
+
 }
