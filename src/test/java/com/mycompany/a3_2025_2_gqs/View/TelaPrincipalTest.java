@@ -1056,4 +1056,22 @@ public class TelaPrincipalTest {
         assertEquals(amigoConst, btn.getText(), "Texto do botão b_cadastrarAmigos deve corresponder à constante AMIGO");
     }
 
+    @Test
+    void test_JL_ListaAmigosFontUsesFONT_NAME_manual() throws Exception {
+        Object tela = createTelaWithManualComponents();
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        Field fFont = cls.getDeclaredField("FONT_NAME");
+        fFont.setAccessible(true);
+        String fontName = (String) fFont.get(null);
+
+        Field fLabel = cls.getDeclaredField("JL_ListaAmigos");
+        fLabel.setAccessible(true);
+        javax.swing.JLabel lbl = (javax.swing.JLabel) fLabel.get(tela);
+        assertNotNull(lbl, "JL_ListaAmigos deve estar injetado");
+        String actualFamily = lbl.getFont().getName();
+        assertTrue(actualFamily.contains(fontName) || lbl.getFont().getFontName().contains(fontName),
+                "Fonte do JL_ListaAmigos deve usar FONT_NAME (" + fontName + "), mas foi: " + actualFamily);
+    }
+
 }
