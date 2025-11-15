@@ -191,65 +191,65 @@ public class TelaPrincipalTest {
     // New method to create instance without running GUI initialization
     private Object createTelaPrincipalInstanceWithoutGUI() throws Exception {
         Class<?> cls = Class.forName(TARGET_CLASS);
-        
+
         // Use ReflectionFactory to create instance without calling constructor
         Constructor<?> objCons = Object.class.getDeclaredConstructor();
         ReflectionFactory rf = ReflectionFactory.getReflectionFactory();
         Constructor<?> fakeCons = rf.newConstructorForSerialization(cls, objCons);
         Object instance = fakeCons.newInstance();
-        
+
         // Now manually initialize just the fields we need for testing
         initializeUIComponents(instance, cls);
-        
+
         return instance;
     }
-    
+
     private void initializeUIComponents(Object instance, Class<?> cls) throws Exception {
         // Initialize basic UI components without triggering full GUI setup
         Field jpPrincipalField = cls.getDeclaredField("JP_Principal");
         jpPrincipalField.setAccessible(true);
         jpPrincipalField.set(instance, new JPanel(new CardLayout()));
-        
+
         // Initialize other main panels
         Field[] panelFields = {
             cls.getDeclaredField("JP_Home"),
-            cls.getDeclaredField("JP_ListaAmigos"), 
+            cls.getDeclaredField("JP_ListaAmigos"),
             cls.getDeclaredField("JP_ListaFerramentas"),
             cls.getDeclaredField("JP_Relatorio"),
             cls.getDeclaredField("JP_Lista"),
             cls.getDeclaredField("jPanel1"),
             cls.getDeclaredField("jPanel2")
         };
-        
+
         for (Field field : panelFields) {
             field.setAccessible(true);
             field.set(instance, new JPanel());
         }
-        
+
         // Initialize popup menus
         Field[] popupFields = {
             cls.getDeclaredField("JPop_botoes"),
             cls.getDeclaredField("JPop_Amigos"),
             cls.getDeclaredField("JPop_Home")
         };
-        
+
         for (Field field : popupFields) {
             field.setAccessible(true);
             field.set(instance, new JPopupMenu());
         }
-        
+
         // Initialize menu items
         String[] menuItemFields = {
             "popupHome", "popupAmigos", "popupFerramentas", "popupRelatorio",
             "popupOpcoes", "popupSair", "popupCadastrar", "jMenuItem2", "popup001"
         };
-        
+
         for (String fieldName : menuItemFields) {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             field.set(instance, new javax.swing.JMenuItem());
         }
-        
+
         // Initialize buttons
         String[] buttonFields = {
             "realizarEmprestimo", "CadastrarAmigoHome", "CadastrarFerramentaHome",
@@ -259,25 +259,25 @@ public class TelaPrincipalTest {
             "AtualizarFerramentas", "b_Home", "b_ListaAmigos", "b_ListaFerramentas",
             "b_relatorio", "jMudarTema", "b_opcoes"
         };
-        
+
         for (String fieldName : buttonFields) {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             field.set(instance, new javax.swing.JButton("Test"));
         }
-        
+
         // Initialize labels
         String[] labelFields = {
-            "jLabel3", "jLabel7", "JL_ListaAmigos", "jLabel6", 
+            "jLabel3", "jLabel7", "JL_ListaAmigos", "jLabel6",
             "jLabel1", "jLabel8", "jLabel4"
         };
-        
+
         for (String fieldName : labelFields) {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             field.set(instance, new javax.swing.JLabel("Test"));
         }
-        
+
         // Initialize tables
         String[] tableFields = {"table_amigos", "table_ferramentas", "tabelaEmprestimo"};
         for (String fieldName : tableFields) {
@@ -285,7 +285,7 @@ public class TelaPrincipalTest {
             field.setAccessible(true);
             field.set(instance, new javax.swing.JTable());
         }
-        
+
         // Initialize scroll panes
         String[] scrollPaneFields = {"jScrollPane4", "jScrollPane1", "jScrollPane2"};
         for (String fieldName : scrollPaneFields) {
@@ -296,7 +296,6 @@ public class TelaPrincipalTest {
     }
 
     // NEW TESTS FOR UI COMPONENT INITIALIZATION
-
     @Test
     @DisplayName("All JPopupMenu components should be properly initialized")
     void testAllPopupMenusInitialized() throws Exception {
@@ -311,10 +310,10 @@ public class TelaPrincipalTest {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             Object popupMenu = field.get(instance);
-            
+
             assertNotNull(popupMenu, fieldName + " should not be null");
-            assertTrue(popupMenu instanceof JPopupMenu, 
-                fieldName + " should be an instance of JPopupMenu");
+            assertTrue(popupMenu instanceof JPopupMenu,
+                    fieldName + " should be an instance of JPopupMenu");
         }
     }
 
@@ -333,10 +332,10 @@ public class TelaPrincipalTest {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             Object menuItem = field.get(instance);
-            
+
             assertNotNull(menuItem, fieldName + " should not be null");
-            assertTrue(menuItem instanceof javax.swing.JMenuItem, 
-                fieldName + " should be an instance of JMenuItem");
+            assertTrue(menuItem instanceof javax.swing.JMenuItem,
+                    fieldName + " should be an instance of JMenuItem");
         }
     }
 
@@ -347,7 +346,7 @@ public class TelaPrincipalTest {
         Object instance = createTelaPrincipalInstanceWithoutGUI();
 
         String[] panelFields = {
-            "JP_Principal", "JP_Home", "jPanel2", "jPanel1", 
+            "JP_Principal", "JP_Home", "jPanel2", "jPanel1",
             "JP_ListaAmigos", "JP_ListaFerramentas", "JP_Relatorio", "JP_Lista"
         };
 
@@ -355,10 +354,10 @@ public class TelaPrincipalTest {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             Object panel = field.get(instance);
-            
+
             assertNotNull(panel, fieldName + " should not be null");
-            assertTrue(panel instanceof JPanel, 
-                fieldName + " should be an instance of JPanel");
+            assertTrue(panel instanceof JPanel,
+                    fieldName + " should be an instance of JPanel");
         }
     }
 
@@ -381,10 +380,10 @@ public class TelaPrincipalTest {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             Object button = field.get(instance);
-            
+
             assertNotNull(button, fieldName + " should not be null");
-            assertTrue(button instanceof javax.swing.JButton, 
-                fieldName + " should be an instance of JButton");
+            assertTrue(button instanceof javax.swing.JButton,
+                    fieldName + " should be an instance of JButton");
         }
     }
 
@@ -395,7 +394,7 @@ public class TelaPrincipalTest {
         Object instance = createTelaPrincipalInstanceWithoutGUI();
 
         String[] labelFields = {
-            "jLabel3", "jLabel7", "JL_ListaAmigos", "jLabel6", 
+            "jLabel3", "jLabel7", "JL_ListaAmigos", "jLabel6",
             "jLabel1", "jLabel8", "jLabel4"
         };
 
@@ -403,10 +402,10 @@ public class TelaPrincipalTest {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             Object label = field.get(instance);
-            
+
             assertNotNull(label, fieldName + " should not be null");
-            assertTrue(label instanceof javax.swing.JLabel, 
-                fieldName + " should be an instance of JLabel");
+            assertTrue(label instanceof javax.swing.JLabel,
+                    fieldName + " should be an instance of JLabel");
         }
     }
 
@@ -422,10 +421,10 @@ public class TelaPrincipalTest {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             Object table = field.get(instance);
-            
+
             assertNotNull(table, fieldName + " should not be null");
-            assertTrue(table instanceof javax.swing.JTable, 
-                fieldName + " should be an instance of JTable");
+            assertTrue(table instanceof javax.swing.JTable,
+                    fieldName + " should be an instance of JTable");
         }
 
         // Test scroll panes
@@ -434,10 +433,10 @@ public class TelaPrincipalTest {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             Object scrollPane = field.get(instance);
-            
+
             assertNotNull(scrollPane, fieldName + " should not be null");
-            assertTrue(scrollPane instanceof javax.swing.JScrollPane, 
-                fieldName + " should be an instance of JScrollPane");
+            assertTrue(scrollPane instanceof javax.swing.JScrollPane,
+                    fieldName + " should be an instance of JScrollPane");
         }
     }
 
@@ -455,7 +454,7 @@ public class TelaPrincipalTest {
             "popupHome", "popupAmigos", "popupFerramentas", "popupRelatorio",
             "popupOpcoes", "popupSair", "popupCadastrar", "jMenuItem2", "popup001",
             // Panels
-            "JP_Principal", "JP_Home", "jPanel2", "jPanel1", 
+            "JP_Principal", "JP_Home", "jPanel2", "jPanel1",
             "JP_ListaAmigos", "JP_ListaFerramentas", "JP_Relatorio", "JP_Lista",
             // Buttons
             "realizarEmprestimo", "CadastrarAmigoHome", "CadastrarFerramentaHome",
@@ -465,7 +464,7 @@ public class TelaPrincipalTest {
             "AtualizarFerramentas", "b_Home", "b_ListaAmigos", "b_ListaFerramentas",
             "b_relatorio", "jMudarTema", "b_opcoes",
             // Labels
-            "jLabel3", "jLabel7", "JL_ListaAmigos", "jLabel6", 
+            "jLabel3", "jLabel7", "JL_ListaAmigos", "jLabel6",
             "jLabel1", "jLabel8", "jLabel4",
             // Tables and Scroll Panes
             "tabelaEmprestimo", "table_amigos", "table_ferramentas",
@@ -476,9 +475,9 @@ public class TelaPrincipalTest {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
             Object component = field.get(instance);
-            
-            assertNotNull(component, 
-                "UI component " + fieldName + " should not be null after initialization");
+
+            assertNotNull(component,
+                    "UI component " + fieldName + " should not be null after initialization");
         }
     }
 
@@ -491,15 +490,15 @@ public class TelaPrincipalTest {
         // Test field types
         Field jpopBotoesField = cls.getDeclaredField("JPop_botoes");
         assertEquals(JPopupMenu.class, jpopBotoesField.getType(),
-            "JPop_botoes should be of type JPopupMenu");
+                "JPop_botoes should be of type JPopupMenu");
 
         Field jpopAmigosField = cls.getDeclaredField("JPop_Amigos");
         assertEquals(JPopupMenu.class, jpopAmigosField.getType(),
-            "JPop_Amigos should be of type JPopupMenu");
+                "JPop_Amigos should be of type JPopupMenu");
 
         Field jpopHomeField = cls.getDeclaredField("JPop_Home");
         assertEquals(JPopupMenu.class, jpopHomeField.getType(),
-            "JPop_Home should be of type JPopupMenu");
+                "JPop_Home should be of type JPopupMenu");
     }
 
     @Test
@@ -511,15 +510,15 @@ public class TelaPrincipalTest {
         // Test main panel field types
         Field jpPrincipalField = cls.getDeclaredField("JP_Principal");
         assertEquals(JPanel.class, jpPrincipalField.getType(),
-            "JP_Principal should be of type JPanel");
+                "JP_Principal should be of type JPanel");
 
         Field jpHomeField = cls.getDeclaredField("JP_Home");
         assertEquals(JPanel.class, jpHomeField.getType(),
-            "JP_Home should be of type JPanel");
+                "JP_Home should be of type JPanel");
 
         Field jpListaAmigosField = cls.getDeclaredField("JP_ListaAmigos");
         assertEquals(JPanel.class, jpListaAmigosField.getType(),
-            "JP_ListaAmigos should be of type JPanel");
+                "JP_ListaAmigos should be of type JPanel");
     }
 
     @Test
@@ -536,7 +535,7 @@ public class TelaPrincipalTest {
         for (String fieldName : sampleButtons) {
             Field field = cls.getDeclaredField(fieldName);
             assertEquals(javax.swing.JButton.class, field.getType(),
-                fieldName + " should be of type JButton");
+                    fieldName + " should be of type JButton");
         }
     }
 
@@ -548,20 +547,19 @@ public class TelaPrincipalTest {
 
         Field tableAmigosField = cls.getDeclaredField("table_amigos");
         assertEquals(javax.swing.JTable.class, tableAmigosField.getType(),
-            "table_amigos should be of type JTable");
+                "table_amigos should be of type JTable");
 
         Field tableFerramentasField = cls.getDeclaredField("table_ferramentas");
         assertEquals(javax.swing.JTable.class, tableFerramentasField.getType(),
-            "table_ferramentas should be of type JTable");
+                "table_ferramentas should be of type JTable");
 
         Field tabelaEmprestimoField = cls.getDeclaredField("tabelaEmprestimo");
         assertEquals(javax.swing.JTable.class, tabelaEmprestimoField.getType(),
-            "tabelaEmprestimo should be of type JTable");
+                "tabelaEmprestimo should be of type JTable");
     }
 
     // KEEP ALL YOUR EXISTING TESTS THAT DON'T REQUIRE GUI INITIALIZATION
     // These should work fine as they use reflection only
-
     @Test
     void classShouldBeLoadable() throws ClassNotFoundException {
         Class<?> cls = Class.forName(TARGET_CLASS);
@@ -1450,7 +1448,7 @@ public class TelaPrincipalTest {
 
     @Test
     void test_jMudarTemaActionPerformed_noException_manual() throws Exception {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Pulando teste de tema em ambiente headless");
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Pulando teste de tema em ambiente sem cabeça");
 
         Object tela = createTelaWithManualComponents();
         Class<?> cls = Class.forName(TARGET_CLASS);
@@ -1458,12 +1456,14 @@ public class TelaPrincipalTest {
         Method m = cls.getDeclaredMethod("jMudarTemaActionPerformed", java.awt.event.ActionEvent.class);
         m.setAccessible(true);
 
-        SwingUtilities.invokeAndWait(() -> {
-            try {
-                m.invoke(tela, (Object) null);
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
+        assertDoesNotThrow(() -> {
+            SwingUtilities.invokeAndWait(() -> {
+                try {
+                    m.invoke(tela, (Object) null);
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
+            });
         });
     }
 
