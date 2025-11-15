@@ -533,7 +533,6 @@ public class TelaPrincipalTest {
         }
     }
 
-
     @Test
     @DisplayName("navigation action methods set card flags (no-constructor)")
     void test19_navigationActionMethodsSetCardFlags() throws Exception {
@@ -592,6 +591,73 @@ public class TelaPrincipalTest {
         mRel.setAccessible(true);
         mRel.invoke(tela, (Object) null);
         assertTrue(fCardRel.getBoolean(tela), "b_relatorioActionPerformed não setou cardRelatorio=true");
+    }
+
+   
+    @Test
+    @DisplayName("JP_PrincipalMouseReleased shows right popup (no-constructor) - fix")
+    void test20_JP_PrincipalMouseReleased_showsCorrectPopup() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+        Constructor<?> objCons = Object.class.getDeclaredConstructor();
+        // usa ReflectionFactory (observação: API interna -> warning ok)
+        sun.reflect.ReflectionFactory rf = sun.reflect.ReflectionFactory.getReflectionFactory();
+        Constructor<?> fakeCons = rf.newConstructorForSerialization(cls, objCons);
+        Object tela = fakeCons.newInstance();
+
+        // painel com CardLayout (não precisa ser mostrado)
+        JPanel jp = new JPanel(new CardLayout());
+        Field fJP = cls.getDeclaredField("JP_Principal");
+        fJP.setAccessible(true);
+        fJP.set(tela, jp);
+
+        // cria popups de teste que registram se show() foi chamado
+        class TestPopup extends JPopupMenu {
+
+            boolean shown = false;
+            int lastX = -1, lastY = -1;
+
+            @Override
+            public void show(java.awt.Component invoker, int x, int y) {
+                // NÃO chamar super.show(invoker,x,y) — isso exige que invoker esteja visível.
+                this.shown = true;
+                this.lastX = x;
+                this.lastY = y;
+                // não desenhar nada; apenas registrar a chamada
+            }
+        }
+
+        TestPopup tpHome = new TestPopup();
+        TestPopup tpAmigos = new TestPopup();
+
+        Field fPopHome = cls.getDeclaredField("JPop_Home");
+        fPopHome.setAccessible(true);
+        fPopHome.set(tela, tpHome);
+        Field fPopAmigos = cls.getDeclaredField("JPop_Amigos");
+        fPopAmigos.setAccessible(true);
+        fPopAmigos.set(tela, tpAmigos);
+
+        // setar flags: cardHome true -> JP_PrincipalMouseReleased deve chamar JPop_Home.show
+        Field fCardHome = cls.getDeclaredField("cardHome");
+        fCardHome.setAccessible(true);
+        fCardHome.setBoolean(tela, true);
+        Field fCardAmigos = cls.getDeclaredField("cardAmigos");
+        fCardAmigos.setAccessible(true);
+        fCardAmigos.setBoolean(tela, false);
+
+        // criar MouseEvent com popupTrigger=true
+        MouseEvent ev = new MouseEvent(jp, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, 10, 10, 1, true);
+        Method m = cls.getDeclaredMethod("JP_PrincipalMouseReleased", java.awt.event.MouseEvent.class);
+        m.setAccessible(true);
+        m.invoke(tela, ev);
+        assertTrue(tpHome.shown, "JPop_Home não foi mostrado quando cardHome==true e evento popupTrigger");
+
+        // testar cardAmigos true
+        tpHome.shown = false;
+        fCardHome.setBoolean(tela, false);
+        fCardAmigos.setBoolean(tela, true);
+
+        m.invoke(tela, ev);
+        assertTrue(tpAmigos.shown, "JPop_Amigos não foi mostrado quando cardAmigos==true e evento popupTrigger");
     }
 
 }
