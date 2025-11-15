@@ -669,61 +669,81 @@ public class TelaPrincipalTest {
         m.invoke(tela, ev);
         assertTrue(tpAmigos.shown, "JPop_Amigos não foi mostrado quando cardAmigos==true e evento popupTrigger");
     }
-// Commit: test(TelaPrincipal): JPop_botoes.show with AWT invoker (robust, CI-safe)
-@Test
-void test_JPop_botoes_showWithAWTInvoker_noNPE() throws Exception {
-    assumeFalse(GraphicsEnvironment.isHeadless(), "Pulando teste que cria peers AWT em ambiente headless");
 
-    Class<?> cls = Class.forName(TARGET_CLASS);
-    Constructor<?> objCons = Object.class.getDeclaredConstructor();
-    sun.reflect.ReflectionFactory rf = sun.reflect.ReflectionFactory.getReflectionFactory();
-    Constructor<?> fakeCons = rf.newConstructorForSerialization(cls, objCons);
-    Object tela = fakeCons.newInstance();
 
-    // inicializa componentes (invoca private initComponents) — não executa construtor
-    Method init = cls.getDeclaredMethod("initComponents");
-    init.setAccessible(true);
-    init.invoke(tela);
+    @Test
+    void test_JPop_botoes_showWithAWTInvoker_noNPE() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Pulando teste que cria peers AWT em ambiente headless");
 
-    // cria um Frame AWT temporário e um invoker simples (Button) com peer nativo
-    java.awt.Frame frame = new java.awt.Frame();
-    java.awt.Button invoker = new java.awt.Button("invoker");
-    try {
-        frame.add(invoker);
-        frame.pack();        // organiza (não mostra)
-        frame.addNotify();   // força criação do peer -> objectLock DEFINITIVAMENTE não será null
+        Class<?> cls = Class.forName(TARGET_CLASS);
+        Constructor<?> objCons = Object.class.getDeclaredConstructor();
+        sun.reflect.ReflectionFactory rf = sun.reflect.ReflectionFactory.getReflectionFactory();
+        Constructor<?> fakeCons = rf.newConstructorForSerialization(cls, objCons);
+        Object tela = fakeCons.newInstance();
 
-        // cria um JPopupMenu stub que registra se show() foi chamado
-        class TestPopup extends javax.swing.JPopupMenu {
-            boolean shown = false;
-            int lastX = -1, lastY = -1;
-            @Override
-            public void show(java.awt.Component invoker, int x, int y) {
-                // não chama super.show(invoker,x,y) para evitar UI real
-                this.shown = true;
-                this.lastX = x;
-                this.lastY = y;
+        // inicializa componentes (invoca private initComponents) — não executa construtor
+        Method init = cls.getDeclaredMethod("initComponents");
+        init.setAccessible(true);
+        init.invoke(tela);
+
+        // cria um Frame AWT temporário e um invoker simples (Button) com peer nativo
+        java.awt.Frame frame = new java.awt.Frame();
+        java.awt.Button invoker = new java.awt.Button("invoker");
+        try {
+            frame.add(invoker);
+            frame.pack();        // organiza (não mostra)
+            frame.addNotify();   // força criação do peer -> objectLock DEFINITIVAMENTE não será null
+
+            // cria um JPopupMenu stub que registra se show() foi chamado
+            class TestPopup extends javax.swing.JPopupMenu {
+
+                boolean shown = false;
+                int lastX = -1, lastY = -1;
+
+                @Override
+                public void show(java.awt.Component invoker, int x, int y) {
+                    // não chama super.show(invoker,x,y) para evitar UI real
+                    this.shown = true;
+                    this.lastX = x;
+                    this.lastY = y;
+                }
+            }
+            TestPopup tp = new TestPopup();
+
+            // injeta o stub no campo JPop_botoes da tela
+            Field fPop = cls.getDeclaredField("JPop_botoes");
+            fPop.setAccessible(true);
+            fPop.set(tela, tp);
+
+            // chama show com o invoker AWT que tem peer nativo - evita NullPointerException
+            tp.show(invoker, 11, 22);
+
+            assertTrue(tp.shown, "JPop_botoes.show deveria ter sido invocado com invoker AWT válido");
+            assertEquals(11, tp.lastX);
+            assertEquals(22, tp.lastY);
+        } finally {
+            // desmonta o peer e limpa recursos
+            try {
+                frame.remove(invoker);
+                frame.removeNotify();
+                frame.dispose();
+            } catch (Throwable ignored) {
             }
         }
-        TestPopup tp = new TestPopup();
-
-        // injeta o stub no campo JPop_botoes da tela
-        Field fPop = cls.getDeclaredField("JPop_botoes"); fPop.setAccessible(true);
-        fPop.set(tela, tp);
-
-        // chama show com o invoker AWT que tem peer nativo - evita NullPointerException
-        tp.show(invoker, 11, 22);
-
-        assertTrue(tp.shown, "JPop_botoes.show deveria ter sido invocado com invoker AWT válido");
-        assertEquals(11, tp.lastX);
-        assertEquals(22, tp.lastY);
-    } finally {
-        // desmonta o peer e limpa recursos
-        try {
-            frame.remove(invoker);
-            frame.removeNotify();
-            frame.dispose();
-        } catch (Throwable ignored) {}
     }
-}
+
+
+    @Test
+    void test_LOGO_resourceExists() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+        Field fLogo = cls.getDeclaredField("LOGO");
+        fLogo.setAccessible(true);
+        Object val = fLogo.get(null); // constant static
+        assertNotNull(val, "Constante LOGO deve existir");
+        String path = (String) val;
+        // verificar resource no classpath relativo à classe
+        java.net.URL resource = cls.getResource(path);
+        assertNotNull(resource, "Recurso de LOGO não encontrado no classpath: " + path);
+    }
+
 }
