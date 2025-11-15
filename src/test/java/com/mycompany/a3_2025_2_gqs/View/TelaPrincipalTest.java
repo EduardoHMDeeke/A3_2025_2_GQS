@@ -10,10 +10,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /**
  * Testes por reflexão para TelaPrincipal.
- * - Não instancia a UI (CI-safe / headless).
+ * - Não instancia a UI por padrão (CI-safe / headless).
  * - Verifica existência de campos essenciais (tabelas, botões, popups).
  * - Verifica existência de métodos de actionPerformed.
  * - Verifica que 'controller' é transient e final.
@@ -28,7 +29,7 @@ public class TelaPrincipalTest {
 
     @BeforeAll
     void beforeAll() {
-        // Garante execução em headless (CI / GitHub Actions)
+        // Garante execução em headless (CI / GitHub Actions) por padrão
         System.setProperty("java.awt.headless", "true");
     }
 
@@ -140,8 +141,6 @@ public class TelaPrincipalTest {
         String[] expectedGetters = {
                 "getTable_amigos",
                 "getTable_ferramentas",
-                "getTabelaEmprestimo",
-                "getTable_ferramentas", // redundante, mas verifica existência
                 "getTabelaEmprestimo"
         };
 
@@ -182,6 +181,70 @@ public class TelaPrincipalTest {
             if (java.awt.Component.class.isAssignableFrom(type)) {
                 assertFalse(Modifier.isStatic(f.getModifiers()),
                         "Componente Swing NÃO deve ser static: " + f.getName());
+            }
+        }
+    }
+
+    // Test melhorado: garante segurança em headless.
+    @Test
+    void tableModelsShouldHaveExpectedColumns() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        // Verifica a existência dos JTable por reflexão (sempre)
+        String[] tables = {
+                "table_amigos",
+                "table_ferramentas",
+                "tabelaEmprestimo"
+        };
+
+        for (String table : tables) {
+            Field f = cls.getDeclaredField(table);
+            assertNotNull(f, "Campo JTable esperado não encontrado: " + table);
+            assertTrue(javax.swing.JTable.class.isAssignableFrom(f.getType()),
+                    "Campo '" + table + "' deve ser um JTable");
+        }
+
+        // A validação de nomes/ordem de colunas exige acessar o TableModel,
+        // o que implica instanciar componentes Swing -> pode lançar HeadlessException.
+        // Portanto, só fazemos essa parte quando NÃO estivermos em ambiente headless.
+        boolean runningHeadless = java.awt.GraphicsEnvironment.isHeadless();
+        assumeFalse(runningHeadless, "Ambiente headless — pulando verificação de nomes de colunas");
+
+        // Se chegamos aqui, ambiente gráfico está disponível: instancia a TelaPrincipal (sem mostrar)
+        Object instance = null;
+        try {
+            Class<?> target = Class.forName(TARGET_CLASS);
+            instance = target.getDeclaredConstructor().newInstance();
+
+            // acessar campos JTable e verificar TableModel columns
+            Field fAmigos = target.getDeclaredField("table_amigos");
+            fAmigos.setAccessible(true);
+            javax.swing.JTable tableAmigos = (javax.swing.JTable) fAmigos.get(instance);
+            assertNotNull(tableAmigos.getModel(), "TableModel de table_amigos não deve ser null");
+            // Exemplo de checagem básica (ajuste conforme seu modelo real)
+            assertTrue(tableAmigos.getColumnCount() >= 3, "table_amigos deve ter pelo menos 3 colunas");
+
+            Field fFerr = target.getDeclaredField("table_ferramentas");
+            fFerr.setAccessible(true);
+            javax.swing.JTable tableFerr = (javax.swing.JTable) fFerr.get(instance);
+            assertNotNull(tableFerr.getModel(), "TableModel de table_ferramentas não deve ser null");
+            assertTrue(tableFerr.getColumnCount() >= 3, "table_ferramentas deve ter pelo menos 3 colunas");
+
+            Field fEmp = target.getDeclaredField("tabelaEmprestimo");
+            fEmp.setAccessible(true);
+            javax.swing.JTable tableEmp = (javax.swing.JTable) fEmp.get(instance);
+            assertNotNull(tableEmp.getModel(), "TableModel de tabelaEmprestimo não deve ser null");
+            assertTrue(tableEmp.getColumnCount() >= 4, "tabelaEmprestimo deve ter pelo menos 4 colunas");
+
+        } finally {
+            // tenta chamar dispose() caso a instância exista e seja JFrame para liberar recursos
+            if (instance != null) {
+                try {
+                    Method mDispose = instance.getClass().getMethod("dispose");
+                    mDispose.invoke(instance);
+                } catch (NoSuchMethodException ignored) {
+                } catch (Throwable ignored) {
+                }
             }
         }
     }
