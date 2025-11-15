@@ -409,7 +409,6 @@ public class TelaPrincipalTest {
             }
         }
     }
-// Commit: test(TelaPrincipal): buttons have listeners or are enabled (skipped headless)
 
     @Test
     @DisplayName("buttons have listeners or are enabled (skipped headless)")
@@ -436,6 +435,46 @@ public class TelaPrincipalTest {
                 /* ignora */ }
         }
         assertTrue(anyFound, "Nenhum dos botões esperados foi encontrado para checagem de listeners/estado.");
+    }
+
+    @Test
+    @DisplayName("frame default close operation and title check (skipped headless)")
+    void test17_frameDefaultCloseOperationAndTitle_check() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ambiente headless: pulando verificação de JFrame");
+        Object tela = createTelaPrincipalInstance();
+        Class<?> cls = tela.getClass();
+
+        Field frameField = null;
+        try {
+            frameField = cls.getDeclaredField("frame");
+            frameField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            String[] alt = {"jFrame", "principalFrame", "TelaPrincipal"};
+            for (String a : alt) {
+                try {
+                    frameField = cls.getDeclaredField(a);
+                    frameField.setAccessible(true);
+                    break;
+                } catch (NoSuchFieldException ex) {
+                    /* ignora */ }
+            }
+        }
+
+        if (frameField != null) {
+            Object f = frameField.get(tela);
+            if (f instanceof JFrame) {
+                JFrame jf = (JFrame) f;
+                int op = jf.getDefaultCloseOperation();
+                assertTrue(op >= 0 && op <= 3, "DefaultCloseOperation do JFrame parece inválido.");
+                String title = jf.getTitle();
+                assertNotNull(title, "JFrame deve ter um título (mesmo que vazio).");
+            }
+        } else {
+            if (tela instanceof JFrame) {
+                JFrame jf = (JFrame) tela;
+                assertNotNull(jf.getTitle());
+            }
+        }
     }
 
 }
