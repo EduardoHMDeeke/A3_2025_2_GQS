@@ -13,14 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /**
- * Testes por reflexão para TelaPrincipal.
- * - Não instancia a UI por padrão (CI-safe / headless).
- * - Verifica existência de campos essenciais (tabelas, botões, popups).
- * - Verifica existência de métodos de actionPerformed.
- * - Verifica que 'controller' é transient e final.
- * - Verifica valor da constante FONT_NAME.
- * - Verifica que initComponents é private e non-static.
- * - Garante que não há componentes Swing estáticos.
+ * Testes por reflexão para TelaPrincipal. - Não instancia a UI por padrão
+ * (CI-safe / headless). - Verifica existência de campos essenciais (tabelas,
+ * botões, popups). - Verifica existência de métodos de actionPerformed. -
+ * Verifica que 'controller' é transient e final. - Verifica valor da constante
+ * FONT_NAME. - Verifica que initComponents é private e non-static. - Garante
+ * que não há componentes Swing estáticos.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TelaPrincipalTest {
@@ -44,30 +42,32 @@ public class TelaPrincipalTest {
         Class<?> cls = Class.forName(TARGET_CLASS);
         Field[] fields = cls.getDeclaredFields();
         Set<String> declared = new HashSet<>();
-        for (Field f : fields) declared.add(f.getName());
+        for (Field f : fields) {
+            declared.add(f.getName());
+        }
 
         // Nomes detectados no código fornecido
         String[] expected = {
-                "table_amigos",
-                "table_ferramentas",
-                "tabelaEmprestimo",
-                "b_Home",
-                "b_ListaAmigos",
-                "b_ListaFerramentas",
-                "b_relatorio",
-                "b_opcoes",
-                "JP_Principal",
-                "JP_Home",
-                // popups / menu items presentes no código
-                "JPop_botoes",
-                "JPop_Amigos",
-                "JPop_Home",
-                "popupHome",
-                "popupAmigos",
-                "popupFerramentas",
-                "popupRelatorio",
-                "popupOpcoes",
-                "popupSair"
+            "table_amigos",
+            "table_ferramentas",
+            "tabelaEmprestimo",
+            "b_Home",
+            "b_ListaAmigos",
+            "b_ListaFerramentas",
+            "b_relatorio",
+            "b_opcoes",
+            "JP_Principal",
+            "JP_Home",
+            // popups / menu items presentes no código
+            "JPop_botoes",
+            "JPop_Amigos",
+            "JPop_Home",
+            "popupHome",
+            "popupAmigos",
+            "popupFerramentas",
+            "popupRelatorio",
+            "popupOpcoes",
+            "popupSair"
         };
 
         for (String name : expected) {
@@ -116,14 +116,14 @@ public class TelaPrincipalTest {
         Arrays.stream(methods).forEach(m -> methodNames.add(m.getName()));
 
         String[] expectedMethods = {
-                "b_HomeActionPerformed",
-                "b_ListaAmigosActionPerformed",
-                "b_ListaFerramentasActionPerformed",
-                "jMudarTemaActionPerformed",
-                "b_opcoesActionPerformed",
-                "b_cadastrarAmigosActionPerformed",
-                "initComponents",
-                "JP_PrincipalMouseReleased"
+            "b_HomeActionPerformed",
+            "b_ListaAmigosActionPerformed",
+            "b_ListaFerramentasActionPerformed",
+            "jMudarTemaActionPerformed",
+            "b_opcoesActionPerformed",
+            "b_cadastrarAmigosActionPerformed",
+            "initComponents",
+            "JP_PrincipalMouseReleased"
         };
 
         for (String m : expectedMethods) {
@@ -136,12 +136,14 @@ public class TelaPrincipalTest {
         Class<?> cls = Class.forName(TARGET_CLASS);
 
         Set<String> methodNames = new HashSet<>();
-        for (var m : cls.getDeclaredMethods()) methodNames.add(m.getName());
+        for (var m : cls.getDeclaredMethods()) {
+            methodNames.add(m.getName());
+        }
 
         String[] expectedGetters = {
-                "getTable_amigos",
-                "getTable_ferramentas",
-                "getTabelaEmprestimo"
+            "getTable_amigos",
+            "getTable_ferramentas",
+            "getTabelaEmprestimo"
         };
 
         for (String g : expectedGetters) {
@@ -155,8 +157,9 @@ public class TelaPrincipalTest {
 
         Method init = null;
         for (Method m : cls.getDeclaredMethods()) {
-            if (m.getName().equals("initComponents"))
+            if (m.getName().equals("initComponents")) {
                 init = m;
+            }
         }
 
         assertNotNull(init, "initComponents deve existir");
@@ -172,8 +175,9 @@ public class TelaPrincipalTest {
         for (Field f : cls.getDeclaredFields()) {
 
             // Ignora constantes estáticas finais (ex: FONT_NAME)
-            if (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()))
+            if (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers())) {
                 continue;
+            }
 
             Class<?> type = f.getType();
 
@@ -192,9 +196,9 @@ public class TelaPrincipalTest {
 
         // Verifica a existência dos JTable por reflexão (sempre)
         String[] tables = {
-                "table_amigos",
-                "table_ferramentas",
-                "tabelaEmprestimo"
+            "table_amigos",
+            "table_ferramentas",
+            "tabelaEmprestimo"
         };
 
         for (String table : tables) {
@@ -246,6 +250,42 @@ public class TelaPrincipalTest {
                 } catch (Throwable ignored) {
                 }
             }
+        }
+    }
+
+    @Test
+    void actionMethodsShouldBePrivateAndNonStatic() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        String[] expectedActionMethods = {
+            "b_HomeActionPerformed",
+            "b_ListaAmigosActionPerformed",
+            "b_ListaFerramentasActionPerformed",
+            "jMudarTemaActionPerformed",
+            "b_opcoesActionPerformed",
+            "b_cadastrarAmigosActionPerformed",
+            "JP_PrincipalMouseReleased"
+        };
+
+        for (String methodName : expectedActionMethods) {
+            Method m = null;
+
+            for (Method mm : cls.getDeclaredMethods()) {
+                if (mm.getName().equals(methodName)) {
+                    m = mm;
+                    break;
+                }
+            }
+
+            assertNotNull(m, "Método de ação não encontrado: " + methodName);
+
+            int mods = m.getModifiers();
+
+            assertTrue(Modifier.isPrivate(mods),
+                    "Método de ação deve ser private: " + methodName);
+
+            assertFalse(Modifier.isStatic(mods),
+                    "Método de ação NÃO deve ser static: " + methodName);
         }
     }
 }
