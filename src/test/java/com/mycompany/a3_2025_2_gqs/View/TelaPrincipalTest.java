@@ -868,7 +868,6 @@ public class TelaPrincipalTest {
         assertNotNull(resource, "Recurso de LOGO não encontrado no classpath: " + path);
     }
 
-
     @Test
     void test_JP_ListaMouseReleased_showsJPop_botoes() throws Exception {
         assumeFalse(GraphicsEnvironment.isHeadless(), "Requer peer AWT; pulando em headless");
@@ -915,6 +914,48 @@ public class TelaPrincipalTest {
             } catch (Throwable ignored) {
             }
         }
+    }
+// Commit: test(TelaPrincipal): atualizarTabelaActionPerformed calls controller.listarAmigos (stub)
+
+    @Test
+    void test_atualizarTabela_callsControllerListarAmigos() throws Exception {
+        Object tela = createTelaWithManualComponents();
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        class Stub extends com.mycompany.a3_2025_2_gqs.Controller.ListaAmigosFerramentasController {
+
+            boolean listarAmigosCalled = false;
+
+            public Stub() {
+                super(null);
+            }
+
+            @Override
+            public void listarAmigos() {
+                listarAmigosCalled = true;
+            }
+        }
+        Constructor<?> objCons = Object.class.getDeclaredConstructor();
+        sun.reflect.ReflectionFactory rf = sun.reflect.ReflectionFactory.getReflectionFactory();
+        Object stub = rf.newConstructorForSerialization(Stub.class, objCons).newInstance();
+
+        Field fController = cls.getDeclaredField("controller");
+        fController.setAccessible(true);
+        fController.set(tela, stub);
+
+        Method m = cls.getDeclaredMethod("atualizarTabelaActionPerformed", java.awt.event.ActionEvent.class);
+        SwingUtilities.invokeAndWait(() -> {
+            try {
+                m.setAccessible(true);
+                m.invoke(tela, (Object) null);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        Field flag = Stub.class.getDeclaredField("listarAmigosCalled");
+        flag.setAccessible(true);
+        assertTrue(flag.getBoolean(stub), "listarAmigos() não foi chamado no stub");
     }
 
 }
