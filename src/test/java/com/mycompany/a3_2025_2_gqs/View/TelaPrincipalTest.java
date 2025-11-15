@@ -363,5 +363,52 @@ public class TelaPrincipalTest {
         Object tela = createTelaPrincipalInstance();
         assertNotNull(tela, "Instancia de TelaPrincipal não deve ser null");
     }
+ 
+
+    @Test
+    @DisplayName("doClick on buttons does not throw (skipped headless)")
+    void test15_clickableButtons_doClick_shouldNotThrow() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ambiente headless: pulando teste de clique em botões");
+        Object tela = createTelaPrincipalInstance();
+
+        String[] commonButtonNames = {
+            "b_cadastrarFerramenta", "CadastrarFerramentaHome",
+            "b_cadastrarAmigos", "CadastrarAmigoHome",
+            "b_Home", "b_ListaAmigos", "b_ListaFerramentas", "b_relatorio", "b_opcoes",
+            "b_refreshEmprestimos", "realizarEmprestimo", "editarEmprestimo", "devolverEmprestimo"
+        };
+
+        List<Field> found = new ArrayList<>();
+        Class<?> cls = tela.getClass();
+        for (String n : commonButtonNames) {
+            try {
+                Field f = cls.getDeclaredField(n);
+                f.setAccessible(true);
+                found.add(f);
+            } catch (NoSuchFieldException ex) {
+                /* ignora */ }
+        }
+
+        assertFalse(found.isEmpty(), "Nenhum botão reconhecível encontrado na TelaPrincipal para clicar.");
+
+        for (Field f : found) {
+            Object val = f.get(tela);
+            assertNotNull(val, "Campo " + f.getName() + " encontrado mas valor é null.");
+            assertTrue(val instanceof AbstractButton, "Campo " + f.getName() + " não é um AbstractButton.");
+
+            AbstractButton btn = (AbstractButton) val;
+            AtomicReference<Throwable> err = new AtomicReference<>();
+            SwingUtilities.invokeAndWait(() -> {
+                try {
+                    btn.doClick();
+                } catch (Throwable t) {
+                    err.set(t);
+                }
+            });
+            if (err.get() != null) {
+                fail("Clicar no botão " + f.getName() + " lançou exceção: " + err.get());
+            }
+        }
+    }
 
 }
