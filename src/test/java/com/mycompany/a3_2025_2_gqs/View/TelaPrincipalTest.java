@@ -12,14 +12,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
-/**
- * Testes por reflexão para TelaPrincipal. - Não instancia a UI por padrão
- * (CI-safe / headless). - Verifica existência de campos essenciais (tabelas,
- * botões, popups). - Verifica existência de métodos de actionPerformed. -
- * Verifica que 'controller' é transient e final. - Verifica valor da constante
- * FONT_NAME. - Verifica que initComponents é private e non-static. - Garante
- * que não há componentes Swing estáticos.
- */
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TelaPrincipalTest {
 
@@ -189,7 +182,7 @@ public class TelaPrincipalTest {
         }
     }
 
-    // Test melhorado: garante segurança em headless.
+    
     @Test
     void tableModelsShouldHaveExpectedColumns() throws Exception {
         Class<?> cls = Class.forName(TARGET_CLASS);
@@ -208,13 +201,11 @@ public class TelaPrincipalTest {
                     "Campo '" + table + "' deve ser um JTable");
         }
 
-        // A validação de nomes/ordem de colunas exige acessar o TableModel,
-        // o que implica instanciar componentes Swing -> pode lançar HeadlessException.
-        // Portanto, só fazemos essa parte quando NÃO estivermos em ambiente headless.
+        
         boolean runningHeadless = java.awt.GraphicsEnvironment.isHeadless();
         assumeFalse(runningHeadless, "Ambiente headless — pulando verificação de nomes de colunas");
 
-        // Se chegamos aqui, ambiente gráfico está disponível: instancia a TelaPrincipal (sem mostrar)
+        
         Object instance = null;
         try {
             Class<?> target = Class.forName(TARGET_CLASS);
@@ -241,7 +232,7 @@ public class TelaPrincipalTest {
             assertTrue(tableEmp.getColumnCount() >= 4, "tabelaEmprestimo deve ter pelo menos 4 colunas");
 
         } finally {
-            // tenta chamar dispose() caso a instância exista e seja JFrame para liberar recursos
+            
             if (instance != null) {
                 try {
                     Method mDispose = instance.getClass().getMethod("dispose");
@@ -288,16 +279,16 @@ public class TelaPrincipalTest {
                     "Método de ação NÃO deve ser static: " + methodName);
         }
     }
-    
-        @Test
+
+    @Test
     void cardPanelsShouldExistAndBeJPanels() throws Exception {
         Class<?> cls = Class.forName(TARGET_CLASS);
 
         Object[][] expectedCards = {
-                {"JP_Home", javax.swing.JPanel.class},
-                {"JP_ListaAmigos", javax.swing.JPanel.class},
-                {"JP_ListaFerramentas", javax.swing.JPanel.class},
-                {"JP_Relatorio", javax.swing.JPanel.class}
+            {"JP_Home", javax.swing.JPanel.class},
+            {"JP_ListaAmigos", javax.swing.JPanel.class},
+            {"JP_ListaFerramentas", javax.swing.JPanel.class},
+            {"JP_Relatorio", javax.swing.JPanel.class}
         };
 
         for (Object[] pair : expectedCards) {
@@ -310,6 +301,37 @@ public class TelaPrincipalTest {
             assertTrue(expectedType.isAssignableFrom(f.getType()),
                     "Painel '" + fieldName + "' deve ser um " + expectedType.getSimpleName()
                     + ", mas é " + f.getType().getSimpleName());
+        }
+    }
+
+    @Test
+    void cardControlFlagsShouldExistAndBePrivateBooleans() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        String[] expectedFlags = {
+            "cardHome",
+            "cardAmigos",
+            "cardFerramentas",
+            "cardRelatorio"
+        };
+
+        for (String flag : expectedFlags) {
+            Field f = cls.getDeclaredField(flag);
+            assertNotNull(f, "Flag de controle não encontrada: " + flag);
+
+            // Tipo deve ser boolean
+            assertEquals(boolean.class, f.getType(),
+                    "Flag '" + flag + "' deve ser do tipo boolean.");
+
+            int mods = f.getModifiers();
+
+            // Deve ser private
+            assertTrue(Modifier.isPrivate(mods),
+                    "Flag '" + flag + "' deve ser private.");
+
+            // Não pode ser static
+            assertFalse(Modifier.isStatic(mods),
+                    "Flag '" + flag + "' NÃO deve ser static.");
         }
     }
 
