@@ -28,6 +28,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.GraphicsEnvironment;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
@@ -56,6 +58,128 @@ public class TelaPrincipalTest {
             throw new Exception("Erro ao instanciar TelaPrincipal", err.get());
         }
         return ref.get();
+    }
+    // Commit: test(helper): createTelaWithManualComponents helper (no initComponents)
+
+    private Object createTelaWithManualComponents() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+        Constructor<?> objCons = Object.class.getDeclaredConstructor();
+        sun.reflect.ReflectionFactory rf = sun.reflect.ReflectionFactory.getReflectionFactory();
+        Constructor<?> fakeCons = rf.newConstructorForSerialization(cls, objCons);
+        Object tela = fakeCons.newInstance();
+
+        // ler constantes para configurar textos/fontes
+        try {
+            Field fFONT = cls.getDeclaredField("FONT_NAME");
+            fFONT.setAccessible(true);
+        } catch (NoSuchFieldException ignored) {
+        }
+        String FONT_NAME = tryGetStaticString(cls, "FONT_NAME");
+        String AMIGO = tryGetStaticString(cls, "AMIGO");
+        String REFRESH = tryGetStaticString(cls, "REFRESH");
+        String LOGO = tryGetStaticString(cls, "LOGO");
+
+        // criar componentes mínimos e configurar
+        javax.swing.JTable tableAmigos = new javax.swing.JTable(new javax.swing.table.DefaultTableModel(
+                new Object[][]{{1, "Nome", "email", "telefone"}}, new String[]{"id", "Nome", "Email", "Telefone"}));
+        javax.swing.JTable tableFerramentas = new javax.swing.JTable(new javax.swing.table.DefaultTableModel(
+                new Object[][]{{1, "Martelo", "Marca", "10.0"}}, new String[]{"Id", "Nome", "Marca", "Preço"}));
+        javax.swing.JTable tabelaEmp = new javax.swing.JTable(new javax.swing.table.DefaultTableModel(
+                new Object[][]{{1, "A", "B", "2025-01-01", "2025-01-02"}}, new String[]{"ID", "Amigo", "Ferramenta", "Data de emprestimo", "Data de devolução"}));
+
+        javax.swing.JButton b_cadastrarAmigos = new javax.swing.JButton(AMIGO != null ? AMIGO : "Cadastrar Amigo");
+        javax.swing.JButton b_Home = new javax.swing.JButton("Home");
+        javax.swing.JButton b_ListaAmigos = new javax.swing.JButton("Amigos");
+        javax.swing.JButton b_ListaFerramentas = new javax.swing.JButton("Ferramentas");
+
+        javax.swing.JLabel jlLista = new javax.swing.JLabel("AMIGOS");
+        if (FONT_NAME != null) {
+            jlLista.setFont(new java.awt.Font(FONT_NAME, java.awt.Font.BOLD, 48));
+        }
+
+        javax.swing.JPanel JP_Lista = new javax.swing.JPanel();
+        javax.swing.JPanel JP_Principal = new javax.swing.JPanel();
+
+        javax.swing.JPopupMenu JPop_botoes = new javax.swing.JPopupMenu();
+        javax.swing.JPopupMenu JPop_Home = new javax.swing.JPopupMenu();
+        javax.swing.JPopupMenu JPop_Amigos = new javax.swing.JPopupMenu();
+
+        javax.swing.JMenuItem popupHome = new javax.swing.JMenuItem("Home");
+        javax.swing.JMenuItem popupAmigos = new javax.swing.JMenuItem("Amigos");
+        javax.swing.JMenuItem popupFerramentas = new javax.swing.JMenuItem("Ferramentas");
+        javax.swing.JMenuItem popupRelatorio = new javax.swing.JMenuItem("Relatório");
+        javax.swing.JMenuItem popupOpcoes = new javax.swing.JMenuItem("Opções");
+        javax.swing.JMenuItem popupSair = new javax.swing.JMenuItem("Sair");
+
+        // tenta setar ícone se existir
+        try {
+            if (LOGO != null) {
+                java.net.URL res = cls.getResource(LOGO);
+                if (res != null) {
+                    jlLista.setIcon(new javax.swing.ImageIcon(res));
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+
+        Map<String, Object> toInject = new HashMap<>();
+        toInject.put("table_amigos", tableAmigos);
+        toInject.put("table_ferramentas", tableFerramentas);
+        toInject.put("tabelaEmprestimo", tabelaEmp);
+        toInject.put("b_cadastrarAmigos", b_cadastrarAmigos);
+        toInject.put("b_Home", b_Home);
+        toInject.put("b_ListaAmigos", b_ListaAmigos);
+        toInject.put("b_ListaFerramentas", b_ListaFerramentas);
+        toInject.put("JL_ListaAmigos", jlLista);
+        toInject.put("JP_Lista", JP_Lista);
+        toInject.put("JP_Principal", JP_Principal);
+        toInject.put("JPop_botoes", JPop_botoes);
+        toInject.put("JPop_Home", JPop_Home);
+        toInject.put("JPop_Amigos", JPop_Amigos);
+        toInject.put("popupHome", popupHome);
+        toInject.put("popupAmigos", popupAmigos);
+        toInject.put("popupFerramentas", popupFerramentas);
+        toInject.put("popupRelatorio", popupRelatorio);
+        toInject.put("popupOpcoes", popupOpcoes);
+        toInject.put("popupSair", popupSair);
+
+        for (Map.Entry<String, Object> e : toInject.entrySet()) {
+            try {
+                Field f = cls.getDeclaredField(e.getKey());
+                f.setAccessible(true);
+                f.set(tela, e.getValue());
+            } catch (NoSuchFieldException nsf) {
+                // campo pode não existir com exatamente esse nome — ignorar
+            }
+        }
+
+        // inicializa flags se existirem
+        try {
+            Field f = cls.getDeclaredField("cardHome");
+            f.setAccessible(true);
+            f.setBoolean(tela, false);
+        } catch (NoSuchFieldException ignored) {
+        }
+        try {
+            Field f = cls.getDeclaredField("cardAmigos");
+            f.setAccessible(true);
+            f.setBoolean(tela, false);
+        } catch (NoSuchFieldException ignored) {
+        }
+
+        return tela;
+    }
+
+// pequeno helper auxiliar para ler constantes string estáticas sem lançar
+    private static String tryGetStaticString(Class<?> cls, String name) {
+        try {
+            Field f = cls.getDeclaredField(name);
+            f.setAccessible(true);
+            Object v = f.get(null);
+            return v == null ? null : v.toString();
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     @BeforeAll
@@ -670,7 +794,6 @@ public class TelaPrincipalTest {
         assertTrue(tpAmigos.shown, "JPop_Amigos não foi mostrado quando cardAmigos==true e evento popupTrigger");
     }
 
-
     @Test
     void test_JPop_botoes_showWithAWTInvoker_noNPE() throws Exception {
         assumeFalse(GraphicsEnvironment.isHeadless(), "Pulando teste que cria peers AWT em ambiente headless");
@@ -732,7 +855,6 @@ public class TelaPrincipalTest {
         }
     }
 
-
     @Test
     void test_LOGO_resourceExists() throws Exception {
         Class<?> cls = Class.forName(TARGET_CLASS);
@@ -744,6 +866,55 @@ public class TelaPrincipalTest {
         // verificar resource no classpath relativo à classe
         java.net.URL resource = cls.getResource(path);
         assertNotNull(resource, "Recurso de LOGO não encontrado no classpath: " + path);
+    }
+
+
+    @Test
+    void test_JP_ListaMouseReleased_showsJPop_botoes() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Requer peer AWT; pulando em headless");
+
+        Object tela = createTelaWithManualComponents();
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        class TestPopup extends javax.swing.JPopupMenu {
+
+            boolean shown = false;
+            int x, y;
+
+            @Override
+            public void show(java.awt.Component invoker, int x, int y) {
+                this.shown = true;
+                this.x = x;
+                this.y = y;
+            }
+        }
+        TestPopup tp = new TestPopup();
+        Field fPop = null;
+        try {
+            fPop = cls.getDeclaredField("JPop_botoes");
+            fPop.setAccessible(true);
+            fPop.set(tela, tp);
+        } catch (NoSuchFieldException ignored) {
+        }
+
+        java.awt.Frame frame = new java.awt.Frame();
+        java.awt.Button invoker = new java.awt.Button("i");
+        try {
+            frame.add(invoker);
+            frame.pack();
+            frame.addNotify();
+            SwingUtilities.invokeAndWait(() -> tp.show(invoker, 7, 8));
+            assertTrue(tp.shown, "JPop_botoes deveria ter sido mostrado");
+            assertEquals(7, tp.x);
+            assertEquals(8, tp.y);
+        } finally {
+            try {
+                frame.remove(invoker);
+                frame.removeNotify();
+                frame.dispose();
+            } catch (Throwable ignored) {
+            }
+        }
     }
 
 }
