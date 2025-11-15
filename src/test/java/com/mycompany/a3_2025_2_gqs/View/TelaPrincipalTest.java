@@ -5,7 +5,6 @@ import java.awt.GraphicsEnvironment;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
-import java.lang.reflect.Field;
 import javax.swing.AbstractButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -15,6 +14,12 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.awt.CardLayout;
+import java.awt.event.MouseEvent;
+import javax.swing.JPopupMenu;
+import javax.swing.JPanel;
+import java.lang.reflect.Constructor;
+import sun.reflect.ReflectionFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
@@ -526,6 +531,67 @@ public class TelaPrincipalTest {
                 }
             }
         }
+    }
+
+
+    @Test
+    @DisplayName("navigation action methods set card flags (no-constructor)")
+    void test19_navigationActionMethodsSetCardFlags() throws Exception {
+        Class<?> cls = Class.forName(TARGET_CLASS);
+
+        // cria instância sem chamar o construtor (para não inicializar controller)
+        Constructor<?> objCons = Object.class.getDeclaredConstructor();
+        ReflectionFactory rf = ReflectionFactory.getReflectionFactory();
+        Constructor<?> fakeCons = rf.newConstructorForSerialization(cls, objCons);
+        Object tela = fakeCons.newInstance();
+
+        // precisamos de um JP_Principal com CardLayout (métodos usam getLayout().show(...))
+        JPanel jp = new JPanel(new CardLayout());
+        Field fJP = cls.getDeclaredField("JP_Principal");
+        fJP.setAccessible(true);
+        fJP.set(tela, jp);
+
+        // preparar campos booleanos iniciais
+        Field fCardHome = cls.getDeclaredField("cardHome");
+        fCardHome.setAccessible(true);
+        fCardHome.setBoolean(tela, false);
+        Field fCardAmigos = cls.getDeclaredField("cardAmigos");
+        fCardAmigos.setAccessible(true);
+        fCardAmigos.setBoolean(tela, false);
+        Field fCardFerr = cls.getDeclaredField("cardFerramentas");
+        fCardFerr.setAccessible(true);
+        fCardFerr.setBoolean(tela, false);
+        Field fCardRel = cls.getDeclaredField("cardRelatorio");
+        fCardRel.setAccessible(true);
+        fCardRel.setBoolean(tela, false);
+
+        // invoke b_HomeActionPerformed
+        Method mHome = cls.getDeclaredMethod("b_HomeActionPerformed", java.awt.event.ActionEvent.class);
+        mHome.setAccessible(true);
+        mHome.invoke(tela, (Object) null);
+        assertTrue(fCardHome.getBoolean(tela), "b_HomeActionPerformed não setou cardHome=true");
+        // reset
+        fCardHome.setBoolean(tela, false);
+
+        // invoke b_ListaAmigosActionPerformed
+        Method mAmigos = cls.getDeclaredMethod("b_ListaAmigosActionPerformed", java.awt.event.ActionEvent.class);
+        mAmigos.setAccessible(true);
+        mAmigos.invoke(tela, (Object) null);
+        assertTrue(fCardAmigos.getBoolean(tela), "b_ListaAmigosActionPerformed não setou cardAmigos=true");
+        fCardAmigos.setBoolean(tela, false);
+
+        // invoke b_ListaFerramentasActionPerformed
+        Method mFerr = cls.getDeclaredMethod("b_ListaFerramentasActionPerformed", java.awt.event.ActionEvent.class);
+        mFerr.setAccessible(true);
+        mFerr.invoke(tela, (Object) null);
+        assertTrue(fCardFerr.getBoolean(tela), "b_ListaFerramentasActionPerformed não setou cardFerramentas=true");
+        fCardFerr.setBoolean(tela, false);
+
+        // invoke b_relatorioActionPerformed
+        Method mRel = cls.getDeclaredMethod("b_relatorioActionPerformed", java.awt.event.ActionEvent.class);
+        mRel.setAccessible(true);
+        mRel.invoke(tela, (Object) null);
+        assertTrue(fCardRel.getBoolean(tela), "b_relatorioActionPerformed não setou cardRelatorio=true");
     }
 
 }
