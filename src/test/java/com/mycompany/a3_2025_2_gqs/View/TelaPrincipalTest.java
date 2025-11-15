@@ -477,4 +477,55 @@ public class TelaPrincipalTest {
         }
     }
 
+    @Test
+    @DisplayName("pack/show/hide frame does not throw (skipped headless)")
+    void test18_showingFrame_pack_and_setVisible_noExceptions() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ambiente headless: pulando pack/show dos frames");
+        Object tela = createTelaPrincipalInstance();
+
+        if (tela instanceof JFrame) {
+            AtomicReference<Throwable> err = new AtomicReference<>();
+            SwingUtilities.invokeAndWait(() -> {
+                try {
+                    JFrame jf = (JFrame) tela;
+                    jf.pack();
+                    jf.setVisible(true);
+                    jf.setVisible(false);
+                } catch (Throwable t) {
+                    err.set(t);
+                }
+            });
+            if (err.get() != null) {
+                fail("Operação de mostrar JFrame lançou exceção: " + err.get());
+            }
+        } else {
+            Field frameField = null;
+            Class<?> cls = tela.getClass();
+            try {
+                frameField = cls.getDeclaredField("frame");
+                frameField.setAccessible(true);
+            } catch (NoSuchFieldException e) {
+                /* ignora */ }
+            if (frameField != null) {
+                Object f = frameField.get(tela);
+                if (f instanceof JFrame) {
+                    AtomicReference<Throwable> err = new AtomicReference<>();
+                    SwingUtilities.invokeAndWait(() -> {
+                        try {
+                            JFrame jf = (JFrame) f;
+                            jf.pack();
+                            jf.setVisible(true);
+                            jf.setVisible(false);
+                        } catch (Throwable t) {
+                            err.set(t);
+                        }
+                    });
+                    if (err.get() != null) {
+                        fail("Operação de mostrar JFrame (campo) lançou exceção: " + err.get());
+                    }
+                }
+            }
+        }
+    }
+
 }
