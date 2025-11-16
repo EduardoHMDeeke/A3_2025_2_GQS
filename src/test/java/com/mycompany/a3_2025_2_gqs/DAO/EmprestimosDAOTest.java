@@ -220,4 +220,18 @@ public class EmprestimosDAOTest {
                     "Exceção esperada: SQLException ou HeadlessException; obtido: " + exc.getClass().getName());
         }
     }
+
+    @Test
+    void buscarEmprestimo_inexistente_retornaObjetoVazio() throws Exception {
+        try (Connection c = newConnection()) {
+            EmprestimosDAO dao = new EmprestimosDAO(c);
+            Emprestimos emp = dao.buscarEmprestimo(999999);
+            // comportamento observado no DAO: retorna um Emprestimos novo (campos default)
+            assertNotNull(emp);
+            // id padrão 0 (não encontrado)
+            assertEquals(0, emp.getId());
+            assertNull(emp.getDataEmprestimo());
+        }
+    }
+
 }
