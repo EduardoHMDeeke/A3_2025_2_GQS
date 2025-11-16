@@ -76,7 +76,6 @@ public class TelaPrincipalTest {
         }
         String FONT_NAME = tryGetStaticString(cls, "FONT_NAME");
         String AMIGO = tryGetStaticString(cls, "AMIGO");
-        String REFRESH = tryGetStaticString(cls, "REFRESH");
         String LOGO = tryGetStaticString(cls, "LOGO");
 
         // criar componentes mínimos e configurar
