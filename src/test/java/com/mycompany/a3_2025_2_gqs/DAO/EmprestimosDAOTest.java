@@ -3,20 +3,15 @@ package com.mycompany.a3_2025_2_gqs.DAO;
 import com.mycompany.a3_2025_2_gqs.Model.Emprestimos;
 import org.junit.jupiter.api.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Testes de integração para EmprestimosDAO usando SQLite in-memory.
- * Até Commit F (inclui insert, listar, buscar, updates e SQL injection)
+ * EmprestimosDAOTest — versão ajustada para lidar com HeadlessException e remover injeção frágil
  */
 public class EmprestimosDAOTest {
 
@@ -42,15 +37,17 @@ public class EmprestimosDAOTest {
     }
 
     private static void createSchema(Connection c) throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS emprestimos ("
-                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "idAmigo INTEGER, "
-                + "idFerramenta INTEGER, "
-                + "dataEmprestimo DATE, "
-                + "dataDevolucao DATE, "
-                + "dataDevolvida DATE, "
-                + "estaEmprestada INTEGER"
-                + ")";
+        String sql = """
+                CREATE TABLE IF NOT EXISTS emprestimos (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    idAmigo INTEGER,
+                    idFerramenta INTEGER,
+                    dataEmprestimo DATE,
+                    dataDevolucao DATE,
+                    dataDevolvida DATE,
+                    estaEmprestada INTEGER
+                )
+                """;
         try (Statement st = c.createStatement()) {
             st.execute(sql);
         }
@@ -62,7 +59,7 @@ public class EmprestimosDAOTest {
         }
     }
 
-    // helper para criar um objeto Emprestimos (ajuste se sua model for diferente)
+    // helper para criar um objeto Emprestimos (usa o construtor que aceita LocalDate)
     private Emprestimos novoEmprestimo(int idAmigo, int idFerramenta, LocalDate dtEmp, LocalDate dtDev) {
         return new Emprestimos(idAmigo, idFerramenta, dtEmp, dtDev, 1);
     }
@@ -96,17 +93,14 @@ public class EmprestimosDAOTest {
 
         try (Connection c1 = newConnection()) {
             EmprestimosDAO dao = new EmprestimosDAO(c1);
-            LocalDate hoje = LocalDate.now();
-            LocalDate seteDias = hoje.plusDays(7);
-            Emprestimos e = novoEmprestimo(1, 2, hoje, seteDias);
+            Emprestimos e = novoEmprestimo(1, 2, LocalDate.now(), LocalDate.now().plusDays(7));
             dao.insertBD(e);
         }
 
         try (Connection c2 = newConnection()) {
             EmprestimosDAO dao2 = new EmprestimosDAO(c2);
-            ArrayList<Emprestimos> lista = dao2.listarEmprestimos();
-            assertFalse(lista.isEmpty(), "A lista não deve estar vazia");
-            idGerado = lista.get(0).getId();
+            assertFalse(dao2.listarEmprestimos().isEmpty());
+            idGerado = dao2.listarEmprestimos().get(0).getId();
         }
 
         try (Connection c3 = newConnection()) {
@@ -125,10 +119,7 @@ public class EmprestimosDAOTest {
 
         try (Connection c1 = newConnection()) {
             EmprestimosDAO dao = new EmprestimosDAO(c1);
-            LocalDate hoje = LocalDate.now();
-            LocalDate seteDias = hoje.plusDays(7);
-            Emprestimos e = novoEmprestimo(5, 6, hoje, seteDias);
-            dao.insertBD(e);
+            dao.insertBD(novoEmprestimo(5, 6, LocalDate.now(), LocalDate.now()));
         }
 
         try (Connection c2 = newConnection()) {
@@ -154,14 +145,11 @@ public class EmprestimosDAOTest {
     @Test
     void updateEmprestimosComData_deveAtualizarStatusEDataDevolvida() throws Exception {
         int idGerado;
-        Date dataDev = Date.from(LocalDate.now().plusDays(2).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        java.util.Date dataDev = java.util.Date.from(LocalDate.now().plusDays(2).atStartOfDay(ZoneId.systemDefault()).toInstant());
 
         try (Connection c1 = newConnection()) {
             EmprestimosDAO dao = new EmprestimosDAO(c1);
-            LocalDate hoje = LocalDate.now();
-            LocalDate seteDias = hoje.plusDays(7);
-            Emprestimos e = novoEmprestimo(7, 8, hoje, seteDias);
-            dao.insertBD(e);
+            dao.insertBD(novoEmprestimo(7, 8, LocalDate.now(), LocalDate.now().plusDays(7)));
         }
 
         try (Connection c2 = newConnection()) {
@@ -188,10 +176,7 @@ public class EmprestimosDAOTest {
     void insertBD_deveProtegerContraSQLInjection() throws Exception {
         try (Connection c1 = newConnection()) {
             EmprestimosDAO dao = new EmprestimosDAO(c1);
-            LocalDate hoje = LocalDate.now();
-            LocalDate depois = hoje.plusDays(3);
-
-            Emprestimos e = novoEmprestimo(999, 999, hoje, depois);
+            Emprestimos e = novoEmprestimo(999, 999, LocalDate.now(), LocalDate.now().plusDays(3));
             dao.insertBD(e);
         }
 
@@ -201,7 +186,22 @@ public class EmprestimosDAOTest {
             lista = dao2.listarEmprestimos();
         }
 
-        assertTrue(lista.size() >= 1, "Tabela deveria conter pelo menos 1 registro após insert");
+        assertTrue(lista.size() >= 1);
         assertEquals(999, lista.get(0).getIdAmigos());
+    }
+    
+    
+    @Test
+    void insertBD_comDatasNulas_deveGravarSemErro() throws Exception {
+        Emprestimos e = new Emprestimos(1, 1, null, null, 1);
+
+        try (Connection c = newConnection()) {
+            new EmprestimosDAO(c).insertBD(e);
+        }
+
+        try (Connection c2 = newConnection()) {
+            var lista = new EmprestimosDAO(c2).listarEmprestimos();
+            assertEquals(1, lista.size());
+        }
     }
 }
