@@ -17,7 +17,7 @@ import com.mycompany.a3_2025_2_gqs.Model.Amigos;
 
 /**
  *
- * @author Eduardo Deeke
+ * @author Eduardo
  */
 public class AmigosDAO {
 
