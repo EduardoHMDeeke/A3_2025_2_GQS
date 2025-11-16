@@ -1,6 +1,10 @@
 package com.mycompany.a3_2025_2_gqs.DAO;
 
 import com.mycompany.a3_2025_2_gqs.Model.Emprestimos;
+import com.mycompany.a3_2025_2_gqs.Util.Util;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import org.junit.jupiter.api.*;
 
 import java.sql.*;
@@ -255,4 +259,32 @@ public class EmprestimosDAOTest {
             }
         }
     }
+
+    
+
+    @Test
+    void insertBD_withUtilDate_shouldPersist() throws Exception {
+        try (Connection c = newConnection()) {
+            createSchema(c);
+            EmprestimosDAO dao = new EmprestimosDAO(c);
+
+            Emprestimos empre = new Emprestimos();
+            empre.setIdAmigos(7);
+            empre.setIdFerramentas(9);
+            empre.setEstaEmprestada(1);
+
+            // usando java.util.Date
+            java.util.Date agora = new java.util.Date();
+            empre.setDataEmprestimo(Util.converterData(agora));
+            empre.setDataDevolucao(Util.converterData(new java.util.Date(agora.getTime() + 86400000L)));
+
+            dao.insertBD(empre);
+
+            ArrayList<Emprestimos> lista = dao.listarEmprestimos();
+            assertEquals(1, lista.size());
+            assertEquals(7, lista.get(0).getIdAmigos());
+        }
+    }
+    
+
 }
