@@ -21,7 +21,7 @@
             **/View/**,
             **/Controller/**,
             **/Util/**,
-            **/Principal.java
+            **/Principal.java,
             **/*.form
         </sonar.exclusions>
 
