@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * EmprestimosDAOTest — versão ajustada para lidar com HeadlessException e remover injeção frágil
+ * EmprestimosDAOTest — versão ajustada para lidar com HeadlessException e
+ * remover injeção frágil
  */
 public class EmprestimosDAOTest {
 
@@ -189,8 +190,7 @@ public class EmprestimosDAOTest {
         assertTrue(lista.size() >= 1);
         assertEquals(999, lista.get(0).getIdAmigos());
     }
-    
-    
+
     @Test
     void insertBD_comDatasNulas_deveGravarSemErro() throws Exception {
         Emprestimos e = new Emprestimos(1, 1, null, null, 1);
@@ -202,6 +202,22 @@ public class EmprestimosDAOTest {
         try (Connection c2 = newConnection()) {
             var lista = new EmprestimosDAO(c2).listarEmprestimos();
             assertEquals(1, lista.size());
+        }
+    }
+
+    @Test
+    void listarEmprestimos_comTabelaInexistente_deveLancarSQLException_ou_Headless() throws Exception {
+        try (Connection c = newConnection()) {
+            // remove tabela para forçar exceção
+            try (Statement st = c.createStatement()) {
+                st.execute("DROP TABLE IF EXISTS emprestimos");
+            }
+            EmprestimosDAO dao = new EmprestimosDAO(c);
+            // DAO pode exibir JOptionPane -> em headless isso vira HeadlessException
+            Exception exc = assertThrows(Exception.class, dao::listarEmprestimos);
+            // aceitar as duas possibilidades (SQLException oriunda do PreparedStatement OR HeadlessException vindo do JOptionPane)
+            assertTrue(exc instanceof SQLException || exc instanceof java.awt.HeadlessException,
+                    "Exceção esperada: SQLException ou HeadlessException; obtido: " + exc.getClass().getName());
         }
     }
 }
