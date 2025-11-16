@@ -19,6 +19,8 @@
         <sonar.coverage.exclusions>**/main/*Principal.*</sonar.coverage.exclusions>
         <sonar.exclusions>**/View/**, **/*.form</sonar.exclusions>
         <sonar.coverage.exclusions>**/View/**, **/*.form</sonar.coverage.exclusions>
+        <sonar.exclusions>**/Controller/**, **/*.form</sonar.exclusions>
+        <sonar.coverage.exclusions>**/Controller/**, **/*.form</sonar.coverage.exclusions>
 
         <java.awt.headless>true</java.awt.headless>
     </properties>
