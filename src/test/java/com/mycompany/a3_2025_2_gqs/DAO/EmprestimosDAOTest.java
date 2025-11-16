@@ -14,10 +14,6 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * EmprestimosDAOTest — versão ajustada para lidar com HeadlessException e
- * remover injeção frágil
- */
 public class EmprestimosDAOTest {
 
     private Connection keeper;
@@ -64,7 +60,6 @@ public class EmprestimosDAOTest {
         }
     }
 
-    // helper para criar um objeto Emprestimos (usa o construtor que aceita LocalDate)
     private Emprestimos novoEmprestimo(int idAmigo, int idFerramenta, LocalDate dtEmp, LocalDate dtDev) {
         return new Emprestimos(idAmigo, idFerramenta, dtEmp, dtDev, 1);
     }
@@ -212,14 +207,11 @@ public class EmprestimosDAOTest {
     @Test
     void listarEmprestimos_comTabelaInexistente_deveLancarSQLException_ou_Headless() throws Exception {
         try (Connection c = newConnection()) {
-            // remove tabela para forçar exceção
             try (Statement st = c.createStatement()) {
                 st.execute("DROP TABLE IF EXISTS emprestimos");
             }
             EmprestimosDAO dao = new EmprestimosDAO(c);
-            // DAO pode exibir JOptionPane -> em headless isso vira HeadlessException
             Exception exc = assertThrows(Exception.class, dao::listarEmprestimos);
-            // aceitar as duas possibilidades (SQLException oriunda do PreparedStatement OR HeadlessException vindo do JOptionPane)
             assertTrue(exc instanceof SQLException || exc instanceof java.awt.HeadlessException,
                     "Exceção esperada: SQLException ou HeadlessException; obtido: " + exc.getClass().getName());
         }
@@ -230,9 +222,7 @@ public class EmprestimosDAOTest {
         try (Connection c = newConnection()) {
             EmprestimosDAO dao = new EmprestimosDAO(c);
             Emprestimos emp = dao.buscarEmprestimo(999999);
-            // comportamento observado no DAO: retorna um Emprestimos novo (campos default)
             assertNotNull(emp);
-            // id padrão 0 (não encontrado)
             assertEquals(0, emp.getId());
             assertNull(emp.getDataEmprestimo());
         }
@@ -241,26 +231,20 @@ public class EmprestimosDAOTest {
     @Test
     void updateEmprestimos_comTabelaInexistente_naoLancaExcecaoNaoTratada() throws Exception {
         try (Connection c = newConnection()) {
-            // remove tabela e chama update — DAO captura SQLException internamente e mostra JOptionPane
             try (Statement st = c.createStatement()) {
                 st.execute("DROP TABLE IF EXISTS emprestimos");
             }
             EmprestimosDAO dao = new EmprestimosDAO(c);
             try {
-                // chamar e certificar que NÃO há exceção inesperada (aceitar HeadlessException, porque pode ocorrer ao exibir dialog)
                 dao.updateEmprestimos(1, 1);
             } catch (Exception ex) {
-                // aceitar HeadlessException (mostrando diálogo em ambiente headful), mas falhar em outros tipos
                 if (ex instanceof java.awt.HeadlessException) {
-                    // ok — vem do JOptionPane tentando abrir em headless
                 } else {
                     fail("updateEmprestimos lançou exceção inesperada: " + ex.getClass().getName());
                 }
             }
         }
     }
-
-    
 
     @Test
     void insertBD_withUtilDate_shouldPersist() throws Exception {
@@ -285,6 +269,33 @@ public class EmprestimosDAOTest {
             assertEquals(7, lista.get(0).getIdAmigos());
         }
     }
-    
+
+    @Test
+    void getAndConvertDate_whenResultSetThrows_shouldReturnNull() throws Exception {
+        Class<?> daoClass = EmprestimosDAO.class;
+        Connection c = newConnection();
+        EmprestimosDAO dao = new EmprestimosDAO(c);
+
+        java.lang.reflect.InvocationHandler handler = (proxy, method, args) -> {
+            if ("getDate".equals(method.getName()) && args != null && args.length > 0) {
+                throw new SQLException("simulated");
+            }
+            if ("next".equals(method.getName())) {
+                return false;
+            }
+            return null;
+        };
+
+        Object rsProxy = java.lang.reflect.Proxy.newProxyInstance(
+                ResultSet.class.getClassLoader(),
+                new Class[]{ResultSet.class},
+                handler
+        );
+
+        Method m = daoClass.getDeclaredMethod("getAndConvertDate", ResultSet.class, String.class);
+        m.setAccessible(true);
+        Object res = m.invoke(dao, rsProxy, "dataEmprestimo");
+        assertNull(res, "Quando ResultSet.getDate lança SQLException, retorno deve ser null");
+    }
 
 }
