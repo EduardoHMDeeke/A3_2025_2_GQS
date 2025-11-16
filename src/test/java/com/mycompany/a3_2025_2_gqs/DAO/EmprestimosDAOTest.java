@@ -234,4 +234,25 @@ public class EmprestimosDAOTest {
         }
     }
 
+    @Test
+    void updateEmprestimos_comTabelaInexistente_naoLancaExcecaoNaoTratada() throws Exception {
+        try (Connection c = newConnection()) {
+            // remove tabela e chama update — DAO captura SQLException internamente e mostra JOptionPane
+            try (Statement st = c.createStatement()) {
+                st.execute("DROP TABLE IF EXISTS emprestimos");
+            }
+            EmprestimosDAO dao = new EmprestimosDAO(c);
+            try {
+                // chamar e certificar que NÃO há exceção inesperada (aceitar HeadlessException, porque pode ocorrer ao exibir dialog)
+                dao.updateEmprestimos(1, 1);
+            } catch (Exception ex) {
+                // aceitar HeadlessException (mostrando diálogo em ambiente headful), mas falhar em outros tipos
+                if (ex instanceof java.awt.HeadlessException) {
+                    // ok — vem do JOptionPane tentando abrir em headless
+                } else {
+                    fail("updateEmprestimos lançou exceção inesperada: " + ex.getClass().getName());
+                }
+            }
+        }
+    }
 }
