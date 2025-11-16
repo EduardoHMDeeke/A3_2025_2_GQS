@@ -68,12 +68,16 @@ public class FerramentasDAOTest {
         try {
             f.getClass().getMethod("setPreco", String.class).invoke(f, preco);
             setOk = true;
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            // Leave empty?
+        }
         if (!setOk) {
             try {
                 f.getClass().getMethod("setValor", String.class).invoke(f, preco);
                 setOk = true;
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+                // Leave empty?
+            }
         }
         if (!setOk) {
             throw new RuntimeException("Configure setPreco(String) OU setValor(String) na classe Ferramentas.");

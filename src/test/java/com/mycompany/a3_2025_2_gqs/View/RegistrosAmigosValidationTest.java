@@ -13,14 +13,9 @@ import java.awt.GraphicsEnvironment;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("RegistrosAmigos Validation Tests")
-@EnabledIf("isGuiTestSupported")
 class RegistrosAmigosValidationTest {
 
     private RegistrosAmigos view;
-
-    private static boolean isGuiTestSupported() {
-        return !GraphicsEnvironment.isHeadless();
-    }
 
     @BeforeEach
     void setUp() {
