@@ -33,10 +33,6 @@ public class Amigos{
         this.telefone = telefone;
     }
 
-    
- 
-   
-
     public int getId() {
         return id;
     }

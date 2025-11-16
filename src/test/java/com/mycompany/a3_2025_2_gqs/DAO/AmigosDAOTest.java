@@ -185,25 +185,6 @@ public class AmigosDAOTest {
         assertEquals(38, amigoEncontrado.getIdade());
     }
 
-    /**
-    @Test
-    void listarAmigos_variosRegistros_deveRetornarTodos() throws Exception {
-        // Insert multiple records
-        try (Connection c = newConnection()) {
-            AmigosDAO dao = new AmigosDAO(c);
-            dao.insertBD(novoAmigo("Amigo 1", 20, "111111111", "amigo1@test.com"));
-            dao.insertBD(novoAmigo("Amigo 2", 25, "222222222", "amigo2@test.com"));
-            dao.insertBD(novoAmigo("Amigo 3", 30, "333333333", "amigo3@test.com"));
-        }
-
-        ArrayList<Amigos> lista;
-        try (Connection c = newConnection()) {
-            lista = new AmigosDAO(c).listarAmigos();
-        }
-
-        assertEquals(3, lista.size());
-    } */
-
     @Test
     void insertBD_deveProtegerContraSQLInjection() throws Exception {
         String payload = "'; DROP TABLE amigos; --";

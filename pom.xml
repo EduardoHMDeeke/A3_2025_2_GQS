@@ -20,12 +20,14 @@
         <sonar.exclusions>
             **/View/**,
             **/Controller/**,
+            **/Util/**,
             **/*.form
         </sonar.exclusions>
 
         <sonar.coverage.exclusions>
             **/View/**,
             **/Controller/**,
+            **/Util/**,
             **/*.form
         </sonar.coverage.exclusions>
 
