@@ -66,5 +66,14 @@ public class AmigosTest {
         amigo.setNome(null);
         assertNull(amigo.getNome());
     }
+
+    @Test
+    void testGetSetEmail() {
+        amigo.setEmail("pedro@email.com");
+        assertEquals("pedro@email.com", amigo.getEmail());
+        
+        amigo.setEmail("teste@teste.com.br");
+        assertEquals("teste@teste.com.br", amigo.getEmail());
+    }
 }
 
