@@ -72,5 +72,14 @@ public class EmprestimosTest {
         emprestimo.setIdAmigos(0);
         assertEquals(0, emprestimo.getIdAmigos());
     }
+
+    @Test
+    void testGetSetIdFerramentas() {
+        emprestimo.setIdFerramentas(12);
+        assertEquals(12, emprestimo.getIdFerramentas());
+        
+        emprestimo.setIdFerramentas(1);
+        assertEquals(1, emprestimo.getIdFerramentas());
+    }
 }
 
