@@ -41,5 +41,14 @@ public class ListaAmigosFerramentasControllerTest {
         amigo.setTelefone("11999999999");
         return amigo;
     }
+
+     private Ferramentas criarFerramenta(int id, String nome) {
+        Ferramentas ferramenta = new Ferramentas();
+        ferramenta.setId(id);
+        ferramenta.setNome(nome);
+        ferramenta.setMarca("Marca");
+        ferramenta.setValor("10.00");
+        return ferramenta;
+    }
 }
 
