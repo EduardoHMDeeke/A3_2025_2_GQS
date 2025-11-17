@@ -116,7 +116,7 @@ public class AmigosTest {
         assertTrue(result.contains("nome="));
     }
 
-        @Test
+    @Test
     void testTodosOsGettersESetters() {
         amigo.setId(5);
         amigo.setNome("Ana");
