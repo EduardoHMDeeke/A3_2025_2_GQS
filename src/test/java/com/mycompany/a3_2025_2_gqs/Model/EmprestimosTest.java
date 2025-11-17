@@ -126,5 +126,25 @@ public class EmprestimosTest {
         emprestimo.setDataDevolvida(null);
         assertNull(emprestimo.getDataDevolvida());
     }
+
+    @Test
+    void testTodosOsGettersESetters() {
+        emprestimo.setId(1);
+        emprestimo.setIdAmigos(5);
+        emprestimo.setIdFerramentas(10);
+        emprestimo.setDataEmprestimo(dataEmprestimo);
+        emprestimo.setDataDevolucao(dataDevolucao);
+        emprestimo.setEstaEmprestada(1);
+        LocalDate dataDevolvida = LocalDate.of(2024, 1, 18);
+        emprestimo.setDataDevolvida(dataDevolvida);
+
+        assertEquals(1, emprestimo.getId());
+        assertEquals(5, emprestimo.getIdAmigos());
+        assertEquals(10, emprestimo.getIdFerramentas());
+        assertEquals(dataEmprestimo, emprestimo.getDataEmprestimo());
+        assertEquals(dataDevolucao, emprestimo.getDataDevolucao());
+        assertEquals(1, emprestimo.getEstaEmprestada());
+        assertEquals(dataDevolvida, emprestimo.getDataDevolvida());
+    }
 }
 
