@@ -115,5 +115,22 @@ public class AmigosTest {
         assertTrue(result.contains("Teste"));
         assertTrue(result.contains("nome="));
     }
+
+        @Test
+    void testTodosOsGettersESetters() {
+        amigo.setId(5);
+        amigo.setNome("Ana");
+        amigo.setEmail("ana@email.com");
+        amigo.setTelefone("11777777777");
+        amigo.setIdade(30);
+        amigo.setDiaDoEmprestimo("15/03/2024");
+
+        assertEquals(5, amigo.getId());
+        assertEquals("Ana", amigo.getNome());
+        assertEquals("ana@email.com", amigo.getEmail());
+        assertEquals("11777777777", amigo.getTelefone());
+        assertEquals(30, amigo.getIdade());
+        assertEquals("15/03/2024", amigo.getDiaDoEmprestimo());
+    }
 }
 
