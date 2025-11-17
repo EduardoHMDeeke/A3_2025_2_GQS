@@ -1516,7 +1516,7 @@ public class TelaPrincipalTest {
                 fCardAmigos = cls.getDeclaredField("cardAmigos");
                 fCardAmigos.setAccessible(true);
                 fCardAmigos.setBoolean(tela, false);
-            } catch (NoSuchFieldException ignored ) {
+            } catch (NoSuchFieldException ignored) {
             }
 
             Method m = cls.getDeclaredMethod("JP_PrincipalMouseReleased", java.awt.event.MouseEvent.class);
@@ -1553,7 +1553,7 @@ public class TelaPrincipalTest {
                 frame.remove(invoker);
                 frame.removeNotify();
                 frame.dispose();
-            } catch (Throwable ignored ) {
+            } catch (Throwable ignored) {
             }
         }
     }
