@@ -81,5 +81,18 @@ public class EmprestimosTest {
         emprestimo.setIdFerramentas(1);
         assertEquals(1, emprestimo.getIdFerramentas());
     }
+
+    @Test
+    void testGetSetDataEmprestimo() {
+        emprestimo.setDataEmprestimo(dataEmprestimo);
+        assertEquals(dataEmprestimo, emprestimo.getDataEmprestimo());
+        
+        emprestimo.setDataEmprestimo(null);
+        assertNull(emprestimo.getDataEmprestimo());
+        
+        LocalDate outraData = LocalDate.of(2024, 2, 1);
+        emprestimo.setDataEmprestimo(outraData);
+        assertEquals(outraData, emprestimo.getDataEmprestimo());
+    }
 }
 
