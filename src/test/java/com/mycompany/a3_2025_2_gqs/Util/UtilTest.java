@@ -18,6 +18,10 @@ public class UtilTest {
         assertEquals(123456, resultado);
     }
 
-
+    @Test
+    void testObtemNumComApenasNumeros() {
+        int resultado = Util.obtemNum("12345");
+        assertEquals(12345, resultado);
+    }
 }
 
