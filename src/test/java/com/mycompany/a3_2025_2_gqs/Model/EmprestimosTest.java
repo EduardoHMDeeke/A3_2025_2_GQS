@@ -43,6 +43,17 @@ public class EmprestimosTest {
         assertEquals(dataEmprestimo, e.getDataEmprestimo());
         assertEquals(dataDevolucao, e.getDataDevolucao());
     }
+
+    @Test
+    void testConstrutorSemId() {
+        Emprestimos e = new Emprestimos(5, 15, dataEmprestimo, dataDevolucao, 1);
+        assertEquals(0, e.getId());
+        assertEquals(5, e.getIdAmigos());
+        assertEquals(15, e.getIdFerramentas());
+        assertEquals(dataEmprestimo, e.getDataEmprestimo());
+        assertEquals(dataDevolucao, e.getDataDevolucao());
+        assertEquals(1, e.getEstaEmprestada());
+    }
     
 }
 
