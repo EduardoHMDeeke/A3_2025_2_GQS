@@ -41,5 +41,11 @@ public class UtilTest {
         int resultado = Util.obtemNum("a1b2c3d4");
         assertEquals(1234, resultado);
     }
+
+    @Test
+    void testObtemNumComZero() {
+        int resultado = Util.obtemNum("0");
+        assertEquals(0, resultado);
+    }
 }
 
