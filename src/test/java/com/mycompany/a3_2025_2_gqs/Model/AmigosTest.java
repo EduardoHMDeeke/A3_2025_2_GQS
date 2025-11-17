@@ -106,5 +106,14 @@ public class AmigosTest {
         amigo.setDiaDoEmprestimo(null);
         assertNull(amigo.getDiaDoEmprestimo());
     }
+
+    @Test
+    void testToString() {
+        amigo.setNome("Teste");
+        String result = amigo.toString();
+        assertNotNull(result);
+        assertTrue(result.contains("Teste"));
+        assertTrue(result.contains("nome="));
+    }
 }
 
