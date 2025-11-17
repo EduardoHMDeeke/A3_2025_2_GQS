@@ -47,5 +47,14 @@ public class UtilTest {
         int resultado = Util.obtemNum("0");
         assertEquals(0, resultado);
     }
+
+    @Test
+    void testConverterDataStringParaLocalDate() {
+        LocalDate resultado = Util.converterData("15/01/2024");
+        assertNotNull(resultado);
+        assertEquals(2024, resultado.getYear());
+        assertEquals(1, resultado.getMonthValue());
+        assertEquals(15, resultado.getDayOfMonth());
+    }
 }
 
