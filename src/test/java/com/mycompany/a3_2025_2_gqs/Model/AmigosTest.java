@@ -27,5 +27,15 @@ public class AmigosTest {
         assertEquals(0, a.getIdade());
         assertNull(a.getDiaDoEmprestimo());
     }
+
+    @Test
+    void testConstrutorComTodosParametros() {
+        Amigos a = new Amigos("João Silva", "joao@email.com", "11999999999", 25);
+        assertEquals("João Silva", a.getNome());
+        assertEquals("joao@email.com", a.getEmail());
+        assertEquals("11999999999", a.getTelefone());
+        assertEquals(25, a.getIdade());
+    }
+    
 }
 
