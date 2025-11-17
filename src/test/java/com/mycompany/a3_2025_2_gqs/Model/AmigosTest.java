@@ -54,5 +54,17 @@ public class AmigosTest {
         amigo.setId(100);
         assertEquals(100, amigo.getId());
     }
+
+    @Test
+    void testGetSetNome() {
+        amigo.setNome("Pedro");
+        assertEquals("Pedro", amigo.getNome());
+        
+        amigo.setNome("");
+        assertEquals("", amigo.getNome());
+        
+        amigo.setNome(null);
+        assertNull(amigo.getNome());
+    }
 }
 
