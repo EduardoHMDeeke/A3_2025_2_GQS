@@ -29,5 +29,11 @@ public class UtilTest {
         int resultado = Util.obtemNum("abc");
         assertEquals(0, resultado);
     }
+
+    @Test
+    void testObtemNumComTextoVazio() {
+        int resultado = Util.obtemNum("");
+        assertEquals(0, resultado);
+    }
 }
 
