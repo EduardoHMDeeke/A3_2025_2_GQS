@@ -107,5 +107,14 @@ public class EmprestimosTest {
         emprestimo.setDataDevolucao(outraData);
         assertEquals(outraData, emprestimo.getDataDevolucao());
     }
+
+    @Test
+    void testGetSetEstaEmprestada() {
+        emprestimo.setEstaEmprestada(1);
+        assertEquals(1, emprestimo.getEstaEmprestada());
+        
+        emprestimo.setEstaEmprestada(0);
+        assertEquals(0, emprestimo.getEstaEmprestada());
+    }
 }
 
