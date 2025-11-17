@@ -110,5 +110,17 @@ public class ListaAmigosFerramentasControllerTest {
         
         assertNull(resultado);
     }
+
+    @Test
+    void testBuscarFerramentasComListaVazia() throws Exception {
+        Method method = ListaAmigosFerramentasController.class.getDeclaredMethod(
+            "buscarFerramentas", int.class, ArrayList.class);
+        method.setAccessible(true);
+        
+        ArrayList<Ferramentas> listaVazia = new ArrayList<>();
+        Ferramentas resultado = (Ferramentas) method.invoke(controller, 1, listaVazia);
+        
+        assertNull(resultado);
+    }
 }
 
