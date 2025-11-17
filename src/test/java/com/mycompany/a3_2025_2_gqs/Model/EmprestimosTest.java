@@ -54,6 +54,15 @@ public class EmprestimosTest {
         assertEquals(dataDevolucao, e.getDataDevolucao());
         assertEquals(1, e.getEstaEmprestada());
     }
+
+    @Test
+    void testGetSetId() {
+        emprestimo.setId(100);
+        assertEquals(100, emprestimo.getId());
+        
+        emprestimo.setId(0);
+        assertEquals(0, emprestimo.getId());
+    }
     
 }
 
