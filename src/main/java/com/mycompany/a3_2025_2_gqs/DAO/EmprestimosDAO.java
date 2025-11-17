@@ -45,20 +45,20 @@ public class EmprestimosDAO {
             pstmt.setInt(2, emprestimos.getIdFerramentas());
 
             Object dtEmp = emprestimos.getDataEmprestimo();
-            if (dtEmp instanceof LocalDateTime) {
+            if (dtEmp instanceof LocalDateTime localDateTime) {
                 pstmt.setTimestamp(3, Timestamp.valueOf((LocalDateTime) dtEmp));
-            } else if (dtEmp instanceof java.time.LocalDate) {
+            } else if (dtEmp instanceof java.time.LocalDate localDate) {
                 pstmt.setDate(3, java.sql.Date.valueOf((java.time.LocalDate) dtEmp));
-            } else if (dtEmp instanceof java.util.Date) {
+            } else if (dtEmp instanceof java.util.Date date) {
                 pstmt.setTimestamp(3, new Timestamp(((java.util.Date) dtEmp).getTime()));
-            } else if (dtEmp instanceof Timestamp) {
+            } else if (dtEmp instanceof Timestamp timestamp) {
                 pstmt.setTimestamp(3, (Timestamp) dtEmp);
             } else {
                 pstmt.setNull(3, Types.TIMESTAMP);
             }
 
             Object dtDev = emprestimos.getDataDevolucao();
-            if (dtDev instanceof LocalDateTime) {
+            if (dtDev instanceof LocalDateTime ) {
                 pstmt.setTimestamp(4, Timestamp.valueOf((LocalDateTime) dtDev));
             } else if (dtDev instanceof java.time.LocalDate) {
                 pstmt.setDate(4, java.sql.Date.valueOf((java.time.LocalDate) dtDev));
