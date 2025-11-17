@@ -50,5 +50,18 @@ public class ListaAmigosFerramentasControllerTest {
         ferramenta.setValor("10.00");
         return ferramenta;
     }
+
+    @Test
+    void testBusqueAmigoEncontrado() throws Exception {
+        Method method = ListaAmigosFerramentasController.class.getDeclaredMethod(
+            "busqueAmigo", int.class, ArrayList.class);
+        method.setAccessible(true);
+        
+        Amigos resultado = (Amigos) method.invoke(controller, 2, listaAmigos);
+        
+        assertNotNull(resultado);
+        assertEquals(2, resultado.getId());
+        assertEquals("Maria", resultado.getNome());
+    }
 }
 
