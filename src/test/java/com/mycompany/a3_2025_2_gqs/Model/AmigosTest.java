@@ -96,5 +96,15 @@ public class AmigosTest {
         amigo.setIdade(100);
         assertEquals(100, amigo.getIdade());
     }
+
+    
+    @Test
+    void testGetSetDiaDoEmprestimo() {
+        amigo.setDiaDoEmprestimo("01/01/2024");
+        assertEquals("01/01/2024", amigo.getDiaDoEmprestimo());
+        
+        amigo.setDiaDoEmprestimo(null);
+        assertNull(amigo.getDiaDoEmprestimo());
+    }
 }
 
