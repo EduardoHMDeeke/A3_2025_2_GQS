@@ -135,5 +135,18 @@ public class ListaAmigosFerramentasControllerTest {
         assertEquals(1, resultado.getId());
         assertEquals("João", resultado.getNome());
     }
+
+     @Test
+    void testBuscarFerramentasUltimoElemento() throws Exception {
+        Method method = ListaAmigosFerramentasController.class.getDeclaredMethod(
+            "buscarFerramentas", int.class, ArrayList.class);
+        method.setAccessible(true);
+        
+        Ferramentas resultado = (Ferramentas) method.invoke(controller, 3, listaFerramentas);
+        
+        assertNotNull(resultado);
+        assertEquals(3, resultado.getId());
+        assertEquals("Serrote", resultado.getNome());
+    }
 }
 
