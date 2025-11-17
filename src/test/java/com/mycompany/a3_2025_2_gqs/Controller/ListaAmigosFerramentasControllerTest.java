@@ -122,5 +122,18 @@ public class ListaAmigosFerramentasControllerTest {
         
         assertNull(resultado);
     }
+
+    @Test
+    void testBusqueAmigoPrimeiroElemento() throws Exception {
+        Method method = ListaAmigosFerramentasController.class.getDeclaredMethod(
+            "busqueAmigo", int.class, ArrayList.class);
+        method.setAccessible(true);
+        
+        Amigos resultado = (Amigos) method.invoke(controller, 1, listaAmigos);
+        
+        assertNotNull(resultado);
+        assertEquals(1, resultado.getId());
+        assertEquals("João", resultado.getNome());
+    }
 }
 
