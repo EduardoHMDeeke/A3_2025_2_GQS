@@ -23,5 +23,11 @@ public class UtilTest {
         int resultado = Util.obtemNum("12345");
         assertEquals(12345, resultado);
     }
+
+    @Test
+    void testObtemNumComApenasTexto() {
+        int resultado = Util.obtemNum("abc");
+        assertEquals(0, resultado);
+    }
 }
 
