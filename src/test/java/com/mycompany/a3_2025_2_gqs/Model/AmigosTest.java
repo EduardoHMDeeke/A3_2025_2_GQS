@@ -36,6 +36,15 @@ public class AmigosTest {
         assertEquals("11999999999", a.getTelefone());
         assertEquals(25, a.getIdade());
     }
+
+    @Test
+    void testConstrutorSemIdade() {
+        Amigos a = new Amigos("Maria Santos", "maria@email.com", "11888888888");
+        assertEquals("Maria Santos", a.getNome());
+        assertEquals("maria@email.com", a.getEmail());
+        assertEquals("11888888888", a.getTelefone());
+        assertEquals(0, a.getIdade());
+    }
     
 }
 
