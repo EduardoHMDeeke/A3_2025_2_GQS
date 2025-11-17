@@ -84,5 +84,17 @@ public class AmigosTest {
         amigo.setTelefone("(11) 98765-4321");
         assertEquals("(11) 98765-4321", amigo.getTelefone());
     }
+
+    @Test
+    void testGetSetIdade() {
+        amigo.setIdade(18);
+        assertEquals(18, amigo.getIdade());
+        
+        amigo.setIdade(0);
+        assertEquals(0, amigo.getIdade());
+        
+        amigo.setIdade(100);
+        assertEquals(100, amigo.getIdade());
+    }
 }
 
