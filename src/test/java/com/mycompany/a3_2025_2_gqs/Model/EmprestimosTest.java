@@ -116,5 +116,15 @@ public class EmprestimosTest {
         emprestimo.setEstaEmprestada(0);
         assertEquals(0, emprestimo.getEstaEmprestada());
     }
+
+    @Test
+    void testGetSetDataDevolvida() {
+        LocalDate dataDevolvida = LocalDate.of(2024, 1, 20);
+        emprestimo.setDataDevolvida(dataDevolvida);
+        assertEquals(dataDevolvida, emprestimo.getDataDevolvida());
+        
+        emprestimo.setDataDevolvida(null);
+        assertNull(emprestimo.getDataDevolvida());
+    }
 }
 
