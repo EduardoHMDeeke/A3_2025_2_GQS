@@ -56,5 +56,12 @@ public class UtilTest {
         assertEquals(1, resultado.getMonthValue());
         assertEquals(15, resultado.getDayOfMonth());
     }
+
+    @Test
+    void testConverterDataLocalDateParaString() {
+        LocalDate data = LocalDate.of(2024, 3, 20);
+        String resultado = Util.converterData(data);
+        assertEquals("20/03/2024", resultado);
+    }
 }
 
