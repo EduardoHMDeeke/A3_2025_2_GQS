@@ -75,5 +75,14 @@ public class AmigosTest {
         amigo.setEmail("teste@teste.com.br");
         assertEquals("teste@teste.com.br", amigo.getEmail());
     }
+
+    @Test
+    void testGetSetTelefone() {
+        amigo.setTelefone("11987654321");
+        assertEquals("11987654321", amigo.getTelefone());
+        
+        amigo.setTelefone("(11) 98765-4321");
+        assertEquals("(11) 98765-4321", amigo.getTelefone());
+    }
 }
 
