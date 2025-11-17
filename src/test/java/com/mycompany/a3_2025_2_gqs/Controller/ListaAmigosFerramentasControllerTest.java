@@ -99,5 +99,16 @@ public class ListaAmigosFerramentasControllerTest {
         assertEquals(2, resultado.getId());
         assertEquals("Chave", resultado.getNome());
     }
+
+     @Test
+    void testBuscarFerramentasNaoEncontrada() throws Exception {
+        Method method = ListaAmigosFerramentasController.class.getDeclaredMethod(
+            "buscarFerramentas", int.class, ArrayList.class);
+        method.setAccessible(true);
+        
+        Ferramentas resultado = (Ferramentas) method.invoke(controller, 999, listaFerramentas);
+        
+        assertNull(resultado);
+    }
 }
 
