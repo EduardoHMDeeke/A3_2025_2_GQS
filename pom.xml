@@ -26,11 +26,13 @@
         <sonar.coverage.exclusions>
             **/main/*Principal.*,
             **/View/**,
+            **/Controller/**,
             **/Principal.java,
             **/*.form
         </sonar.coverage.exclusions>
         <sonar.exclusions>
             **/View/**,
+            **/Controller/**,
             **/Principal.java,
             **/*.form
         </sonar.exclusions>
@@ -206,6 +208,7 @@
                     <excludes>
                         <exclude>**/Principal.*</exclude>
                         <exclude>**/View/**</exclude>
+                        <exclude>**/Controller/**</exclude>
                         <exclude>**/*.form</exclude>
                     </excludes>
                 </configuration>
