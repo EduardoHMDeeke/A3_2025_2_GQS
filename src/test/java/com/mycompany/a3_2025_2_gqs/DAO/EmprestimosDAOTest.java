@@ -173,6 +173,34 @@ public class EmprestimosDAOTest {
     }
 
     @Test
+    void updateEmprestimosComDataNula_deveAtualizarStatus() throws Exception {
+        int idGerado;
+
+        try (Connection c1 = newConnection()) {
+            EmprestimosDAO dao = new EmprestimosDAO(c1);
+            dao.insertBD(novoEmprestimo(9, 10, LocalDate.now(), LocalDate.now().plusDays(7)));
+        }
+
+        try (Connection c2 = newConnection()) {
+            EmprestimosDAO dao2 = new EmprestimosDAO(c2);
+            ArrayList<Emprestimos> lista = dao2.listarEmprestimos();
+            assertFalse(lista.isEmpty());
+            idGerado = lista.get(0).getId();
+        }
+
+        try (Connection c3 = newConnection()) {
+            EmprestimosDAO dao3 = new EmprestimosDAO(c3);
+            dao3.updateEmprestimos(0, null, idGerado);
+        }
+
+        try (Connection c4 = newConnection()) {
+            EmprestimosDAO dao4 = new EmprestimosDAO(c4);
+            Emprestimos atualizado = dao4.buscarEmprestimo(idGerado);
+            assertEquals(0, atualizado.getEstaEmprestada());
+        }
+    }
+
+    @Test
     void insertBD_deveProtegerContraSQLInjection() throws Exception {
         try (Connection c1 = newConnection()) {
             EmprestimosDAO dao = new EmprestimosDAO(c1);
@@ -269,6 +297,7 @@ public class EmprestimosDAOTest {
             assertEquals(7, lista.get(0).getIdAmigos());
         }
     }
+
 
     @Test
     void getAndConvertDate_whenResultSetThrows_shouldReturnNull() throws Exception {

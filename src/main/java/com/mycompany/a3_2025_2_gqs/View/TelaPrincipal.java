@@ -39,18 +39,39 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private boolean cardRelatorio = false;
 
     public TelaPrincipal() {
-        initComponents();
-        //Colocando o icone do Sistema/Janela
-        this.setIconImage(new javax.swing.ImageIcon(getClass().getResource("/Icons/ToolTracker_logo-removebg-preview.png")).getImage());
+        if (!java.awt.GraphicsEnvironment.isHeadless()) {
+            initComponents();
+            //Colocando o icone do Sistema/Janela
+            try {
+                this.setIconImage(new javax.swing.ImageIcon(getClass().getResource("/Icons/ToolTracker_logo-removebg-preview.png")).getImage());
+            } catch (Exception e) {
+                // Ignore if icon cannot be loaded
+            }
+            // Codigo para iniciar em tela cheia
+            this.setExtendedState(MAXIMIZED_BOTH);
+        } else {
+            // Inicializar componentes mínimos para testes em modo headless
+            JP_Principal = new javax.swing.JPanel();
+            JP_Home = new javax.swing.JPanel();
+            JP_ListaAmigos = new javax.swing.JPanel();
+            JP_ListaFerramentas = new javax.swing.JPanel();
+            JP_Relatorio = new javax.swing.JPanel();
+            JP_Lista = new javax.swing.JPanel();
+            table_amigos = new javax.swing.JTable(new javax.swing.table.DefaultTableModel(
+                new Object[][]{}, new String[]{"id", "Nome", "Email", "Telefone"}));
+            table_ferramentas = new javax.swing.JTable(new javax.swing.table.DefaultTableModel(
+                new Object[][]{}, new String[]{"Id", "Nome", "Marca", "Preço"}));
+            tabelaEmprestimo = new javax.swing.JTable(new javax.swing.table.DefaultTableModel(
+                new Object[][]{}, new String[]{"ID", "Amigo", "Ferramenta", "Data de emprestimo", "Data de devolução"}));
+        }
 
         controller = new ListaAmigosFerramentasController(this);
 
-        // Codigo para iniciar em tela cheia
-        this.setExtendedState(MAXIMIZED_BOTH);
-
-        controller.listarAmigos();
-        controller.listarFerramentas();
-        controller.listarEmprestimos();
+        if (!java.awt.GraphicsEnvironment.isHeadless()) {
+            controller.listarAmigos();
+            controller.listarFerramentas();
+            controller.listarEmprestimos();
+        }
     }
 
     @SuppressWarnings("unchecked")

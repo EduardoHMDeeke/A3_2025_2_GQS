@@ -20,7 +20,30 @@ public class RegistroFerramentas extends javax.swing.JFrame {
      * Creates new form RegistroFerramenta
      */
     public RegistroFerramentas() {
-        initComponents();
+        if (!java.awt.GraphicsEnvironment.isHeadless()) {
+            initComponents();
+        } else {
+            // Inicializar componentes mínimos para testes em modo headless
+            JP_Fundo = new javax.swing.JPanel();
+            jPanel2 = new javax.swing.JPanel();
+            updateFerramenta = new javax.swing.JButton();
+            jBotaoCadastroFerramenta = new javax.swing.JButton();
+            jDeleteFerramenta = new javax.swing.JButton();
+            b_voltar = new javax.swing.JButton();
+            jPanel1 = new javax.swing.JPanel();
+            labelNome = new javax.swing.JLabel();
+            txtnomeFerramenta = new javax.swing.JTextField();
+            txtMarca = new javax.swing.JTextField();
+            labelFone = new javax.swing.JLabel();
+            txtPreco = new javax.swing.JTextField();
+            labelEmail = new javax.swing.JLabel();
+            jPanel3 = new javax.swing.JPanel();
+            jPanel4 = new javax.swing.JPanel();
+            jPanel5 = new javax.swing.JPanel();
+            jPanel6 = new javax.swing.JPanel();
+            jLabel1 = new javax.swing.JLabel();
+            txtId = new javax.swing.JTextField();
+        }
         controller = new RegistroFerramentasController(this);
     }
 

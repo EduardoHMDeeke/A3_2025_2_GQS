@@ -12,7 +12,17 @@ public class DevolverFerramenta extends javax.swing.JFrame {
     
     private transient final EmprestimosController controller;
     public DevolverFerramenta() {
-        initComponents();
+        if (!java.awt.GraphicsEnvironment.isHeadless()) {
+            initComponents();
+        } else {
+            // Inicializar componentes mínimos para testes em modo headless
+            jDevolver = new javax.swing.JButton();
+            txtNomeAmigos = new javax.swing.JTextField();
+            txtNomeFerramenta = new javax.swing.JTextField();
+            txtDataEmprestimo = new javax.swing.JTextField();
+            txtDataDevolcao = new javax.swing.JTextField();
+            txtId = new javax.swing.JTextField();
+        }
         controller = new EmprestimosController(this);
     }
 
