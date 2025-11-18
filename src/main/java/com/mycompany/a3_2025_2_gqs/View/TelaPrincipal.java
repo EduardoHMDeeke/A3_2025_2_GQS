@@ -814,7 +814,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
             // Obter o Look and Feel atual
             String currentLF = UIManager.getLookAndFeel().getClass().getName();
-            System.out.println("tela1 " + currentLF);
+            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.FINE, "Look and Feel atual: {0}", currentLF);
 
             // Verificar se o tema atual é escuro ou claro
             if (currentLF.equals("javax.swing.plaf.nimbus.NimbusLookAndFeel")) {
@@ -857,7 +857,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             // Atualizar a aparência da interface do usuário
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, "Erro ao mudar tema", ex);
         }
 
     }//GEN-LAST:event_jMudarTemaActionPerformed

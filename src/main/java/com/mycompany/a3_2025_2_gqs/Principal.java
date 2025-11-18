@@ -35,10 +35,7 @@ public class Principal {
         int mes = calendar.get(Calendar.MONTH) + 1; // Mês começa em 0, então adicionamos 1
         int ano = calendar.get(Calendar.YEAR);
 
-        System.out.println("Dia: " + dia);
-        System.out.println("Mês: " + mes);
-        System.out.println("Ano: " + ano);
-
-     //   System.out.println(data);
+        // Log removido para evitar code smell no SonarQube
+        // A data é usada apenas para inicialização da interface
     }
 }
