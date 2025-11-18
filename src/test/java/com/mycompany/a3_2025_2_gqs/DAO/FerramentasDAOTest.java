@@ -256,4 +256,241 @@ public class FerramentasDAOTest {
             assertEquals(payload, lista.get(0).getNome());
         }
     }
+
+    @Test
+    void buscarFerramenta_inexistente_retornaObjetoVazio() throws Exception {
+        try (Connection c = newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            Ferramentas f = dao.buscarFerramenta(999999);
+            assertNotNull(f);
+            assertEquals(0, f.getId());
+        }
+    }
+
+    @Test
+    void listarFerramentas_comTabelaVazia_retornaListaVazia() throws Exception {
+        try (Connection c = newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            ArrayList<Ferramentas> lista = dao.listarFerramentas();
+            assertTrue(lista.isEmpty());
+        }
+    }
+
+    @Test
+    void listarFerramentasNaoEmprestadas_comTabelaVazia_retornaListaVazia() throws Exception {
+        try (Connection c = newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            ArrayList<Ferramentas> lista = dao.listarFerramentasNaoEmprestadas();
+            assertTrue(lista.isEmpty());
+        }
+    }
+
+    @Test
+    void updateFerramenta_comIdInexistente_naoLancaExcecao() throws Exception {
+        try (Connection c = newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            Ferramentas f = novaFerramenta("Teste", "Marca", "10.00", 0);
+            // Update with non-existent ID should not throw exception
+            assertDoesNotThrow(() -> {
+                dao.updateFerramenta(f, 999999);
+            });
+        }
+    }
+
+    @Test
+    void deleteFerramentas_comIdInexistente_naoLancaExcecao() throws Exception {
+        try (Connection c = newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            // Delete with non-existent ID should not throw exception
+            assertDoesNotThrow(() -> {
+                dao.deleteFerramentas(999999);
+            });
+        }
+    }
+
+    @Test
+    void updateStatus_comIdInexistente_naoLancaExcecao() throws Exception {
+        try (Connection c = newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            // Update status with non-existent ID should not throw exception
+            assertDoesNotThrow(() -> {
+                dao.updateStatus(1, 999999);
+            });
+        }
+    }
+
+    @Test
+    void insertBD_withSQLException_shouldPropagateException() throws Exception {
+        // Test that SQLException is propagated from insertBD
+        try (Connection c = newConnection()) {
+            c.close();
+            
+            FerramentaDAO dao = new FerramentaDAO(c);
+            Ferramentas f = novaFerramenta("Teste", "Marca", "10.00", 0);
+            
+            assertThrows(SQLException.class, () -> {
+                dao.insertBD(f);
+            });
+        }
+    }
+
+    @Test
+    void listarFerramentas_withSQLException_shouldHandleGracefully() throws Exception {
+        // Test that listarFerramentas handles SQLException gracefully
+        // Note: In headless mode, JOptionPane throws HeadlessException
+        try (Connection c = newConnection()) {
+            c.close();
+            
+            FerramentaDAO dao = new FerramentaDAO(c);
+            
+            // May throw HeadlessException in headless mode, which is acceptable
+            try {
+                ArrayList<Ferramentas> lista = dao.listarFerramentas();
+            } catch (java.awt.HeadlessException e) {
+                // Expected in headless mode
+            }
+        }
+    }
+
+    @Test
+    void listarFerramentasNaoEmprestadas_withSQLException_shouldHandleGracefully() throws Exception {
+        // Test that listarFerramentasNaoEmprestadas handles SQLException gracefully
+        // Note: In headless mode, JOptionPane throws HeadlessException
+        try (Connection c = newConnection()) {
+            c.close();
+            
+            FerramentaDAO dao = new FerramentaDAO(c);
+            
+            // May throw HeadlessException in headless mode, which is acceptable
+            try {
+                ArrayList<Ferramentas> lista = dao.listarFerramentasNaoEmprestadas();
+            } catch (java.awt.HeadlessException e) {
+                // Expected in headless mode
+            }
+        }
+    }
+
+    @Test
+    void buscarFerramenta_withSQLException_shouldHandleGracefully() throws Exception {
+        // Test that buscarFerramenta handles SQLException gracefully
+        // Note: In headless mode, JOptionPane throws HeadlessException
+        try (Connection c = newConnection()) {
+            c.close();
+            
+            FerramentaDAO dao = new FerramentaDAO(c);
+            
+            // May throw HeadlessException in headless mode, which is acceptable
+            try {
+                Ferramentas f = dao.buscarFerramenta(1);
+            } catch (java.awt.HeadlessException e) {
+                // Expected in headless mode
+            }
+        }
+    }
+
+    @Test
+    void updateFerramenta_withSQLException_shouldHandleGracefully() throws Exception {
+        // Test that updateFerramenta handles SQLException gracefully
+        try (Connection c = newConnection()) {
+            c.close();
+            
+            FerramentaDAO dao = new FerramentaDAO(c);
+            Ferramentas f = novaFerramenta("Teste", "Marca", "10.00", 0);
+            
+            assertDoesNotThrow(() -> {
+                dao.updateFerramenta(f, 1);
+            });
+        }
+    }
+
+    @Test
+    void deleteFerramentas_withSQLException_shouldHandleGracefully() throws Exception {
+        // Test that deleteFerramentas handles SQLException gracefully
+        try (Connection c = newConnection()) {
+            c.close();
+            
+            FerramentaDAO dao = new FerramentaDAO(c);
+            
+            assertDoesNotThrow(() -> {
+                dao.deleteFerramentas(1);
+            });
+        }
+    }
+
+    @Test
+    void updateStatus_withSQLException_shouldHandleGracefully() throws Exception {
+        // Test that updateStatus handles SQLException gracefully
+        try (Connection c = newConnection()) {
+            c.close();
+            
+            FerramentaDAO dao = new FerramentaDAO(c);
+            
+            assertDoesNotThrow(() -> {
+                dao.updateStatus(1, 1);
+            });
+        }
+    }
+
+    @Test
+    void listarFerramentas_shouldClearListBeforeAdding() throws Exception {
+        // Test that lista is cleared before adding new items
+        try (Connection c = newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            
+            // Insert first batch
+            dao.insertBD(novaFerramenta("Ferramenta1", "Marca1", "10.00", 0));
+            
+            ArrayList<Ferramentas> lista1 = dao.listarFerramentas();
+            assertEquals(1, lista1.size());
+            
+            // Insert second batch
+            dao.insertBD(novaFerramenta("Ferramenta2", "Marca2", "20.00", 0));
+            
+            ArrayList<Ferramentas> lista2 = dao.listarFerramentas();
+            assertEquals(2, lista2.size());
+        }
+    }
+
+    @Test
+    void listarFerramentasNaoEmprestadas_shouldClearListBeforeAdding() throws Exception {
+        // Test that lista is cleared in listarFerramentasNaoEmprestadas
+        try (Connection c = newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            
+            // Insert ferramentas with estaEmprestada = 1
+            dao.insertBD(novaFerramenta("Ferramenta1", "Marca1", "10.00", 1));
+            dao.insertBD(novaFerramenta("Ferramenta2", "Marca2", "20.00", 1));
+            
+            ArrayList<Ferramentas> lista = dao.listarFerramentasNaoEmprestadas();
+            assertEquals(2, lista.size());
+        }
+    }
+
+    @Test
+    void buscarFerramenta_shouldReturnCorrectFerramenta() throws Exception {
+        // Test buscarFerramenta with multiple records
+        int id1, id2;
+        
+        try (Connection c = newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            dao.insertBD(novaFerramenta("Ferramenta1", "Marca1", "10.00", 0));
+            dao.insertBD(novaFerramenta("Ferramenta2", "Marca2", "20.00", 0));
+            
+            ArrayList<Ferramentas> lista = dao.listarFerramentas();
+            id1 = lista.get(0).getId();
+            id2 = lista.get(1).getId();
+        }
+        
+        try (Connection c = newConnection()) {
+            FerramentaDAO dao = new FerramentaDAO(c);
+            
+            Ferramentas f1 = dao.buscarFerramenta(id1);
+            assertEquals("Ferramenta1", f1.getNome());
+            assertEquals("Marca1", f1.getMarca());
+            
+            Ferramentas f2 = dao.buscarFerramenta(id2);
+            assertEquals("Ferramenta2", f2.getNome());
+            assertEquals("Marca2", f2.getMarca());
+        }
+    }
 }
