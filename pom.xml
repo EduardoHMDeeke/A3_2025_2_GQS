@@ -15,7 +15,14 @@
         <maven.compiler.release>22</maven.compiler.release>
 
         <sonar.organization>eduardohmdeeke</sonar.organization>
+        <sonar.projectKey>EduardoHMDeeke_A3_2025_2_GQS</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.sources>src/main/java</sonar.sources>
+        <sonar.tests>src/test/java</sonar.tests>
+        <sonar.java.binaries>target/classes</sonar.java.binaries>
+        <sonar.java.test.binaries>target/test-classes</sonar.java.test.binaries>
         <sonar.coverage.exclusions>
             **/main/*Principal.*,
             **/View/**,
@@ -215,12 +222,19 @@
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>prepare-package</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Sonar Maven Plugin -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.11.0.3922</version>
             </plugin>
         </plugins>
     </build>

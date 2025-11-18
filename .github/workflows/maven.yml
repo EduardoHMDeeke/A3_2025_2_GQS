@@ -32,6 +32,12 @@ jobs:
         cache: maven
 
     - name: Compila o projeto com o Maven
+      env:
+        DB_HOST: localhost
+        DB_PORT: 3306
+        DB_NAME: dbtooltracker
+        DB_USER: tooltracker
+        DB_PASSWORD: tooltracker123
       run: mvn -B compile --file pom.xml
 
 
@@ -55,6 +61,12 @@ jobs:
         cache: maven
 
     - name: Testa o projeto com o Maven
+      env:
+        DB_HOST: localhost
+        DB_PORT: 3306
+        DB_NAME: dbtooltracker
+        DB_USER: tooltracker
+        DB_PASSWORD: tooltracker123
       run: mvn -B test --file pom.xml
 
 
@@ -76,10 +88,22 @@ jobs:
         cache: maven
 
     - name: Executa o empacotamento do projeto com o Maven.
+      env:
+        DB_HOST: localhost
+        DB_PORT: 3306
+        DB_NAME: dbtooltracker
+        DB_USER: tooltracker
+        DB_PASSWORD: tooltracker123
       run: mvn -B package --file pom.xml -DskipTests
 
     # O parâmetro -DskipTests pula os testes pois já foram executados no ambiente anterior.
     - name: Empacota o projeto com Maven
+      env:
+        DB_HOST: localhost
+        DB_PORT: 3306
+        DB_NAME: dbtooltracker
+        DB_USER: tooltracker
+        DB_PASSWORD: tooltracker123
       run: mvn -B package --file pom.xml -DskipTests
 
     # Cria o artefato de download

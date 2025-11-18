@@ -43,12 +43,15 @@ jobs:
       - name: Build and analyze (with xvfb)
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          DB_HOST: localhost
+          DB_PORT: 3306
+          DB_NAME: dbtooltracker
+          DB_USER: tooltracker
+          DB_PASSWORD: tooltracker123
         run: |
           export DISPLAY=:99
           xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" \
-            mvn -B verify \
-            org.jacoco:jacoco-maven-plugin:prepare-agent \
-            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            mvn -B verify sonar:sonar \
             -Dsonar.projectKey=EduardoHMDeeke_A3_2025_2_GQS \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
       # ==========================================================
