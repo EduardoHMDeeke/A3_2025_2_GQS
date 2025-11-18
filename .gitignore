@@ -1,2 +1,16 @@
-
 /target/
+
+# Arquivo de configuração com credenciais
+.env
+
+# Arquivos de IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
